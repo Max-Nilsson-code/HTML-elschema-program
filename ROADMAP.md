@@ -27,7 +27,7 @@ finns.
 | **Spara/ladda** | JSON-export/import via fil (ladda ner/ladda upp) | Funkar i alla webbläsare, användaren äger sina filer. |
 | **Export** | SVG (primärt), PNG (bonus) | SVG-export är i praktiken en serialisering av det som redan ritas. PNG blir en biprodukt (rendera samma SVG via canvas). |
 | **Layout-konvention** | Horisontella rader, fas (L) vänster / nolla (N) höger — ren användarkonvention | Ritas med de generella verktygen (symboler + linjer), inget särskilt "skena"-objekt i v1. |
-| **Symbolkälla** | `symboler och vägledning/Symboler-vägledning.svg` (draw.io-export) är designreferensen | Innehåller både symbolutseende och etikettplaceringskonvention. Måste ritas om som fristående SVG:er — draw.io:s inbyggda shape-bibliotek (`mxgraph.electrical.*`) går inte att bädda in direkt i en egen app. |
+| **Symbolkälla** | `symboler och vägledning/Symboler-vägledning.svg` (draw.io-export) — symbolerna är **extraherade direkt** ur filen | Den renderade delen av draw.io-exporten innehåller symbolerna som riktiga `<path>`/`<rect>`/`<ellipse>`, så geometrin kunde återanvändas exakt i stället för att ritas om. Vid konverteringen normaliseras varje symbol så anslutningspunkterna hamnar på rutnätet. |
 
 ### Projektstruktur
 
@@ -53,21 +53,20 @@ finns.
 │       ├── kontakt-no.svg
 │       ├── kontakt-nc.svg
 │       └── … (se Fas 2)
-├── symboler och vägledning/        ← designreferens & dokumentation (redan skapad)
+├── symboler och vägledning/        ← symbolkälla & dokumentation
 │   ├── README.md
-│   ├── Symboler-vägledning.svg     ← ursprunglig draw.io-referens (källa)
+│   ├── Symboler-vägledning.svg     ← originalritningen (draw.io), symbolernas källa
 │   └── vägledning.md               ← skriven guide: standard, namngivningskonvention, etikettplacering
 └── ROADMAP.md                      ← detta dokument
 ```
 
-**Varför två symbolmappar?** `symboler och vägledning/` är den mänskligt
-läsbara referensen (hur *ska* symbolerna se ut, varför) — den håller kvar
-draw.io-originalet och en skriven guide. `assets/symbols/` är appens egna,
-körfärdiga kopior som koden faktiskt laddar in vid körning. Anledningen till
+**Varför två symbolmappar?** `symboler och vägledning/` håller
+originalritningen och den skrivna guiden — källan och förklaringen.
+`assets/symbols/` är de körfärdiga filer som appen laddar in, med geometrin
+extraherad ur originalet och normaliserad mot rutnätet. Anledningen till
 uppdelningen: mappnamnet `symboler och vägledning` innehåller mellanslag,
 vilket är onödigt krångligt att referera från kod (URL-encoding vid `fetch`);
-bättre att hålla den mappen som ren dokumentation och låta appen läsa från en
-egen, url-vänlig assets-mapp.
+bättre att låta appen läsa från en egen, url-vänlig assets-mapp.
 
 ---
 
@@ -92,39 +91,42 @@ egen, url-vänlig assets-mapp.
 - [x] Gemensam `snapToGrid(x, y)`-hjälpfunktion i `js/grid.js`, redo att
       användas av senare faser
 
-### Fas 2 – Symbolbibliotek (datamodell + innehåll)
-- [ ] Definiera datastruktur per symboltyp: SVG-geometri, storlek i
-      grid-enheter, namngivna anslutningspunkter (relativ position per pinne),
-      etikett-slots (var beteckning och pinnamn ska sitta, i alla 4
-      rotationslägen)
-- [ ] Rita om samtliga symboler från `Symboler-vägledning.svg` som fristående
-      SVG-filer i `assets/symbols/`:
+### Fas 2 – Symbolbibliotek (datamodell + innehåll) ✅
+- [x] Datastruktur per symboltyp: SVG-geometri, storlek, namngivna
+      anslutningspunkter, etikett-ankare — allt som `data-`-attribut i
+      symbolfilen själv
+- [x] Symbolerna **extraherade direkt ur** `Symboler-vägledning.svg`
+      (samma paths/proportioner som originalet), normaliserade så
+      anslutningarna hamnar på rutnätet:
   1. Kontakt NO
   2. Kontakt NC
   3. Tillslagsfördröjd kontakt NO
   4. Tillslagsfördröjd kontakt NC
   5. Säkring
-  6. Återfjädrande knapp (tillägg på kontakt)
-  7. Tryckknapp bistabil (tillägg på kontakt)
-  8. Motorskyddskontakt (tillägg på kontakt)
+  6. Återfjädrande knapp *(tillägg på kontakt)*
+  7. Tryckknapp bistabil *(tillägg på kontakt)*
+  8. Motorskyddskontakt *(tillägg på kontakt)*
   9. Lampa
   10. Spole
-  11. Brytare (motsvarande draw.io:s `singleSwitch`)
-- [ ] Skriv `symboler och vägledning/vägledning.md`: vilken standard som
-      följs, namngivningskonvention för beteckningar (K, M, Q, S, B, P …) och
-      pinnamn (A1/A2, 13/14, 95/96 …)
-- [ ] `symbol-library.js`: registry som laddar in och exponerar alla
-      symboldefinitioner till resten av appen
+- [x] `symboler och vägledning/vägledning.md`: standard, beteckningsprefix,
+      pinnamnskonvention, filformat
+- [x] `js/symbol-library.js`: laddar och exponerar symboltyperna
 
-### Fas 3 – Placera & manipulera symboler
-- [ ] Symbolpalett/sidopanel med alla tillgängliga symboler
-- [ ] Placera symbolinstans på canvas (klick i palett → klick på rityta,
-      snäppt till grid)
-- [ ] Markering: klick på enskild symbol, gummiband för flera
-- [ ] Flytta (drag, snäppt till grid)
-- [ ] Rotera i 90°-steg (etikett-slots uppdateras korrekt till nytt läge)
-- [ ] Duplicera markerad symbol/markering
-- [ ] Radera
+> Ändring mot ursprunglig plan: listan blev 10 symboler, inte 11 — den
+> tänkta "brytaren" fanns bara som draw.io:s inbyggda shape på sida 2 i
+> referensen, inte som egen ritad symbol. Nr 6–8 visade sig vara
+> *tillägg på kontakt* utan egna anslutningar eller beteckning.
+> Lampan (nr 9) har fått anslutningsledningar som originalet saknade.
+
+### Fas 3 – Placera & manipulera symboler ✅
+- [x] Symbolpalett med förhandsvisningar (`js/palette.js`)
+- [x] Placera symbolinstans (klick i palett → klick på rityta, snäppt till
+      grid), med autonumrerad beteckning per prefix (K1, K2 …)
+- [x] Markering: klick, shift-toggle, gummiband (`js/selection.js`)
+- [x] Flytta (drag, snäppt till grid vid släpp)
+- [x] Rotera i 90°-steg — etiketterna räknas om men hålls horisontella
+- [x] Duplicera (Ctrl/Cmd+D)
+- [x] Radera (Delete/Backspace)
 
 ### Fas 4 – Ledningar (wires)
 - [ ] Rittyg: klicka start- och slutpunkt (eller klick-och-dra) för att skapa
@@ -188,8 +190,16 @@ hålls öppen för dem senare:
 ## Öppna trådar att hålla koll på
 
 - Filen `symboler och vägledning/Symboler-vägledning.svg` innehåller texten
-  **"Säring"** för symbol nr 5 — antas vara en felstavning av **"Säkring"**,
-  rättas i samband med Fas 2.
+  **"Säring"** för symbol nr 5 — tolkat som en felstavning av **"Säkring"**,
+  vilket är namnet som används i appen.
+- **Lampan (nr 9)** ritades i originalet utan anslutningsledningar. Den har
+  fått sådana i `assets/symbols/lampa.svg` för att kunna kopplas in och
+  hamna rätt på rutnätet — enda avvikelsen från originalgeometrin.
+- **Tilläggssymbolerna (6–8)** placeras ovanpå en kontakt och har varken
+  anslutningspunkter eller beteckning. De snäpper till samma rutnätspunkt
+  som kontakten, men det finns ingen koppling mellan dem i datamodellen —
+  flyttar man kontakten följer inte tillägget med. Kan behöva ses över om
+  det visar sig irriterande i praktiken.
 - Mappnamnet `symboler och vägledning` har mellanslag i sig — fungerar för
   dokumentation men undviks som körtidssökväg i kod (se "Varför två
   symbolmappar?" ovan).
