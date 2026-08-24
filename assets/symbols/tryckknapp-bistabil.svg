@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 80 80" width="80" height="80"
+     data-symbol-id="tryckknapp-bistabil" data-symbol-name="Tryckknapp bistabil (tillägg)" data-designation-prefix="S"
+     data-width="80" data-height="80">
+  <g class="symbol-geometry" fill="none" stroke="#000" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M 30 50 L 50 50" />
+    <path d="M 40 30 L 40 35 L 35 40 L 40 45 L 40 50" />
+  </g>
+</svg>

@@ -9,14 +9,17 @@ const MIN_ZOOM = 0.2;
 const MAX_ZOOM = 5;
 
 export function initCanvas(svg) {
+  // Mät SVG-elementet självt (inte fönstret) — ritytan delar bredd med
+  // symbolpaletten, så window.innerWidth skulle ge fel skala.
+  const initialRect = svg.getBoundingClientRect();
   const viewBox = {
     x: 0,
     y: 0,
-    w: window.innerWidth,
-    h: window.innerHeight,
+    w: initialRect.width,
+    h: initialRect.height,
   };
-  // Bas-storlek (world units vid zoom = 1) sätts en gång, används för att
-  // räkna ut zoom-nivån och klämma den inom MIN_ZOOM/MAX_ZOOM.
+  // Bas-storlek (world units vid zoom = 1), används för att räkna ut
+  // zoom-nivån och klämma den inom MIN_ZOOM/MAX_ZOOM.
   const baseSize = { w: viewBox.w, h: viewBox.h };
 
   const gridRect = setupGrid(svg);
@@ -123,8 +126,10 @@ export function initCanvas(svg) {
   // --- Fönsterstorlek ---
   window.addEventListener("resize", () => {
     const zoom = currentZoom();
-    baseSize.w = window.innerWidth;
-    baseSize.h = window.innerHeight;
+    const rect = svg.getBoundingClientRect();
+    if (rect.width === 0 || rect.height === 0) return;
+    baseSize.w = rect.width;
+    baseSize.h = rect.height;
     viewBox.w = baseSize.w / zoom;
     viewBox.h = baseSize.h / zoom;
     applyViewBox();
@@ -132,7 +137,15 @@ export function initCanvas(svg) {
 
   applyViewBox();
 
-  return { viewBox, screenToWorld, currentZoom };
+  return {
+    viewBox,
+    screenToWorld,
+    currentZoom,
+    // Exponeras så andra moduler (t.ex. selection.js) kan undvika att
+    // tolka en panorerings-klick som ett markerings-klick.
+    isSpaceHeld: () => spaceHeld,
+    isPanning: () => panState !== null,
+  };
 }
 
 function clamp(value, min, max) {

@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 80 80" width="80" height="80"
+     data-symbol-id="lampa" data-symbol-name="Lampa" data-designation-prefix="P"
+     data-width="80" data-height="80" data-designation-x="40" data-designation-y="10">
+  <g class="symbol-geometry" fill="none" stroke="#000" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M 0 40 L 24.5 40" />
+    <circle cx="40" cy="40" r="15.5" />
+    <path d="M 29.04 50.96 L 50.96 29.04" />
+    <path d="M 29.04 29.04 L 50.96 50.96" />
+    <path d="M 55.5 40 L 80 40" />
+  </g>
+  <circle class="pin" data-pin-id="1" data-default-label="1" data-label-dx="8" data-label-dy="-10" cx="0" cy="40" r="2.5" />
+  <circle class="pin" data-pin-id="2" data-default-label="2" data-label-dx="-8" data-label-dy="-10" cx="80" cy="40" r="2.5" />
+</svg>

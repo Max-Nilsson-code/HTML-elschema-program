@@ -1,0 +1,146 @@
+# Vägledning – symboler och namngivning
+
+Den här mappen är **källan** för symbolbiblioteket. Filerna som appen laddar
+vid körning ligger i `assets/symbols/`.
+
+- `Symboler-vägledning.svg` — originalritningen (draw.io/diagrams.net-export).
+  Det är härifrån symbolernas geometri är hämtad.
+- `vägledning.md` — det här dokumentet.
+
+## Hur symbolerna kommit till
+
+Geometrin är **extraherad direkt ur `Symboler-vägledning.svg`** — samma
+paths, koordinater och proportioner som i originalritningen. Den renderade
+delen av draw.io-filen innehåller symbolerna som riktiga `<path>`-,
+`<rect>`- och `<ellipse>`-element, vilka konverterats till fristående
+SVG-filer.
+
+Vid konverteringen har varje symbol flyttats så att anslutningspunkterna
+hamnar på `x=0` och `x=80`, med den elektriska axeln på `y=40`. Det gör att
+anslutningarna hamnar exakt på rutnätet (20 px) när symbolen placeras.
+
+**En avvikelse från originalet:** lampan (nr 9) ritades i originalet utan
+anslutningsledningar — bara cirkeln med kryss. I appen har den fått
+ledningar ut till `x=0` respektive `x=80`, som övriga symboler, så att den
+går att koppla in och hamnar rätt på rutnätet.
+
+## Symboluppsättning
+
+| # | Fil | Namn | Beteckning | Anslutningar |
+|---|---|---|---|---|
+| 1 | `kontakt-no.svg` | Kontakt NO (slutande) | S | 1 / 2 |
+| 2 | `kontakt-nc.svg` | Kontakt NC (brytande) | S | 1 / 2 |
+| 3 | `tillslagsfordrojd-kontakt-no.svg` | Tillslagsfördröjd kontakt NO | K | 1 / 2 |
+| 4 | `tillslagsfordrojd-kontakt-nc.svg` | Tillslagsfördröjd kontakt NC | K | 1 / 2 |
+| 5 | `sakring.svg` | Säkring | F | 1 / 2 |
+| 6 | `aterfjadrande-knapp.svg` | Återfjädrande knapp | — | *tillägg* |
+| 7 | `tryckknapp-bistabil.svg` | Tryckknapp bistabil | — | *tillägg* |
+| 8 | `motorskyddskontakt.svg` | Motorskyddskontakt | — | *tillägg* |
+| 9 | `lampa.svg` | Lampa | P | 1 / 2 |
+| 10 | `spole.svg` | Spole | K | A1 / A2 |
+
+> **Not:** originalritningen stavar nr 5 "Säring" — tolkat som en felstavning
+> av "Säkring".
+
+## Tilläggssymboler (6, 7, 8)
+
+Nr 6, 7 och 8 är i originalritningen markerade som **"tillägg på kontakt"**.
+De är manöverdon, inte egna komponenter: de placeras *ovanpå* en
+kontaktsymbol (1–4) för att visa hur kontakten manövreras.
+
+Därför har de medvetet:
+- **inga anslutningspunkter** — kontakten under bär anslutningarna
+- **ingen egen beteckning** — beteckningen hör till kontakten
+
+Deras lodräta stam är streckad, vilket är konventionen för mekanisk
+förbindelse mellan manöverdon och kontakt.
+
+Symbolerna är ritade i samma koordinatsystem som kontakterna, så en
+tilläggssymbol placerad på samma rutnätspunkt som en kontakt hamnar rätt
+automatiskt.
+
+## Beteckningar (komponentbenämning)
+
+Varje symbolinstans får en beteckning som placeras **ovanför** symbolen.
+Appen föreslår automatiskt nästa lediga nummer per prefix (K1, K2, K3 …),
+men beteckningen är fritt redigerbar.
+
+| Prefix | Används för |
+|---|---|
+| `K` | Reläer, kontaktorer, spolar, tidreläer |
+| `S` | Manöverdon: tryckknappar, brytare, väljare |
+| `Q` | Effektbrytare, huvudbrytare, lastfrånskiljare |
+| `F` | Säkringar och skyddsutrustning |
+| `B` | Givare och övervakning |
+| `P` | Signal- och indikeringsdon (lampor) |
+| `M` | Motorer |
+
+## Pinnamn (anslutningsnummer)
+
+Pinnamn placeras vid respektive anslutningspunkt. Varje symboltyp har
+förifyllda standardnummer, som också går att redigera fritt.
+
+| Funktion | Konvention | Exempel |
+|---|---|---|
+| Spole (manöverlindning) | `A1` / `A2` | Kontaktorspole |
+| Slutande hjälpkontakt (NO) | `13` / `14`, `23` / `24`, … | Hjälpkontakt på kontaktor |
+| Brytande hjälpkontakt (NC) | `11` / `12`, `21` / `22`, … | Hjälpkontakt på kontaktor |
+| Motorskydd, utlösningskontakt | `95` / `96` (NC), `97` / `98` (NO) | Termiskt överlastskydd |
+| Huvudkontakter (kraft) | `1`/`2`, `3`/`4`, `5`/`6` | Kontaktorns huvudpoler |
+| Manöverdon (tryckknapp) | `1` / `2` (NC), `3` / `4` (NO) | Tryckknapp |
+
+Tiotalssiffran anger vilken kontakt i ordningen det gäller, entalssiffran
+vilken sida av kontakten. Ett relä med två slutande hjälpkontakter får
+alltså `13`/`14` på den första och `23`/`24` på den andra.
+
+## Etikettplacering
+
+Placeringen är **fast per symboltyp** och följer med automatiskt vid flytt
+och rotation — användaren ändrar texten, inte positionen:
+
+- **Beteckningen** sitter centrerad ovanför symbolen.
+- **Pinnamnen** sitter ovanför anslutningslinjen vid respektive
+  anslutningspunkt.
+
+Etiketttexterna hålls alltid horisontella och läsbara, även när symbolen
+roteras 90/180/270°.
+
+## Ritkonvention
+
+Styrscheman ritas **horisontellt**, med fas (L) till vänster och nolla (N)
+till höger. Symbolerna är därför ritade med sina anslutningspunkter på
+vänster respektive höger sida i sitt oroterade grundläge.
+
+I v1 finns inget särskilt "skena"-objekt — L- och N-linjerna ritas med det
+vanliga linjeverktyget (Fas 4).
+
+## Teknisk uppbyggnad av en symbolfil
+
+Varje SVG i `assets/symbols/` bär sin metadata som `data-`-attribut, så
+filen är självbeskrivande och `js/symbol-library.js` slipper en separat
+konfigurationsfil:
+
+```svg
+<svg viewBox="0 0 80 80"
+     data-symbol-id="kontakt-no"          <!-- unikt id -->
+     data-symbol-name="Kontakt NO"        <!-- visas i paletten -->
+     data-designation-prefix="S"          <!-- prefix för autonumrering -->
+     data-width="80" data-height="80"     <!-- storlek i world units -->
+     data-designation-x="40"              <!-- var beteckningen placeras;  -->
+     data-designation-y="10">             <!-- utelämnas för tilläggssymboler -->
+  <g class="symbol-geometry"> … </g>      <!-- själva linjeverket -->
+  <circle class="pin"
+          data-pin-id="1"
+          data-default-label="1"          <!-- förifyllt pinnamn -->
+          data-label-dx="8"
+          data-label-dy="-10"             <!-- etikettens läge rel. pinnen -->
+          cx="0" cy="40" r="2.5" />
+</svg>
+```
+
+En symbol utan `data-designation-x` och utan `.pin`-element behandlas som en
+tilläggssymbol.
+
+**Att lägga till en ny symbol:** skapa en SVG efter mallen ovan i
+`assets/symbols/` och lägg till dess id i `SYMBOL_IDS`-listan i
+`js/symbol-library.js`. Inget annat behöver ändras.

@@ -16,6 +16,83 @@ body {
   font-family: system-ui, -apple-system, "Segoe UI", sans-serif;
 }
 
+#app {
+  display: flex;
+  width: 100%;
+  height: 100%;
+}
+
+/* --- Symbolpalett --- */
+
+#palette {
+  flex: 0 0 220px;
+  height: 100%;
+  overflow-y: auto;
+  padding: 12px;
+  background: #f4f4f5;
+  border-right: 1px solid #d4d4d8;
+}
+
+#palette h2 {
+  font-size: 13px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: #52525b;
+  margin-bottom: 10px;
+}
+
+.palette-list {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.palette-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+  padding: 6px 8px;
+  font: inherit;
+  font-size: 12px;
+  text-align: left;
+  color: #18181b;
+  background: #ffffff;
+  border: 1px solid #d4d4d8;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.palette-item:hover {
+  background: #eff6ff;
+  border-color: #93c5fd;
+}
+
+.palette-item.armed {
+  background: #dbeafe;
+  border-color: #2563eb;
+  box-shadow: inset 0 0 0 1px #2563eb;
+}
+
+.palette-preview {
+  flex: 0 0 44px;
+  width: 44px;
+  height: 26px;
+}
+
+.palette-preview .symbol-geometry {
+  stroke: #18181b;
+}
+
+/* --- Arbetsyta --- */
+
+#workspace {
+  position: relative;
+  flex: 1 1 auto;
+  height: 100%;
+}
+
 #canvas {
   display: block;
   width: 100%;
@@ -33,8 +110,78 @@ body {
   cursor: grab;
 }
 
-/* Rutnätslinjer, ritade som ett upprepat <pattern> i grid.js */
+#canvas.placing {
+  cursor: crosshair;
+}
+
+#status {
+  position: absolute;
+  left: 12px;
+  bottom: 10px;
+  padding: 4px 8px;
+  font-size: 11px;
+  color: #52525b;
+  background: rgba(255, 255, 255, 0.9);
+  border-radius: 4px;
+  pointer-events: none;
+}
+
+#status.error {
+  color: #b91c1c;
+  background: #fef2f2;
+}
+
+/* --- Rutnät --- */
+
 .grid-line {
   stroke: #d9d9d9;
   stroke-width: 1;
+}
+
+/* --- Symboler --- */
+
+.symbol-instance {
+  cursor: pointer;
+}
+
+.symbol-instance .symbol-geometry {
+  stroke: #18181b;
+}
+
+.pin-marker {
+  fill: #18181b;
+}
+
+.designation-label,
+.pin-label {
+  font-family: system-ui, -apple-system, "Segoe UI", sans-serif;
+  fill: #18181b;
+  user-select: none;
+}
+
+.designation-label {
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.pin-label {
+  font-size: 11px;
+}
+
+/* --- Markering --- */
+
+.selection-outline {
+  fill: none;
+  stroke: #2563eb;
+  stroke-width: 1.5;
+  stroke-dasharray: 5 3;
+  pointer-events: none;
+}
+
+.rubber-band {
+  fill: rgba(37, 99, 235, 0.08);
+  stroke: #2563eb;
+  stroke-width: 1;
+  stroke-dasharray: 4 3;
+  pointer-events: none;
 }

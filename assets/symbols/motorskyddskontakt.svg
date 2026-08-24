@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 80 80" width="80" height="80"
+     data-symbol-id="motorskyddskontakt" data-symbol-name="Motorskyddskontakt (tillägg)" data-designation-prefix="B"
+     data-width="80" data-height="80">
+  <g class="symbol-geometry" fill="none" stroke="#000" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M 18.5 40 L 30 40 L 30 50 L 50 50 L 50 40 L 61.5 40" />
+    <!-- Streckad stam = mekanisk förbindelse till kontakten -->
+    <path d="M 40 30 L 40 50" stroke-dasharray="3 3" />
+  </g>
+</svg>
