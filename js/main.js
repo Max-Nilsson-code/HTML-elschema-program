@@ -9,6 +9,7 @@ import { initJunctions } from "./junctions.js";
 import { initLabels } from "./labels.js";
 import { initInspector } from "./inspector.js";
 import { initPersistence } from "./persistence.js";
+import { initExport } from "./export.js";
 import { initPalette } from "./palette.js";
 import { initSelection } from "./selection.js";
 import { initTools } from "./tools.js";
@@ -42,7 +43,7 @@ try {
   // ritklick aldrig också tolkas som markering.
   // Fil-API:t behöver markeringen, som i sin tur skapas efter paletten —
   // därför ett litet fördröjt objekt som paletten kan hålla i från start.
-  const fileApi = { save: () => {}, openDialog: () => {} };
+  const fileApi = { save: () => {}, openDialog: () => {}, exportSvg: () => {}, exportPng: () => {} };
   initPalette(paletteEl, svg, canvasApi, symbolsApi, library, tools, fileApi);
 
   // Ledningar först i listan = de ligger under symbolerna vid träfftest.
@@ -51,12 +52,17 @@ try {
   // Egenskapspanelen speglar markeringen, så den måste komma efter den.
   initInspector(document.getElementById("inspector"), symbolsApi, selectionApi, tools, library);
 
+  const setStatus = (text, isError) => {
+    statusEl.textContent = text;
+    statusEl.classList.toggle("error", Boolean(isError));
+  };
+
   Object.assign(
     fileApi,
-    initPersistence(paletteEl, symbolsApi, wiresApi, selectionApi, (text, isError) => {
-      statusEl.textContent = text;
-      statusEl.classList.toggle("error", Boolean(isError));
-    })
+    initPersistence(paletteEl, symbolsApi, wiresApi, selectionApi, setStatus),
+    // Exporten måste se ritytan utan markeringsramar; den städar bort dem
+    // ur sin kopia, men en aktiv markering ska ändå inte hänga med.
+    initExport(svg, setStatus)
   );
 
   function showStatus() {

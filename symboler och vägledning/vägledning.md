@@ -233,6 +233,21 @@ En fil som inte är giltig JSON, har fel `format`, eller är sparad i en
 nyare `version` avvisas med ett meddelande i statusraden — ritningen lämnas
 orörd i stället för att bli halvinläst.
 
+## Exportera
+
+**SVG** och **PNG** exporterar ritningen som bild. Bilden beskärs till det
+som faktiskt ritats — inte hela ritytan — med en liten marginal runtom.
+
+Det som hör till redigeringen följer inte med: rutnätet, markeringsramar,
+draghandtag, anslutningsmarkörer och ledningsförhandsvisningen städas bort
+ur exporten. Det spelar alltså ingen roll om något är markerat när du
+exporterar.
+
+SVG:n är fristående — stilarna bäddas in i filen, så den ser likadan ut i
+vilket program som helst. Den får också en vit botten; utan den blir
+bakgrunden genomskinlig och det svarta linjeverket försvinner i visare med
+mörkt tema. PNG:n renderas ur samma SVG i dubbel upplösning för skärpa.
+
 ## Teknisk uppbyggnad av en symbolfil
 
 Varje SVG i `assets/symbols/` bär sin metadata som `data-`-attribut, så

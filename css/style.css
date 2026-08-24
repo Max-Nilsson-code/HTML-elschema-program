@@ -429,3 +429,12 @@ body {
 .inspector-field input.inspector-designation {
   font-weight: 600;
 }
+
+/* Fil- och exportknappar får plats på två rader i den smala panelen */
+.file-list {
+  flex-wrap: wrap;
+}
+
+.file-list .file-item {
+  flex: 1 1 40%;
+}

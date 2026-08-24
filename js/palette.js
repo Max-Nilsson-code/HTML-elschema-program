@@ -17,8 +17,13 @@ export function initPalette(container, svg, canvasApi, symbolsApi, library, tool
   const fileHeading = document.createElement("h2");
   fileHeading.textContent = "Projekt";
   const fileList = document.createElement("div");
-  fileList.className = "tool-list";
-  for (const [label, handler] of [["Spara", () => fileApi.save()], ["Öppna", () => fileApi.openDialog()]]) {
+  fileList.className = "tool-list file-list";
+  for (const [label, handler] of [
+    ["Spara", () => fileApi.save()],
+    ["Öppna", () => fileApi.openDialog()],
+    ["SVG", () => fileApi.exportSvg()],
+    ["PNG", () => fileApi.exportPng()],
+  ]) {
     const btn = document.createElement("button");
     btn.type = "button";
     // Egen klass, inte tool-item: de här byter inte verktygsläge och ska

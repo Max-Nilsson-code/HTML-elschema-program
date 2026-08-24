@@ -184,12 +184,16 @@ bättre att låta appen läsa från en egen, url-vänlig assets-mapp.
 - [x] Id:n bevaras vid inläsning (ledningarnas bindningar pekar på dem) och
       räknarna flyttas förbi högsta använda nummer
 
-### Fas 7 – Export
-- [ ] SVG-export: rensa bort UI-specifika element (markeringsramar,
-      grid-hjälplinjer, verktygs-cursor-indikatorer) från en kopia, serialisera
-      till fristående `.svg`
-- [ ] PNG-export: rendera samma rensade SVG via en osynlig `<canvas>`,
-      exportera som `.png`
+### Fas 7 – Export ✅
+- [x] SVG-export (`js/export.js`): UI-element städas bort ur en kopia
+      (rutnät och dess mönster, markeringsramar, draghandtag, träffytor,
+      anslutningsmarkörer, ledningsförhandsvisning)
+- [x] Stilarna bäddas in i filen — appens CSS ligger externt, och en
+      exporterad SVG måste stå för sig själv i vilket program som helst
+- [x] Beskärs till innehållet med marginal, plus vit botten (annars blir
+      bakgrunden genomskinlig och svarta linjer försvinner i mörkt tema)
+- [x] PNG-export: samma SVG renderad via `<canvas>` i dubbel upplösning
+- [x] Tom rityta ger ett meddelande i stället för en tom fil
 
 ### Fas 8 – Historik & finputs
 - [ ] Undo/redo: kommandohistorik för alla muterande åtgärder (placera,
