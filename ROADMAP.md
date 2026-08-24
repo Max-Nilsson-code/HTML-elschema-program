@@ -42,7 +42,8 @@ finns.
 │   ├── canvas.js                   ← SVG-rityta, zoom/pan
 │   ├── symbol-library.js           ← registry: laddar symboldefinitioner
 │   ├── symbols.js                  ← placera/flytta/rotera/duplicera/radera symbolinstanser
-│   ├── selection.js                ← markering (klick + gummiband)
+│   ├── selection.js                ← markering (klick + gummiband), typoberoende
+│   ├── tools.js                    ← delat verktygsläge (markera/ledning/placera)
 │   ├── wires.js                    ← rita/redigera ledningar
 │   ├── labels.js                   ← redigera beteckning + pinnamn
 │   ├── history.js                  ← undo/redo
@@ -128,12 +129,23 @@ bättre att låta appen läsa från en egen, url-vänlig assets-mapp.
 - [x] Duplicera (Ctrl/Cmd+D)
 - [x] Radera (Delete/Backspace)
 
-### Fas 4 – Ledningar (wires)
-- [ ] Rittyg: klicka start- och slutpunkt (eller klick-och-dra) för att skapa
-      en ledning
-- [ ] Snap till grid-punkter och till symbolers anslutningspunkter
-- [ ] Markera, flytta ändpunkt, radera ledning
-- [ ] (Ingen elektrisk validering — bekräftat ur scope för v1)
+### Fas 4 – Ledningar (wires) ✅
+- [x] Verktygsval i sidopanelen (Markera / Ledning), `js/tools.js`
+- [x] Rittyg: klicka startpunkt, klicka slutpunkt, med levande
+      förhandsvisning däremellan (`js/wires.js`)
+- [x] **Ortogonal ruttning** — ledningen går vågrätt och lodrätt, aldrig
+      snett, eftersom styrscheman ritas så. Ligger punkterna i linje blir
+      det en rak linje, annars ett knä. `E` byter håll på knäet.
+- [x] Snap mot symbolernas anslutningspunkter (inom 12 enheter, markeras med
+      en ring i förhandsvisningen), annars mot rutnätet
+- [x] Markera, dra ändpunkt, flytta hela ledningen, radera
+- [x] Ingen elektrisk validering — bekräftat ur scope för v1
+
+> `js/selection.js` generaliserades i samma veva: den känner inte längre
+> till någon objekttyp, utan tar emot "providers" (en från `symbols.js`, en
+> från `wires.js`) med ett litet gemensamt gränssnitt. Klick, gummiband,
+> flytt, Delete och Escape fungerar därmed likadant för symboler och
+> ledningar utan duplicerad logik.
 
 ### Fas 5 – Etiketter & namngivning
 - [ ] Redigerbar beteckning per symbolinstans (dubbelklick → textfält, fast

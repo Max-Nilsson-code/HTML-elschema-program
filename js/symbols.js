@@ -328,6 +328,30 @@ export function initSymbols(svg, library) {
     );
   }
 
+  /**
+   * Närmaste anslutningspunkt inom maxDist, i world-koordinater — används av
+   * ledningsverktyget för att låta ändpunkter fästa i symbolernas anslutningar
+   * i stället för att bara snäppa mot rutnätet.
+   */
+  function findNearestPin(worldX, worldY, maxDist) {
+    let best = null;
+    let bestDist2 = maxDist * maxDist;
+    for (const instance of instances.values()) {
+      const type = getSymbolType(library, instance.typeId);
+      for (const pin of type.pins) {
+        const p = rotatePoint(pin.x, pin.y, type.width / 2, type.height / 2, instance.rotation);
+        const wx = instance.x + p.x;
+        const wy = instance.y + p.y;
+        const dist2 = (wx - worldX) ** 2 + (wy - worldY) ** 2;
+        if (dist2 <= bestDist2) {
+          bestDist2 = dist2;
+          best = { x: wx, y: wy, instanceId: instance.id, pinId: pin.id };
+        }
+      }
+    }
+    return best;
+  }
+
   function hitTestPoint(worldX, worldY) {
     const all = getAllInstances();
     for (let i = all.length - 1; i >= 0; i--) {
@@ -347,9 +371,32 @@ export function initSymbols(svg, library) {
     getAllInstances,
     getInstanceBounds,
     hitTestPoint,
+    findNearestPin,
     setStemFromWorld,
     setSelectedIds,
     renderAll,
+
+    // Adapter mot selection.js, som hanterar symboler och ledningar likadant.
+    selectionProvider: {
+      owns: (id) => instances.has(id),
+      getAll: getAllInstances,
+      getBounds: getInstanceBounds,
+      hitTestPoint,
+      move: moveInstances,
+      snap: snapInstances,
+      remove: removeInstances,
+      setSelectedIds,
+      rotate: rotateInstances,
+      duplicate: duplicateInstances,
+      startHandleDrag(event) {
+        if (!event.target.classList?.contains("stem-handle")) return null;
+        const instanceId = event.target.dataset.instanceId;
+        return {
+          move: (world) => setStemFromWorld(instanceId, world.x, world.y),
+          end: () => {},
+        };
+      },
+    },
   };
 }
 

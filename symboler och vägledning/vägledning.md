@@ -139,8 +139,13 @@ Styrscheman ritas **horisontellt**, med fas (L) till vänster och nolla (N)
 till höger. Symbolerna är därför ritade med sina anslutningspunkter på
 vänster respektive höger sida i sitt oroterade grundläge.
 
-I v1 finns inget särskilt "skena"-objekt — L- och N-linjerna ritas med det
-vanliga linjeverktyget (Fas 4).
+I v1 finns inget särskilt "skena"-objekt — L- och N-linjerna ritas med
+ledningsverktyget som vilka ledningar som helst.
+
+Ledningar ritas ortogonalt (vågrätt/lodrätt). Ligger start- och slutpunkt i
+linje blir det en rak linje, annars ett knä; `E` byter håll på knäet medan
+man ritar. Ändpunkterna fäster i symbolernas anslutningspunkter när man
+kommer inom ~12 enheter, vilket visas med en ring i förhandsvisningen.
 
 ## Teknisk uppbyggnad av en symbolfil
 

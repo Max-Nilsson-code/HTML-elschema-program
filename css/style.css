@@ -211,3 +211,102 @@ body {
   stroke-dasharray: 4 3;
   pointer-events: none;
 }
+
+/* Verktygsval */
+
+.tool-list {
+  display: flex;
+  gap: 6px;
+  padding: 0 12px 4px;
+}
+
+.tool-item {
+  flex: 1;
+  padding: 8px 6px;
+  font: inherit;
+  font-size: 13px;
+  color: #3f3f46;
+  background: #fff;
+  border: 1px solid #d4d4d8;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+.tool-item:hover {
+  border-color: #a1a1aa;
+}
+
+.tool-item.armed {
+  color: #1d4ed8;
+  background: #eff6ff;
+  border-color: #2563eb;
+}
+
+/* Ledningar */
+
+#canvas.wiring {
+  cursor: crosshair;
+}
+
+.wire {
+  fill: none;
+  stroke: #18181b;
+  stroke-width: 1.5;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  pointer-events: none;
+}
+
+/* Osynlig, tjock linje under den synliga: greppmån vid klick utan att
+   göra själva ledningen tjockare. */
+.wire-hit {
+  fill: none;
+  stroke: transparent;
+  stroke-width: 12;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.wire-instance.selected .wire {
+  stroke: #2563eb;
+}
+
+.wire-handle {
+  display: none;
+  fill: #fff;
+  stroke: #2563eb;
+  stroke-width: 1.5;
+  cursor: move;
+}
+
+.wire-instance.selected .wire-handle {
+  display: block;
+}
+
+/* Förhandsvisning medan en ledning ritas */
+
+#wire-preview {
+  pointer-events: none;
+}
+
+.wire-preview-line {
+  fill: none;
+  stroke: #2563eb;
+  stroke-width: 1.5;
+  stroke-dasharray: 4 3;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.wire-snap-dot {
+  fill: #2563eb;
+  opacity: 0.5;
+}
+
+/* Fäste i en anslutningspunkt markeras tydligare än ett vanligt rutnätsfäste */
+.wire-snap-dot.on-pin {
+  fill: none;
+  stroke: #2563eb;
+  stroke-width: 2;
+  opacity: 1;
+}

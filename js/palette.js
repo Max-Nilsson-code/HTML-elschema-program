@@ -1,15 +1,41 @@
-// Symbolpalett: sidopanel som listar alla symboltyper. Klick "armar"
-// placeringsläge (visuellt markerad knapp + korshårs-muspekare på
+// Sidopanel: verktygsval överst, därunder symbollistan. Klick på en symbol
+// "armar" placeringsläge (visuellt markerad knapp + korshårs-muspekare på
 // ritytan); nästa klick på ritytan droppar instansen snäppt till grid.
-// Escape avbryter. Se ROADMAP.md, Fas 3.
+// Escape avbryter. Se ROADMAP.md, Fas 3 och Fas 4.
+
+import { TOOL_SELECT, TOOL_WIRE, placeTool } from "./tools.js";
 
 const SVG_NS = "http://www.w3.org/2000/svg";
 
-export function initPalette(container, svg, canvasApi, symbolsApi, library) {
-  let armedTypeId = null;
+export function initPalette(container, svg, canvasApi, symbolsApi, library, tools) {
   const buttons = new Map();
 
   container.replaceChildren();
+
+  const toolHeading = document.createElement("h2");
+  toolHeading.textContent = "Verktyg";
+  container.appendChild(toolHeading);
+
+  const toolList = document.createElement("div");
+  toolList.className = "tool-list";
+  container.appendChild(toolList);
+
+  for (const [tool, label, hint] of [
+    [TOOL_SELECT, "Markera", "Markera, flytta och radera"],
+    [TOOL_WIRE, "Ledning", "Rita ledningar mellan anslutningar"],
+  ]) {
+    const btn = document.createElement("button");
+    btn.type = "button";
+    btn.className = "tool-item";
+    btn.textContent = label;
+    btn.title = hint;
+    btn.addEventListener("click", () => {
+      tools.set(tool);
+      btn.blur();
+    });
+    toolList.appendChild(btn);
+    buttons.set(tool, btn);
+  }
 
   const heading = document.createElement("h2");
   heading.textContent = "Symboler";
@@ -32,8 +58,7 @@ export function initPalette(container, svg, canvasApi, symbolsApi, library) {
     button.appendChild(label);
 
     button.addEventListener("click", () => {
-      if (armedTypeId === type.id) disarm();
-      else arm(type.id);
+      tools.set(tools.placingTypeId() === type.id ? TOOL_SELECT : placeTool(type.id));
       // Släpp fokus: en fokuserad knapp återutlöses av mellanslag, vilket är
       // panoreringstangenten — annars skulle en panorering armera/avarmera
       // paletten bakom ryggen på användaren.
@@ -41,26 +66,23 @@ export function initPalette(container, svg, canvasApi, symbolsApi, library) {
     });
 
     list.appendChild(button);
-    buttons.set(type.id, button);
+    buttons.set(placeTool(type.id), button);
   }
 
-  function arm(typeId) {
-    armedTypeId = typeId;
-    for (const [id, btn] of buttons) btn.classList.toggle("armed", id === typeId);
-    svg.classList.add("placing");
+  // En enda källa till sanning för vilken knapp som ser aktiv ut.
+  function syncActiveButton() {
+    const current = tools.get();
+    for (const [key, btn] of buttons) btn.classList.toggle("armed", key === current);
   }
-
-  function disarm() {
-    armedTypeId = null;
-    for (const btn of buttons.values()) btn.classList.remove("armed");
-    svg.classList.remove("placing");
-  }
+  tools.onChange(syncActiveButton);
+  syncActiveButton();
 
   // Registreras före selection.js i main.js — stopImmediatePropagation här
   // gör att selection.js aldrig ser klicket som ett markerings-/gummiband-
   // klick när en placering faktiskt genomförs.
   svg.addEventListener("mousedown", (event) => {
-    if (!armedTypeId || event.button !== 0) return;
+    const typeId = tools.placingTypeId();
+    if (!typeId || event.button !== 0) return;
     // Panorering äger klicket — annars skulle ett mellanslag+dra för att
     // scrolla fram rätt plats släppa symbolen på utgångspositionen direkt.
     if (canvasApi.isSpaceHeld() || canvasApi.isPanning()) return;
@@ -68,15 +90,15 @@ export function initPalette(container, svg, canvasApi, symbolsApi, library) {
     event.stopImmediatePropagation();
 
     const world = canvasApi.screenToWorld(event.clientX, event.clientY);
-    symbolsApi.addInstance(armedTypeId, world.x, world.y);
-    disarm();
+    symbolsApi.addInstance(typeId, world.x, world.y);
+    tools.reset();
   });
 
   window.addEventListener("keydown", (event) => {
-    if (event.key === "Escape" && armedTypeId) disarm();
+    if (event.key === "Escape" && tools.placingTypeId()) tools.reset();
   });
 
-  return { isArmed: () => armedTypeId !== null };
+  return {};
 }
 
 function buildPreview(type) {
