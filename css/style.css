@@ -152,6 +152,30 @@ body {
   fill: #18181b;
 }
 
+/* Mekanisk förbindelse på tilläggssymboler — justerbar längd */
+
+.stem {
+  stroke: #18181b;
+  stroke-width: 1.5;
+  stroke-linecap: round;
+}
+
+.stem-dashed {
+  stroke-dasharray: 3 3;
+}
+
+.stem-handle {
+  display: none;
+  fill: #fff;
+  stroke: #2563eb;
+  stroke-width: 1.5;
+  cursor: ns-resize;
+}
+
+.symbol-instance.selected .stem-handle {
+  display: block;
+}
+
 .designation-label,
 .pin-label {
   font-family: system-ui, -apple-system, "Segoe UI", sans-serif;

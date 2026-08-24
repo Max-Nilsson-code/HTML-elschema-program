@@ -52,12 +52,33 @@ Därför har de medvetet:
 - **inga anslutningspunkter** — kontakten under bär anslutningarna
 - **ingen egen beteckning** — beteckningen hör till kontakten
 
-Deras lodräta stam är streckad, vilket är konventionen för mekanisk
-förbindelse mellan manöverdon och kontakt.
-
 Symbolerna är ritade i samma koordinatsystem som kontakterna, så en
 tilläggssymbol placerad på samma rutnätspunkt som en kontakt hamnar rätt
 automatiskt.
+
+### Justerbar mekanisk förbindelse
+
+Den lodräta stammen från manöverdonet är den mekaniska förbindelsen till
+kontakten (streckad på nr 6 och 8, heldragen med låshake på nr 7).
+
+**Stammens längd går att justera per instans.** Det behövs eftersom hur långt
+den måste nå beror på vilken kontakt tillägget sitter på: en NO-kontakts blad
+hänger nedåt och ligger lägre än en NC-kontakts raka bygel.
+
+Markera tillägget och dra i den blå punkten i stammens fria ände. Längden
+snäpper mot rutnätet, och stammen kan aldrig dras in genom symbolkroppen —
+en minsta stump behålls alltid. Justeringen fungerar i alla fyra
+rotationslägen.
+
+I symbolfilen deklareras stammen med `data-stem-*` i stället för att ritas
+som en fast `<path>`:
+
+| Attribut | Betydelse |
+|---|---|
+| `data-stem-x` | stammens x-läge (alla nuvarande stammar är lodräta) |
+| `data-stem-attach-y` | där stammen möter symbolkroppen (fast punkt) |
+| `data-stem-default-y` | fria änden vid placering (utgångslängd) |
+| `data-stem-dashed` | `true` = streckad, `false` = heldragen |
 
 ## Beteckningar (komponentbenämning)
 

@@ -32,10 +32,10 @@ export function initSelection(svg, canvasApi, symbolsApi) {
   }
 
   function updateSelectionVisuals() {
-    const keep = new Set(["rubber-band"]);
     Array.from(overlayLayer.children).forEach((el) => {
       if (!el.classList.contains("rubber-band")) el.remove();
     });
+    symbolsApi.setSelectedIds(Array.from(selected));
     for (const id of selected) {
       const instance = symbolsApi.getInstance(id);
       if (!instance) continue;
@@ -55,6 +55,14 @@ export function initSelection(svg, canvasApi, symbolsApi) {
     if (canvasApi.isSpaceHeld() || canvasApi.isPanning()) return; // panorering äger klicket
 
     const world = canvasApi.screenToWorld(event.clientX, event.clientY);
+
+    // Draghandtaget för den mekaniska förbindelsen har företräde framför
+    // vanlig markering/flytt — annars går det inte att greppa.
+    if (event.target.classList?.contains("stem-handle")) {
+      dragState = { mode: "stem", instanceId: event.target.dataset.instanceId };
+      return;
+    }
+
     const hit = symbolsApi.hitTestPoint(world.x, world.y);
 
     if (hit) {
@@ -77,7 +85,10 @@ export function initSelection(svg, canvasApi, symbolsApi) {
     if (!dragState) return;
     const world = canvasApi.screenToWorld(event.clientX, event.clientY);
 
-    if (dragState.mode === "move") {
+    if (dragState.mode === "stem") {
+      symbolsApi.setStemFromWorld(dragState.instanceId, world.x, world.y);
+      updateSelectionVisuals();
+    } else if (dragState.mode === "move") {
       const dx = world.x - dragState.lastWorld.x;
       const dy = world.y - dragState.lastWorld.y;
       if (dx !== 0 || dy !== 0) {

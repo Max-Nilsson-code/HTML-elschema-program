@@ -8,7 +8,7 @@
 // ankarpunkt roteras med räkning i JS, men själva texten hålls alltid
 // horisontell/läsbar, oavsett symbolens rotation.
 
-import { snapToGrid } from "./grid.js";
+import { snapToGrid, GRID_SIZE } from "./grid.js";
 import { getSymbolType } from "./symbol-library.js";
 
 const SVG_NS = "http://www.w3.org/2000/svg";
@@ -49,6 +49,8 @@ export function initSymbols(svg, library) {
       // de placeras ovanpå.
       designation: type.hasDesignation ? nextDesignation(type.designationPrefix) : "",
       pinLabels: Object.fromEntries(type.pins.map((p) => [p.id, p.defaultLabel])),
+      // Fria änden på den mekaniska förbindelsen (endast tilläggssymboler).
+      stemY: type.stem ? type.stem.defaultY : null,
     };
     instances.set(instance.id, instance);
     renderInstance(instance);
@@ -109,6 +111,7 @@ export function initSymbols(svg, library) {
         rotation: original.rotation,
         designation: type.hasDesignation ? nextDesignation(type.designationPrefix) : "",
         pinLabels: { ...original.pinLabels },
+        stemY: original.stemY,
       };
       instances.set(copy.id, copy);
       renderInstance(copy);
@@ -138,6 +141,28 @@ export function initSymbols(svg, library) {
     rotWrap.setAttribute("class", "symbol-geometry-wrap");
     rotWrap.setAttribute("transform", `rotate(${instance.rotation} ${cx} ${cy})`);
     rotWrap.appendChild(document.importNode(type.geometryElement, true));
+
+    if (type.stem) {
+      const stemLine = document.createElementNS(SVG_NS, "line");
+      stemLine.setAttribute("class", type.stem.dashed ? "stem stem-dashed" : "stem");
+      stemLine.setAttribute("x1", type.stem.x);
+      stemLine.setAttribute("y1", type.stem.attachY);
+      stemLine.setAttribute("x2", type.stem.x);
+      stemLine.setAttribute("y2", instance.stemY);
+      rotWrap.appendChild(stemLine);
+
+      // Draghandtag på stammens fria ände. Ligger inuti den roterade gruppen,
+      // så det följer symbolens rotation utan extra räkning; CSS visar det
+      // bara när instansen är markerad.
+      const handle = document.createElementNS(SVG_NS, "circle");
+      handle.setAttribute("class", "stem-handle");
+      handle.dataset.instanceId = instance.id;
+      handle.setAttribute("cx", type.stem.x);
+      handle.setAttribute("cy", instance.stemY);
+      handle.setAttribute("r", 4);
+      rotWrap.appendChild(handle);
+    }
+
     for (const pin of type.pins) {
       const marker = document.createElementNS(SVG_NS, "circle");
       marker.setAttribute("class", "pin-marker");
@@ -181,23 +206,97 @@ export function initSymbols(svg, library) {
     return Array.from(instances.values());
   }
 
-  /** Axelriktad bounding box i world-koordinater (hanterar 90/270°-rotation). */
+  /**
+   * Axelriktad bounding box i world-koordinater. Tar hänsyn till rotation och
+   * till att en justerbar stam kan sticka ut utanför symbolens egen ruta.
+   */
   function getInstanceBounds(instance) {
     const type = getSymbolType(library, instance.typeId);
-    const centerX = instance.x + type.width / 2;
-    const centerY = instance.y + type.height / 2;
-    const swapped = instance.rotation === 90 || instance.rotation === 270;
-    const w = swapped ? type.height : type.width;
-    const h = swapped ? type.width : type.height;
-    return { x: centerX - w / 2, y: centerY - h / 2, width: w, height: h };
+    const cx = type.width / 2;
+    const cy = type.height / 2;
+
+    // Lokal ruta, utvidgad så den rymmer stammens fria ände.
+    let minX = 0;
+    let minY = 0;
+    let maxX = type.width;
+    let maxY = type.height;
+    if (type.stem) {
+      minY = Math.min(minY, instance.stemY);
+      maxY = Math.max(maxY, instance.stemY);
+    }
+
+    // Rotera hörnen och ta den axelriktade rutan runt resultatet.
+    const corners = [
+      [minX, minY],
+      [maxX, minY],
+      [maxX, maxY],
+      [minX, maxY],
+    ].map(([px, py]) => rotatePoint(px, py, cx, cy, instance.rotation));
+
+    const xs = corners.map((p) => p.x);
+    const ys = corners.map((p) => p.y);
+    return {
+      x: instance.x + Math.min(...xs),
+      y: instance.y + Math.min(...ys),
+      width: Math.max(...xs) - Math.min(...xs),
+      height: Math.max(...ys) - Math.min(...ys),
+    };
   }
 
-  /** Instansen längst fram (sist ritad) vars bounding box innehåller punkten. */
+  /**
+   * Flyttar den fria änden på en instans mekaniska förbindelse till närmaste
+   * rutnätsläge under muspekaren. Punkten räknas om till symbolens eget
+   * (oroterade) koordinatsystem, så det fungerar i alla fyra rotationslägen.
+   */
+  function setStemFromWorld(instanceId, worldX, worldY) {
+    const instance = instances.get(instanceId);
+    if (!instance) return;
+    const type = getSymbolType(library, instance.typeId);
+    if (!type.stem) return;
+
+    const local = rotatePoint(
+      worldX - instance.x,
+      worldY - instance.y,
+      type.width / 2,
+      type.height / 2,
+      -instance.rotation
+    );
+
+    // Snäpp mot rutnätet och håll en minsta stump kvar, så stammen aldrig
+    // vänds inåt genom symbolkroppen.
+    const snapped = Math.round(local.y / GRID_SIZE) * GRID_SIZE;
+    const pointsUp = type.stem.defaultY < type.stem.attachY;
+    const limit = pointsUp ? type.stem.attachY - GRID_SIZE / 2 : type.stem.attachY + GRID_SIZE / 2;
+    instance.stemY = pointsUp ? Math.min(snapped, limit) : Math.max(snapped, limit);
+    renderInstance(instance);
+  }
+
+  /** Markerar instansgrupperna i DOM så CSS kan visa t.ex. stamhandtaget. */
+  function setSelectedIds(ids) {
+    const set = new Set(ids);
+    for (const [id, el] of elements) el.classList.toggle("selected", set.has(id));
+  }
+
+  /**
+   * Instansen längst fram (sist ritad) vars bounding box innehåller punkten.
+   *
+   * Marginalen fyller två syften: dels ger den lite greppmån runt symbolernas
+   * tunna streck, dels täcker den flyttalsavrundningen i skärm→world-
+   * omräkningen (ett klick exakt på symbolens kant kan annars landa på
+   * 579.9999999 mot en gräns vid 580 och missa).
+   */
+  const HIT_TOLERANCE = 2;
+
   function hitTestPoint(worldX, worldY) {
     const all = getAllInstances();
     for (let i = all.length - 1; i >= 0; i--) {
       const b = getInstanceBounds(all[i]);
-      if (worldX >= b.x && worldX <= b.x + b.width && worldY >= b.y && worldY <= b.y + b.height) {
+      if (
+        worldX >= b.x - HIT_TOLERANCE &&
+        worldX <= b.x + b.width + HIT_TOLERANCE &&
+        worldY >= b.y - HIT_TOLERANCE &&
+        worldY <= b.y + b.height + HIT_TOLERANCE
+      ) {
         return all[i];
       }
     }
@@ -215,6 +314,8 @@ export function initSymbols(svg, library) {
     getAllInstances,
     getInstanceBounds,
     hitTestPoint,
+    setStemFromWorld,
+    setSelectedIds,
     renderAll,
   };
 }

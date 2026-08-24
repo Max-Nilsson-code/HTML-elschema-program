@@ -72,6 +72,20 @@ async function loadSymbolType(id) {
   // tur bär anslutningarna. Därför är tom pin-lista giltigt.
   const hasDesignation = svgEl.dataset.designationX !== undefined;
 
+  // Mekanisk förbindelse (stam) på tilläggssymboler. Ritas inte i SVG-filen
+  // utan av symbols.js, eftersom längden justeras per instans — hur långt
+  // stammen behöver nå beror på vilken kontakt tillägget sitter på (en NO-
+  // kontakts blad ligger lägre än en NC-kontakts raka bygel).
+  const stem =
+    svgEl.dataset.stemX === undefined
+      ? null
+      : {
+          x: parseFloat(svgEl.dataset.stemX),
+          attachY: parseFloat(svgEl.dataset.stemAttachY),
+          defaultY: parseFloat(svgEl.dataset.stemDefaultY),
+          dashed: svgEl.dataset.stemDashed === "true",
+        };
+
   return {
     id: svgEl.dataset.symbolId || id,
     name: svgEl.dataset.symbolName || id,
@@ -82,6 +96,7 @@ async function loadSymbolType(id) {
     designationX: hasDesignation ? parseFloat(svgEl.dataset.designationX) : 0,
     designationY: hasDesignation ? parseFloat(svgEl.dataset.designationY) : 0,
     pins,
+    stem,
     // Behåll den faktiska DOM-noden (inte en sträng) så den kan importeras
     // rent med document.importNode() vid rendering — se symbols.js.
     geometryElement: geometryEl,
