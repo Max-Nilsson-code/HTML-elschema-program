@@ -187,14 +187,21 @@ export function initSymbols(svg, library) {
     if (type.hasDesignation) {
       const designationPos = rotatePoint(type.designationX, type.designationY, cx, cy, instance.rotation);
       group.appendChild(
-        makeLabel("designation-label", designationPos.x, designationPos.y, instance.designation)
+        makeLabel("designation-label", designationPos.x, designationPos.y, instance.designation, {
+          instanceId: instance.id,
+          labelKind: "designation",
+        })
       );
     }
 
     for (const pin of type.pins) {
       const labelPos = rotatePoint(pin.x + pin.labelDx, pin.y + pin.labelDy, cx, cy, instance.rotation);
       group.appendChild(
-        makeLabel("pin-label", labelPos.x, labelPos.y, instance.pinLabels[pin.id])
+        makeLabel("pin-label", labelPos.x, labelPos.y, instance.pinLabels[pin.id], {
+          instanceId: instance.id,
+          labelKind: "pin",
+          pinId: pin.id,
+        })
       );
     }
   }
@@ -349,6 +356,24 @@ export function initSymbols(svg, library) {
     });
   }
 
+  /** Sätter en instans beteckning (t.ex. "K1"). Tom sträng är tillåtet. */
+  function setDesignation(instanceId, text) {
+    const instance = instances.get(instanceId);
+    if (!instance) return;
+    instance.designation = text;
+    renderInstance(instance);
+    emitChange();
+  }
+
+  /** Sätter namnet på en anslutningspunkt (t.ex. "13"). */
+  function setPinLabel(instanceId, pinId, text) {
+    const instance = instances.get(instanceId);
+    if (!instance || !(pinId in instance.pinLabels)) return;
+    instance.pinLabels[pinId] = text;
+    renderInstance(instance);
+    emitChange();
+  }
+
   /** Ett bestämt anslutningsläge, eller null om symbolen/pinnen inte finns. */
   function getPinPosition(instanceId, pinId) {
     const instance = instances.get(instanceId);
@@ -398,6 +423,8 @@ export function initSymbols(svg, library) {
     findNearestPin,
     getPinPositions,
     getPinPosition,
+    setDesignation,
+    setPinLabel,
     onChange: (fn) => changeListeners.add(fn),
     setStemFromWorld,
     setSelectedIds,
@@ -427,9 +454,10 @@ export function initSymbols(svg, library) {
   };
 }
 
-function makeLabel(className, x, y, text) {
+function makeLabel(className, x, y, text, data = {}) {
   const el = document.createElementNS(SVG_NS, "text");
   el.setAttribute("class", className);
+  Object.assign(el.dataset, data);
   el.setAttribute("x", x);
   el.setAttribute("y", y);
   el.setAttribute("text-anchor", "middle");

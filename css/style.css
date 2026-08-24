@@ -328,3 +328,26 @@ body {
   stroke-width: 2;
   opacity: 1;
 }
+
+/* --- Etikettredigering (Fas 5) --- */
+
+/* Etiketter är klickbara mål för dubbelklick, men ska inte stjäla vanliga
+   klick från symbolen under. */
+.designation-label,
+.pin-label {
+  cursor: text;
+}
+
+.label-editor {
+  position: absolute;
+  z-index: 10;
+  padding: 1px 3px;
+  border: 1px solid #2563eb;
+  border-radius: 3px;
+  background: #ffffff;
+  font: 600 11px system-ui, -apple-system, "Segoe UI", sans-serif;
+  text-align: center;
+  color: #18181b;
+  outline: none;
+  box-shadow: 0 0 0 2px rgba(37, 99, 235, 0.18);
+}

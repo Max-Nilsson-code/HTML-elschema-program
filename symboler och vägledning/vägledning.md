@@ -133,6 +133,16 @@ och rotation — användaren ändrar texten, inte positionen:
 Etiketttexterna hålls alltid horisontella och läsbara, även när symbolen
 roteras 90/180/270°.
 
+### Redigera en etikett
+
+**Dubbelklicka** på beteckningen eller ett pinnamn så öppnas ett textfält på
+plats. `Enter` eller ett klick utanför sparar, `Escape` ångrar. Fältet tar
+över tangentbordet medan det är öppet, så genvägarna (`R`, `Delete`,
+`Ctrl+D`) inte kapar det man skriver.
+
+Positionen går inte att flytta — den är fast per symboltyp så att alla
+scheman ser likadana ut. Det är bara texten som ändras.
+
 ## Ritkonvention
 
 Styrscheman ritas **horisontellt**, med fas (L) till vänster och nolla (N)

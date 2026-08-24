@@ -6,6 +6,7 @@ import { loadSymbolLibrary } from "./symbol-library.js";
 import { initSymbols } from "./symbols.js";
 import { initWires } from "./wires.js";
 import { initJunctions } from "./junctions.js";
+import { initLabels } from "./labels.js";
 import { initPalette } from "./palette.js";
 import { initSelection } from "./selection.js";
 import { initTools } from "./tools.js";
@@ -19,7 +20,8 @@ const tools = initTools(svg);
 
 const STATUS = {
   select:
-    "Markera: klicka eller dra ram · R = rotera · Ctrl+D = duplicera · " +
+    "Markera: klicka eller dra ram · dubbelklicka en etikett för att döpa om · " +
+    "R = rotera · Ctrl+D = duplicera · Delete = radera · Mellanslag+dra = panorera" +
     "Delete = radera · Mellanslag+dra = panorera",
   wire:
     "Ledning: klicka startpunkt, klicka slutpunkt · E = byt håll på knäet · " +
@@ -32,6 +34,7 @@ try {
   const symbolsApi = initSymbols(svg, library);
   const wiresApi = initWires(svg, canvasApi, symbolsApi, tools);
   initJunctions(svg, symbolsApi, wiresApi);
+  initLabels(svg, document.getElementById("workspace"), symbolsApi, tools);
 
   // Ordningen spelar roll: paletten och ledningsverktyget registrerar sina
   // mousedown-lyssnare före markeringen, så att ett placerings- eller

@@ -156,11 +156,16 @@ bättre att låta appen läsa från en egen, url-vänlig assets-mapp.
 > flytt, Delete och Escape fungerar därmed likadant för symboler och
 > ledningar utan duplicerad logik.
 
-### Fas 5 – Etiketter & namngivning
-- [ ] Redigerbar beteckning per symbolinstans (dubbelklick → textfält, fast
-      position enligt etikett-slot)
-- [ ] Redigerbara pinnamn per anslutningspunkt, samma redigeringsmönster
-- [ ] Verifiera att etiketter hamnar rätt i alla 4 rotationslägen
+### Fas 5 – Etiketter & namngivning ✅
+- [x] Redigerbar beteckning per symbolinstans: dubbelklick öppnar ett
+      textfält på plats, Enter eller klick utanför sparar, Escape ångrar
+      (`js/labels.js`)
+- [x] Redigerbara pinnamn per anslutningspunkt, samma mönster
+- [x] Positionen är fast enligt symboltypens etikett-slot — användaren
+      ändrar bara texten
+- [x] Tangentbordsgenvägar (R, Delete, Ctrl+D) kapas inte medan man skriver
+- [x] Verifierat att etiketterna hamnar rätt i alla fyra rotationslägen och
+      att texten består genom rotation
 
 ### Fas 6 – Spara & ladda
 - [ ] Definiera projekt-JSON-schema (version, lista av symbolinstanser med
