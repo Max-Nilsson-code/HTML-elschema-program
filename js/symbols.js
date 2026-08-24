@@ -8,7 +8,7 @@
 // ankarpunkt roteras med räkning i JS, men själva texten hålls alltid
 // horisontell/läsbar, oavsett symbolens rotation.
 
-import { snapToGrid, GRID_SIZE } from "./grid.js";
+import { snapToGrid } from "./grid.js";
 import { getSymbolType } from "./symbol-library.js";
 
 const SVG_NS = "http://www.w3.org/2000/svg";
@@ -243,31 +243,44 @@ export function initSymbols(svg, library) {
     };
   }
 
-  /**
-   * Flyttar den fria änden på en instans mekaniska förbindelse till närmaste
-   * rutnätsläge under muspekaren. Punkten räknas om till symbolens eget
-   * (oroterade) koordinatsystem, så det fungerar i alla fyra rotationslägen.
-   */
-  function setStemFromWorld(instanceId, worldX, worldY) {
-    const instance = instances.get(instanceId);
-    if (!instance) return;
-    const type = getSymbolType(library, instance.typeId);
-    if (!type.stem) return;
-
-    const local = rotatePoint(
+  /** Omräkning av en world-punkt till symbolens eget, oroterade system. */
+  function worldToLocal(instance, type, worldX, worldY) {
+    return rotatePoint(
       worldX - instance.x,
       worldY - instance.y,
       type.width / 2,
       type.height / 2,
       -instance.rotation
     );
+  }
 
-    // Snäpp mot rutnätet och håll en minsta stump kvar, så stammen aldrig
-    // vänds inåt genom symbolkroppen.
-    const snapped = Math.round(local.y / GRID_SIZE) * GRID_SIZE;
+  /**
+   * Flyttar den fria änden på en instans mekaniska förbindelse till punkten
+   * under muspekaren. Fungerar i alla fyra rotationslägen.
+   *
+   * Steget är avsiktligt 1 enhet och INTE hela rutnätssteg: stammen är en
+   * mekanisk förbindelse, inte en elektrisk anslutning, och måste kunna sluta
+   * exakt vid kontaktens rörliga del. En NO-kontakts blad ligger t.ex. på
+   * y≈48 — mellan två rutnätslinjer — så rutnätssnäppning skulle göra just
+   * det som funktionen finns till för omöjligt.
+   */
+  const MIN_STEM_LENGTH = 2;
+
+  function setStemFromWorld(instanceId, worldX, worldY) {
+    const instance = instances.get(instanceId);
+    if (!instance) return;
+    const type = getSymbolType(library, instance.typeId);
+    if (!type.stem) return;
+
+    const local = worldToLocal(instance, type, worldX, worldY);
+
+    // Behåll alltid en kort stump, så stammen aldrig vänds in genom kroppen.
     const pointsUp = type.stem.defaultY < type.stem.attachY;
-    const limit = pointsUp ? type.stem.attachY - GRID_SIZE / 2 : type.stem.attachY + GRID_SIZE / 2;
-    instance.stemY = pointsUp ? Math.min(snapped, limit) : Math.max(snapped, limit);
+    const limit = pointsUp
+      ? type.stem.attachY - MIN_STEM_LENGTH
+      : type.stem.attachY + MIN_STEM_LENGTH;
+    const wanted = Math.round(local.y);
+    instance.stemY = pointsUp ? Math.min(wanted, limit) : Math.max(wanted, limit);
     renderInstance(instance);
   }
 
@@ -278,27 +291,47 @@ export function initSymbols(svg, library) {
   }
 
   /**
-   * Instansen längst fram (sist ritad) vars bounding box innehåller punkten.
+   * Instansen längst fram (sist ritad) som träffas av punkten.
    *
-   * Marginalen fyller två syften: dels ger den lite greppmån runt symbolernas
-   * tunna streck, dels täcker den flyttalsavrundningen i skärm→world-
-   * omräkningen (ett klick exakt på symbolens kant kan annars landa på
-   * 579.9999999 mot en gräns vid 580 och missa).
+   * Testet görs i symbolens eget koordinatsystem: dels mot symbolkroppen,
+   * dels mot ett smalt band längs den mekaniska förbindelsen. Att inte
+   * använda hela den utvidgade rutan är viktigt — en lång utdragen stam
+   * skulle annars ge tillägget en stor rektangulär träffyta som sväljer
+   * symboler som ligger under den.
+   *
+   * Marginalen fyller två syften: greppmån runt symbolernas tunna streck,
+   * och täckning för flyttalsavrundningen i skärm→world-omräkningen (ett
+   * klick exakt på symbolens kant kan annars landa på 579.9999999 mot en
+   * gräns vid 580 och missa).
    */
   const HIT_TOLERANCE = 2;
+  const STEM_HIT_HALF_WIDTH = 4;
+
+  function hitsInstance(instance, worldX, worldY) {
+    const type = getSymbolType(library, instance.typeId);
+    const p = worldToLocal(instance, type, worldX, worldY);
+
+    const inBody =
+      p.x >= -HIT_TOLERANCE &&
+      p.x <= type.width + HIT_TOLERANCE &&
+      p.y >= -HIT_TOLERANCE &&
+      p.y <= type.height + HIT_TOLERANCE;
+    if (inBody) return true;
+
+    if (!type.stem) return false;
+    const top = Math.min(type.stem.attachY, instance.stemY);
+    const bottom = Math.max(type.stem.attachY, instance.stemY);
+    return (
+      Math.abs(p.x - type.stem.x) <= STEM_HIT_HALF_WIDTH &&
+      p.y >= top - HIT_TOLERANCE &&
+      p.y <= bottom + HIT_TOLERANCE
+    );
+  }
 
   function hitTestPoint(worldX, worldY) {
     const all = getAllInstances();
     for (let i = all.length - 1; i >= 0; i--) {
-      const b = getInstanceBounds(all[i]);
-      if (
-        worldX >= b.x - HIT_TOLERANCE &&
-        worldX <= b.x + b.width + HIT_TOLERANCE &&
-        worldY >= b.y - HIT_TOLERANCE &&
-        worldY <= b.y + b.height + HIT_TOLERANCE
-      ) {
-        return all[i];
-      }
+      if (hitsInstance(all[i], worldX, worldY)) return all[i];
     }
     return null;
   }

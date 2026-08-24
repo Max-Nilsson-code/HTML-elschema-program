@@ -169,7 +169,9 @@ body {
   fill: #fff;
   stroke: #2563eb;
   stroke-width: 1.5;
-  cursor: ns-resize;
+  /* Riktningsneutral pekare: stammen är lodrät i symbolens eget system men
+     blir vågrät på skärmen när symbolen roteras 90/270°. */
+  cursor: move;
 }
 
 .symbol-instance.selected .stem-handle {

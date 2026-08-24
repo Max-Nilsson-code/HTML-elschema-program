@@ -88,6 +88,15 @@ export function initCanvas(svg) {
     }
   });
 
+  // Tappar fönstret fokus (alt-tab) medan mellanslag hålls nere kommer aldrig
+  // keyup — utan detta skulle spaceHeld fastna som true och alla vänsterklick
+  // avfärdas som "panorering äger klicket" för all framtid.
+  window.addEventListener("blur", () => {
+    spaceHeld = false;
+    panState = null;
+    svg.classList.remove("pan-ready", "panning");
+  });
+
   svg.addEventListener("mousedown", (event) => {
     const isMiddleButton = event.button === 1;
     const isSpaceDrag = event.button === 0 && spaceHeld;

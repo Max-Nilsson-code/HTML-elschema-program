@@ -107,6 +107,13 @@ export function initSelection(svg, canvasApi, symbolsApi) {
     }
   });
 
+  /** Avbryter ett pågående drag och städar bort gummibandet. */
+  function cancelDrag() {
+    if (!dragState) return;
+    if (dragState.mode === "rubber") dragState.rectEl.remove();
+    dragState = null;
+  }
+
   window.addEventListener("mouseup", () => {
     if (!dragState) return;
 
@@ -133,6 +140,14 @@ export function initSelection(svg, canvasApi, symbolsApi) {
     // (relevant från Fas 5 och framåt, ofarligt att ha med redan nu).
     const tag = event.target.tagName;
     if (tag === "INPUT" || tag === "TEXTAREA" || event.target.isContentEditable) return;
+
+    // Inte mitt i ett pågående drag: att t.ex. rotera medan stammen dras
+    // flyttar handtaget bort under muspekaren och resten av draget styr då
+    // fel led. Escape är undantaget — det avbryter draget.
+    if (dragState) {
+      if (event.key === "Escape") cancelDrag();
+      return;
+    }
 
     if ((event.key === "Delete" || event.key === "Backspace") && selected.size > 0) {
       event.preventDefault();

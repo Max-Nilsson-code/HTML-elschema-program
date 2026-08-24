@@ -53,8 +53,10 @@ Därför har de medvetet:
 - **ingen egen beteckning** — beteckningen hör till kontakten
 
 Symbolerna är ritade i samma koordinatsystem som kontakterna, så en
-tilläggssymbol placerad på samma rutnätspunkt som en kontakt hamnar rätt
-automatiskt.
+tilläggssymbol placerad på samma rutnätspunkt som en kontakt hamnar i rätt
+läge i sidled. Höjdläget behöver däremot justeras för hand — se nästa
+avsnitt. Tillägget och kontakten är inte heller sammankopplade i
+datamodellen: flyttar du kontakten följer tillägget inte med.
 
 ### Justerbar mekanisk förbindelse
 
@@ -65,10 +67,15 @@ kontakten (streckad på nr 6 och 8, heldragen med låshake på nr 7).
 den måste nå beror på vilken kontakt tillägget sitter på: en NO-kontakts blad
 hänger nedåt och ligger lägre än en NC-kontakts raka bygel.
 
-Markera tillägget och dra i den blå punkten i stammens fria ände. Längden
-snäpper mot rutnätet, och stammen kan aldrig dras in genom symbolkroppen —
-en minsta stump behålls alltid. Justeringen fungerar i alla fyra
-rotationslägen.
+Markera tillägget och dra i den blå punkten i stammens fria ände. Stammen
+kan aldrig dras in genom symbolkroppen — en kort stump behålls alltid.
+Justeringen fungerar i alla fyra rotationslägen.
+
+Till skillnad från symbolplacering snäpper stammen **inte** mot rutnätet
+utan går i steg om 1 enhet. Det är avsiktligt: stammen är en mekanisk
+förbindelse, inte en elektrisk anslutning, och måste kunna sluta exakt vid
+kontaktens rörliga del. En NO-kontakts blad ligger t.ex. på y≈48, mellan två
+rutnätslinjer — med rutnätssnäppning hade stammen aldrig kunnat nå det.
 
 I symbolfilen deklareras stammen med `data-stem-*` i stället för att ritas
 som en fast `<path>`:

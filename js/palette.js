@@ -34,6 +34,10 @@ export function initPalette(container, svg, canvasApi, symbolsApi, library) {
     button.addEventListener("click", () => {
       if (armedTypeId === type.id) disarm();
       else arm(type.id);
+      // Släpp fokus: en fokuserad knapp återutlöses av mellanslag, vilket är
+      // panoreringstangenten — annars skulle en panorering armera/avarmera
+      // paletten bakom ryggen på användaren.
+      button.blur();
     });
 
     list.appendChild(button);
@@ -57,6 +61,9 @@ export function initPalette(container, svg, canvasApi, symbolsApi, library) {
   // klick när en placering faktiskt genomförs.
   svg.addEventListener("mousedown", (event) => {
     if (!armedTypeId || event.button !== 0) return;
+    // Panorering äger klicket — annars skulle ett mellanslag+dra för att
+    // scrolla fram rätt plats släppa symbolen på utgångspositionen direkt.
+    if (canvasApi.isSpaceHeld() || canvasApi.isPanning()) return;
     event.preventDefault();
     event.stopImmediatePropagation();
 
@@ -77,5 +84,19 @@ function buildPreview(type) {
   preview.setAttribute("viewBox", `0 0 ${type.width} ${type.height}`);
   preview.setAttribute("class", "palette-preview");
   preview.appendChild(document.importNode(type.geometryElement, true));
+
+  // Den mekaniska förbindelsen ligger inte i .symbol-geometry utan ritas
+  // från data-stem-*, så förhandsvisningen måste rita den själv — annars
+  // visas tilläggen utan stam och stämmer inte med det som placeras.
+  if (type.stem) {
+    const stem = document.createElementNS(SVG_NS, "line");
+    stem.setAttribute("class", type.stem.dashed ? "stem stem-dashed" : "stem");
+    stem.setAttribute("x1", type.stem.x);
+    stem.setAttribute("y1", type.stem.attachY);
+    stem.setAttribute("x2", type.stem.x);
+    stem.setAttribute("y2", type.stem.defaultY);
+    preview.appendChild(stem);
+  }
+
   return preview;
 }
