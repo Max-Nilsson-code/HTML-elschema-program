@@ -132,17 +132,24 @@ export function initCanvas(svg) {
     svg.classList.remove("panning");
   });
 
-  // --- Fönsterstorlek ---
-  window.addEventListener("resize", () => {
+  // --- Ritytans storlek ---
+  //
+  // ResizeObserver, inte window-resize: ritytan krymper även när fönstret
+  // står stilla, t.ex. när egenskapspanelen fälls ut vid markering. Missar
+  // man det behåller viewBox sin gamla bredd och hela världen sträcks ut —
+  // klick hamnar då fel i förhållande till det som ritats.
+  const observer = new ResizeObserver(() => {
     const zoom = currentZoom();
     const rect = svg.getBoundingClientRect();
     if (rect.width === 0 || rect.height === 0) return;
+    if (rect.width === baseSize.w && rect.height === baseSize.h) return;
     baseSize.w = rect.width;
     baseSize.h = rect.height;
     viewBox.w = baseSize.w / zoom;
     viewBox.h = baseSize.h / zoom;
     applyViewBox();
   });
+  observer.observe(svg);
 
   applyViewBox();
 

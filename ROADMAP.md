@@ -46,7 +46,8 @@ finns.
 │   ├── tools.js                    ← delat verktygsläge (markera/ledning/placera)
 │   ├── wires.js                    ← rita/redigera ledningar
 │   ├── junctions.js                ← kopplingsprickar (räknas ut, ritas inte för hand)
-│   ├── labels.js                   ← redigera beteckning + pinnamn
+│   ├── labels.js                   ← redigera beteckning + pinnamn på plats
+│   ├── inspector.js                ← egenskapspanel: alla texter som fält
 │   ├── history.js                  ← undo/redo
 │   ├── persistence.js              ← JSON spara/öppna
 │   └── export.js                   ← SVG-/PNG-export
@@ -166,6 +167,11 @@ bättre att låta appen läsa från en egen, url-vänlig assets-mapp.
 - [x] Tangentbordsgenvägar (R, Delete, Ctrl+D) kapas inte medan man skriver
 - [x] Verifierat att etiketterna hamnar rätt i alla fyra rotationslägen och
       att texten består genom rotation
+- [x] **Egenskapspanel** (`js/inspector.js`): markerar man en symbol listas
+      alla dess texter som fält — beteckning plus ett fält per anslutning
+- [x] **Tillägg sätter kontaktens prefix**: en tryckknapp gör kontakten
+      under till ett `S`, ett motorskydd till ett `B`. Redan rätt prefix
+      lämnas i fred.
 
 ### Fas 6 – Spara & ladda
 - [ ] Definiera projekt-JSON-schema (version, lista av symbolinstanser med

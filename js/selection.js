@@ -21,6 +21,10 @@ export function initSelection(svg, canvasApi, providers, tools) {
   const selected = new Set();
   let dragState = null;
 
+  // Prenumeranter på markeringen — egenskapspanelen (inspector.js) speglar
+  // vad som är markerat.
+  const changeListeners = new Set();
+
   const providerOf = (id) => providers.find((p) => p.owns(id));
 
   /** Grupperar markerade id:n per provider, så varje anrop går till rätt ägare. */
@@ -49,6 +53,7 @@ export function initSelection(svg, canvasApi, providers, tools) {
   }
 
   function updateSelectionVisuals() {
+    for (const fn of changeListeners) fn(Array.from(selected));
     Array.from(overlayLayer.children).forEach((el) => {
       if (!el.classList.contains("rubber-band")) el.remove();
     });
@@ -226,6 +231,10 @@ export function initSelection(svg, canvasApi, providers, tools) {
     getSelectedIds: () => Array.from(selected),
     setSelection,
     clearSelection,
+    /** Anropas med de markerade id:na varje gång markeringen ändras. */
+    onChange: (fn) => changeListeners.add(fn),
+    /** Ritar om markeringsramarna, t.ex. när ett objekt ändrat storlek. */
+    refresh: updateSelectionVisuals,
   };
 }
 

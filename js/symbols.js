@@ -41,6 +41,50 @@ export function initSymbols(svg, library) {
     return `${prefix}${max + 1}`;
   }
 
+  /**
+   * Kontakten som ett tillägg hamnar ovanpå, om någon.
+   *
+   * Tillägget är ett manöverdon: det säger HUR kontakten under manövreras.
+   * Därför är det tilläggets art som avgör kontaktens beteckningsprefix —
+   * en tryckknapp gör kontakten till ett S, ett motorskydd till ett B.
+   */
+  function findHostContact(addon) {
+    const type = getSymbolType(library, addon.typeId);
+    const cx = addon.x + type.width / 2;
+    const cy = addon.y + type.height / 2;
+
+    const all = getAllInstances();
+    for (let i = all.length - 1; i >= 0; i--) {
+      const other = all[i];
+      if (other.id === addon.id) continue;
+      const otherType = getSymbolType(library, other.typeId);
+      if (!otherType.hasDesignation) continue; // ett annat tillägg, inte en kontakt
+      const b = getInstanceBounds(other);
+      if (cx >= b.x && cx <= b.x + b.width && cy >= b.y && cy <= b.y + b.height) return other;
+    }
+    return null;
+  }
+
+  /**
+   * Ger kontakten under ett nyplacerat tillägg rätt beteckningsprefix.
+   * Har den redan rätt prefix lämnas den i fred, så ett redan satt nummer
+   * inte byts ut i onödan.
+   */
+  function applyAddonPrefix(addon) {
+    const type = getSymbolType(library, addon.typeId);
+    if (type.hasDesignation) return null; // bara tillägg styr värdsymbolen
+
+    const host = findHostContact(addon);
+    if (!host) return null;
+
+    const prefix = type.designationPrefix;
+    if (host.designation.startsWith(prefix)) return null;
+
+    host.designation = nextDesignation(prefix);
+    renderInstance(host);
+    return host;
+  }
+
   function addInstance(typeId, worldX, worldY) {
     const type = getSymbolType(library, typeId);
     const snapped = snapToGrid(worldX, worldY);
@@ -59,6 +103,7 @@ export function initSymbols(svg, library) {
     };
     instances.set(instance.id, instance);
     renderInstance(instance);
+    applyAddonPrefix(instance);
     emitChange();
     return instance;
   }
@@ -424,6 +469,7 @@ export function initSymbols(svg, library) {
     getPinPositions,
     getPinPosition,
     setDesignation,
+    findHostContact,
     setPinLabel,
     onChange: (fn) => changeListeners.add(fn),
     setStemFromWorld,

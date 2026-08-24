@@ -52,6 +52,12 @@ Därför har de medvetet:
 - **inga anslutningspunkter** — kontakten under bär anslutningarna
 - **ingen egen beteckning** — beteckningen hör till kontakten
 
+**Tillägget sätter kontaktens beteckningsprefix.** Det är manöverdonet som
+avgör vad komponenten *är*: placerar man en tryckknapp (nr 6 eller 7) på en
+kontakt blir kontakten ett `S`, och ett motorskydd (nr 8) gör den till ett
+`B`. Numret tas från nästa lediga i den serien. Har kontakten redan rätt
+prefix lämnas den i fred, så ett nummer man satt själv inte byts ut.
+
 Symbolerna är ritade i samma koordinatsystem som kontakterna, så en
 tilläggssymbol placerad på samma rutnätspunkt som en kontakt hamnar i rätt
 läge i sidled. Höjdläget behöver däremot justeras för hand — se nästa
@@ -142,6 +148,17 @@ plats. `Enter` eller ett klick utanför sparar, `Escape` ångrar. Fältet tar
 
 Positionen går inte att flytta — den är fast per symboltyp så att alla
 scheman ser likadana ut. Det är bara texten som ändras.
+
+### Egenskapspanelen
+
+Markerar man en symbol listas **alla dess texter som fält** till höger:
+beteckningen överst, sedan ett fält per anslutning. Ändringar slår igenom
+direkt i ritningen. Panelen och redigering på plats skriver till samma
+ställe, så de kan inte glida isär — använd det som passar.
+
+Panelen ligger kvar även när inget är markerat (med en uppmaning i stället
+för fält). Det är avsiktligt: fälldes den ut vid markering skulle ritytan
+krympa och hela ritningen hoppa i sidled just när man klickat på något.
 
 ## Ritkonvention
 
