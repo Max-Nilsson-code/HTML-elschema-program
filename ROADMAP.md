@@ -74,19 +74,23 @@ egen, url-vänlig assets-mapp.
 ## Faser
 
 ### Fas 0 – Projektgrund
-- [ ] Skapa filstruktur enligt ovan (`index.html`, `css/`, `js/`, `assets/`)
-- [ ] Minimalt HTML-skal med ett `<svg>`-element som fyller fönstret
+- [x] Skapa filstruktur enligt ovan (`index.html`, `css/`, `js/`, `assets/`)
+- [x] Minimalt HTML-skal med ett `<svg>`-element som fyller fönstret
 - [ ] Konfigurera GitHub Pages i repo-inställningarna (Settings → Pages →
-      källa: main-branchen, rot-mappen)
-- [ ] Verifiera att sidan laddar tomt utan konsolfel via Pages-länken
+      källa: main-branchen, rot-mappen) — **manuellt steg, kräver
+      repo-admin-behörighet, inget verktyg tillgängligt för att göra det
+      automatiskt**
+- [x] Verifiera att sidan laddar tomt utan konsolfel — verifierat lokalt
+      (statisk server + headless Chromium), återstår att verifiera via den
+      riktiga Pages-länken när Pages är påslaget
 
 ### Fas 1 – Rityta & grid
-- [ ] Rendera rutnätet visuellt (linjer eller punkter, konfigurerbar
-      cellstorlek som en central konstant)
-- [ ] Zoom (scroll/knappar) och panorering (dra med mellanslag eller
-      mellanknapp)
-- [ ] Gemensam `snapToGrid(x, y)`-hjälpfunktion som alla senare faser
-      återanvänder
+- [x] Rendera rutnätet visuellt (linjer, 20px celler, `GRID_SIZE`-konstant i
+      `js/grid.js`)
+- [x] Zoom (scrollhjul, centrerad på muspekaren) och panorering
+      (mellanslag+dra eller mellanknapp-dra), i `js/canvas.js`
+- [x] Gemensam `snapToGrid(x, y)`-hjälpfunktion i `js/grid.js`, redo att
+      användas av senare faser
 
 ### Fas 2 – Symbolbibliotek (datamodell + innehåll)
 - [ ] Definiera datastruktur per symboltyp: SVG-geometri, storlek i
