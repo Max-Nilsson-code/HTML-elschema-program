@@ -25,6 +25,11 @@ export function initSymbols(svg, library) {
   /** @type {Map<string, SVGGElement>} instanceId -> DOM-grupp */
   const elements = new Map();
 
+  // Prenumeranter som behöver veta när något flyttats/ändrats — junctions.js
+  // räknar om kopplingsprickarna utifrån var anslutningarna faktiskt hamnar.
+  const changeListeners = new Set();
+  const emitChange = () => { for (const fn of changeListeners) fn(); };
+
   function nextDesignation(prefix) {
     let max = 0;
     for (const inst of instances.values()) {
@@ -54,6 +59,7 @@ export function initSymbols(svg, library) {
     };
     instances.set(instance.id, instance);
     renderInstance(instance);
+    emitChange();
     return instance;
   }
 
@@ -64,6 +70,7 @@ export function initSymbols(svg, library) {
       elements.delete(id);
       instances.delete(id);
     }
+    emitChange();
   }
 
   function moveInstances(ids, dx, dy) {
@@ -74,6 +81,7 @@ export function initSymbols(svg, library) {
       instance.y += dy;
     }
     for (const id of ids) updateInstanceTransform(instances.get(id));
+    emitChange();
   }
 
   /** Snäpper alla angivna instansers position till rutnätet (t.ex. efter en drag). */
@@ -86,6 +94,7 @@ export function initSymbols(svg, library) {
       instance.y = snapped.y;
       updateInstanceTransform(instance);
     }
+    emitChange();
   }
 
   function rotateInstances(ids, deltaDeg = 90) {
@@ -95,6 +104,7 @@ export function initSymbols(svg, library) {
       instance.rotation = (instance.rotation + deltaDeg + 360) % 360;
       renderInstance(instance); // etikettpositioner måste räknas om
     }
+    emitChange();
   }
 
   function duplicateInstances(ids) {
@@ -117,6 +127,7 @@ export function initSymbols(svg, library) {
       renderInstance(copy);
       created.push(copy);
     }
+    emitChange();
     return created;
   }
 
@@ -282,6 +293,7 @@ export function initSymbols(svg, library) {
     const wanted = Math.round(local.y);
     instance.stemY = pointsUp ? Math.min(wanted, limit) : Math.max(wanted, limit);
     renderInstance(instance);
+    emitChange();
   }
 
   /** Markerar instansgrupperna i DOM så CSS kan visa t.ex. stamhandtaget. */
@@ -328,24 +340,29 @@ export function initSymbols(svg, library) {
     );
   }
 
+  /** En instans anslutningspunkter i world-koordinater, med rotation inräknad. */
+  function getPinPositions(instance) {
+    const type = getSymbolType(library, instance.typeId);
+    return type.pins.map((pin) => {
+      const p = rotatePoint(pin.x, pin.y, type.width / 2, type.height / 2, instance.rotation);
+      return { x: instance.x + p.x, y: instance.y + p.y, instanceId: instance.id, pinId: pin.id };
+    });
+  }
+
   /**
-   * Närmaste anslutningspunkt inom maxDist, i world-koordinater — används av
-   * ledningsverktyget för att låta ändpunkter fästa i symbolernas anslutningar
-   * i stället för att bara snäppa mot rutnätet.
+   * Närmaste anslutningspunkt inom maxDist — används av ledningsverktyget för
+   * att låta ändpunkter fästa i symbolernas anslutningar i stället för att
+   * bara snäppa mot rutnätet.
    */
   function findNearestPin(worldX, worldY, maxDist) {
     let best = null;
     let bestDist2 = maxDist * maxDist;
     for (const instance of instances.values()) {
-      const type = getSymbolType(library, instance.typeId);
-      for (const pin of type.pins) {
-        const p = rotatePoint(pin.x, pin.y, type.width / 2, type.height / 2, instance.rotation);
-        const wx = instance.x + p.x;
-        const wy = instance.y + p.y;
-        const dist2 = (wx - worldX) ** 2 + (wy - worldY) ** 2;
+      for (const p of getPinPositions(instance)) {
+        const dist2 = (p.x - worldX) ** 2 + (p.y - worldY) ** 2;
         if (dist2 <= bestDist2) {
           bestDist2 = dist2;
-          best = { x: wx, y: wy, instanceId: instance.id, pinId: pin.id };
+          best = p;
         }
       }
     }
@@ -372,6 +389,8 @@ export function initSymbols(svg, library) {
     getInstanceBounds,
     hitTestPoint,
     findNearestPin,
+    getPinPositions,
+    onChange: (fn) => changeListeners.add(fn),
     setStemFromWorld,
     setSelectedIds,
     renderAll,

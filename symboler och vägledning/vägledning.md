@@ -147,6 +147,27 @@ linje blir det en rak linje, annars ett knä; `E` byter håll på knäet medan
 man ritar. Ändpunkterna fäster i symbolernas anslutningspunkter när man
 kommer inom ~12 enheter, vilket visas med en ring i förhandsvisningen.
 
+### Kopplingsprickar
+
+En **fylld prick ritas bara där tre eller fler ledare möts** — alltså vid en
+förgrening. Det följer den vanliga konventionen i elscheman:
+
+| Situation | Ledare i punkten | Prick |
+|---|---|---|
+| Två symboler i serie | anslutning + 1 ledning = 2 | nej |
+| Två ledningar möts i ett hörn | 1 + 1 = 2 | nej |
+| Ledning slutar mitt på en annan (T) | genomgående 2 + 1 = 3 | **ja** |
+| Anslutning med två ledningar | anslutning + 2 ledningar = 3 | **ja** |
+| Ledning ansluten till en skena | genomgående 2 + 1 = 3 | **ja** |
+
+Prickarna är inget man ritar själv: de räknas ut från var ledningar och
+anslutningar faktiskt ligger och uppdateras automatiskt när något flyttas,
+läggs till eller raderas.
+
+De små ringarna vid symbolernas anslutningar är bara en hjälpvisning som
+syns medan ledningsverktyget är aktivt, så man ser var det går att fästa.
+De är inte ritningsinnehåll och följer inte med i schemat.
+
 ## Teknisk uppbyggnad av en symbolfil
 
 Varje SVG i `assets/symbols/` bär sin metadata som `data-`-attribut, så

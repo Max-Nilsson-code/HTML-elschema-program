@@ -5,6 +5,7 @@ import { initCanvas } from "./canvas.js";
 import { loadSymbolLibrary } from "./symbol-library.js";
 import { initSymbols } from "./symbols.js";
 import { initWires } from "./wires.js";
+import { initJunctions } from "./junctions.js";
 import { initPalette } from "./palette.js";
 import { initSelection } from "./selection.js";
 import { initTools } from "./tools.js";
@@ -30,6 +31,7 @@ try {
   const library = await loadSymbolLibrary();
   const symbolsApi = initSymbols(svg, library);
   const wiresApi = initWires(svg, canvasApi, symbolsApi, tools);
+  initJunctions(svg, symbolsApi, wiresApi);
 
   // Ordningen spelar roll: paletten och ledningsverktyget registrerar sina
   // mousedown-lyssnare före markeringen, så att ett placerings- eller

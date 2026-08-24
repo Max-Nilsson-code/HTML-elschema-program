@@ -148,8 +148,26 @@ body {
   stroke: #18181b;
 }
 
+/* Anslutningspunkterna är en hjälpvisning, inte ritningsinnehåll: de visas
+   bara medan man ritar ledningar, så man ser var det går att fästa. En fylld
+   svart prick i schemat betyder förgrening — se .junction-dot. */
 .pin-marker {
+  display: none;
+  fill: none;
+  stroke: #2563eb;
+  stroke-width: 1;
+  opacity: 0.55;
+}
+
+#canvas.wiring .pin-marker {
+  display: block;
+}
+
+/* Kopplingsprick: ritas bara där tre eller fler ledare möts (förgrening),
+   och räknas ut av junctions.js utifrån ledningarnas faktiska lägen. */
+.junction-dot {
   fill: #18181b;
+  pointer-events: none;
 }
 
 /* Mekanisk förbindelse på tilläggssymboler — justerbar längd */

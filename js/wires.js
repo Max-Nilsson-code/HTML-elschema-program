@@ -32,6 +32,11 @@ export function initWires(svg, canvasApi, symbolsApi, tools) {
   const wires = new Map();
   const elements = new Map();
 
+  // Prenumeranter som behöver veta när ledningarna ändrats — junctions.js
+  // räknar om kopplingsprickarna.
+  const changeListeners = new Set();
+  const emitChange = () => { for (const fn of changeListeners) fn(); };
+
   // pending = null innan startpunkten satts; hoverPoint är den snäppta
   // punkten under muspekaren och visas även innan man börjat rita.
   let pending = null; // {a:{x,y}, elbow:"h"|"v"}
@@ -182,6 +187,7 @@ export function initWires(svg, canvasApi, symbolsApi, tools) {
     };
     wires.set(wire.id, wire);
     renderWire(wire);
+    emitChange();
     return wire;
   }
 
@@ -216,6 +222,7 @@ export function initWires(svg, canvasApi, symbolsApi, tools) {
       wire.b.x += dx; wire.b.y += dy;
       renderWire(wire);
     }
+    emitChange();
   }
 
   function snapWires(ids) {
@@ -228,6 +235,7 @@ export function initWires(svg, canvasApi, symbolsApi, tools) {
       }
       renderWire(wire);
     }
+    emitChange();
   }
 
   function removeWires(ids) {
@@ -236,6 +244,7 @@ export function initWires(svg, canvasApi, symbolsApi, tools) {
       elements.delete(id);
       wires.delete(id);
     }
+    emitChange();
   }
 
   function setEndpointFromWorld(wireId, endpoint, worldX, worldY) {
@@ -244,6 +253,7 @@ export function initWires(svg, canvasApi, symbolsApi, tools) {
     const p = snapPoint(worldX, worldY);
     wire[endpoint] = { x: p.x, y: p.y };
     renderWire(wire);
+    emitChange();
   }
 
   function setSelectedIds(ids) {
@@ -270,7 +280,15 @@ export function initWires(svg, canvasApi, symbolsApi, tools) {
     },
   };
 
-  return { addWire, getAllWires: () => Array.from(wires.values()), selectionProvider };
+  return {
+    addWire,
+    getAllWires: () => Array.from(wires.values()),
+    // Exponeras för junctions.js, som behöver de faktiskt ritade punkterna
+    // (inklusive knäet) för att räkna ledare i varje punkt.
+    routePoints,
+    onChange: (fn) => changeListeners.add(fn),
+    selectionProvider,
+  };
 }
 
 /** Kortaste avståndet från en punkt till ett linjesegment. */

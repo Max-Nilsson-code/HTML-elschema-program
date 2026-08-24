@@ -45,6 +45,7 @@ finns.
 │   ├── selection.js                ← markering (klick + gummiband), typoberoende
 │   ├── tools.js                    ← delat verktygsläge (markera/ledning/placera)
 │   ├── wires.js                    ← rita/redigera ledningar
+│   ├── junctions.js                ← kopplingsprickar (räknas ut, ritas inte för hand)
 │   ├── labels.js                   ← redigera beteckning + pinnamn
 │   ├── history.js                  ← undo/redo
 │   ├── persistence.js              ← JSON spara/öppna
@@ -140,6 +141,11 @@ bättre att låta appen läsa från en egen, url-vänlig assets-mapp.
       en ring i förhandsvisningen), annars mot rutnätet
 - [x] Markera, dra ändpunkt, flytta hela ledningen, radera
 - [x] Ingen elektrisk validering — bekräftat ur scope för v1
+- [x] **Kopplingsprickar** (`js/junctions.js`): en fylld prick ritas bara
+      där tre eller fler ledare möts, alltså vid en förgrening. Två symboler
+      i serie, eller två ledningar som möts i ett hörn, får ingen prick.
+      Prickarna är inte fast geometri utan räknas ut från var ledningar och
+      anslutningar faktiskt ligger, och ritas om när något flyttas.
 
 > `js/selection.js` generaliserades i samma veva: den känner inte längre
 > till någon objekttyp, utan tar emot "providers" (en från `symbols.js`, en
