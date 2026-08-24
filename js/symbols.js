@@ -401,6 +401,51 @@ export function initSymbols(svg, library) {
     });
   }
 
+  // ---------- spara / öppna ----------
+
+  /** Instanserna som ren data, redo att serialiseras till JSON. */
+  function serialize() {
+    return getAllInstances().map((i) => ({
+      id: i.id,
+      typeId: i.typeId,
+      x: i.x,
+      y: i.y,
+      rotation: i.rotation,
+      designation: i.designation,
+      pinLabels: { ...i.pinLabels },
+      stemY: i.stemY,
+    }));
+  }
+
+  /**
+   * Ersätter allt innehåll med det inlästa. Id:n behålls som de var i filen,
+   * eftersom ledningarnas bindningar pekar på dem — och räknaren flyttas förbi
+   * det högsta använda numret så nya symboler inte krockar.
+   */
+  function loadState(list) {
+    removeInstances(getAllInstances().map((i) => i.id));
+
+    for (const raw of list) {
+      const type = getSymbolType(library, raw.typeId); // kastar vid okänd typ
+      const instance = {
+        id: raw.id,
+        typeId: raw.typeId,
+        x: raw.x,
+        y: raw.y,
+        rotation: raw.rotation ?? 0,
+        designation: raw.designation ?? "",
+        pinLabels: { ...Object.fromEntries(type.pins.map((p) => [p.id, p.defaultLabel])), ...raw.pinLabels },
+        stemY: type.stem ? raw.stemY ?? type.stem.defaultY : null,
+      };
+      instances.set(instance.id, instance);
+      renderInstance(instance);
+
+      const num = parseInt(String(raw.id).replace(/^sym-/, ""), 10);
+      if (!Number.isNaN(num) && num >= nextInstanceNumber) nextInstanceNumber = num + 1;
+    }
+    emitChange();
+  }
+
   /** Sätter en instans beteckning (t.ex. "K1"). Tom sträng är tillåtet. */
   function setDesignation(instanceId, text) {
     const instance = instances.get(instanceId);
@@ -468,6 +513,8 @@ export function initSymbols(svg, library) {
     findNearestPin,
     getPinPositions,
     getPinPosition,
+    serialize,
+    loadState,
     setDesignation,
     findHostContact,
     setPinLabel,

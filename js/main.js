@@ -8,6 +8,7 @@ import { initWires } from "./wires.js";
 import { initJunctions } from "./junctions.js";
 import { initLabels } from "./labels.js";
 import { initInspector } from "./inspector.js";
+import { initPersistence } from "./persistence.js";
 import { initPalette } from "./palette.js";
 import { initSelection } from "./selection.js";
 import { initTools } from "./tools.js";
@@ -39,13 +40,24 @@ try {
   // Ordningen spelar roll: paletten och ledningsverktyget registrerar sina
   // mousedown-lyssnare före markeringen, så att ett placerings- eller
   // ritklick aldrig också tolkas som markering.
-  initPalette(paletteEl, svg, canvasApi, symbolsApi, library, tools);
+  // Fil-API:t behöver markeringen, som i sin tur skapas efter paletten —
+  // därför ett litet fördröjt objekt som paletten kan hålla i från start.
+  const fileApi = { save: () => {}, openDialog: () => {} };
+  initPalette(paletteEl, svg, canvasApi, symbolsApi, library, tools, fileApi);
 
   // Ledningar först i listan = de ligger under symbolerna vid träfftest.
   const selectionApi = initSelection(svg, canvasApi, [wiresApi.selectionProvider, symbolsApi.selectionProvider], tools);
 
   // Egenskapspanelen speglar markeringen, så den måste komma efter den.
   initInspector(document.getElementById("inspector"), symbolsApi, selectionApi, tools, library);
+
+  Object.assign(
+    fileApi,
+    initPersistence(paletteEl, symbolsApi, wiresApi, selectionApi, (text, isError) => {
+      statusEl.textContent = text;
+      statusEl.classList.toggle("error", Boolean(isError));
+    })
+  );
 
   function showStatus() {
     if (tools.isWire()) statusEl.textContent = STATUS.wire;

@@ -173,12 +173,16 @@ bättre att låta appen läsa från en egen, url-vänlig assets-mapp.
       under till ett `S`, ett motorskydd till ett `B`. Redan rätt prefix
       lämnas i fred.
 
-### Fas 6 – Spara & ladda
-- [ ] Definiera projekt-JSON-schema (version, lista av symbolinstanser med
-      typ/position/rotation/beteckning/pinnamn, lista av wires)
-- [ ] "Spara"-knapp → serialisera state → ladda ner `.json`
-- [ ] "Öppna"-knapp → filväljare → läs in `.json` → återskapa canvas-state
-- [ ] Enkelt fel-hanterande vid ogiltig/skadad fil
+### Fas 6 – Spara & ladda ✅
+- [x] Projekt-JSON med `format` + `version`, symbolinstanser (typ, position,
+      rotation, beteckning, pinnamn, stamlängd) och ledningar (ändpunkter,
+      knä, bindningar till anslutningar)
+- [x] "Spara" → serialiserar och laddar ner `elschema.json`
+- [x] "Öppna" → filväljare → läser in och återskapar ritytan
+- [x] Felhantering: ogiltig JSON, fel filformat och nyare filversion avvisas
+      med begripligt meddelande, och ritningen lämnas orörd
+- [x] Id:n bevaras vid inläsning (ledningarnas bindningar pekar på dem) och
+      räknarna flyttas förbi högsta använda nummer
 
 ### Fas 7 – Export
 - [ ] SVG-export: rensa bort UI-specifika element (markeringsramar,

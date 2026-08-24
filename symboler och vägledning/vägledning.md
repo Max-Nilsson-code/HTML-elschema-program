@@ -200,6 +200,39 @@ De små ringarna vid symbolernas anslutningar är bara en hjälpvisning som
 syns medan ledningsverktyget är aktivt, så man ser var det går att fästa.
 De är inte ritningsinnehåll och följer inte med i schemat.
 
+## Spara och öppna
+
+**Spara** laddar ner hela schemat som `elschema.json`. **Öppna** läser
+tillbaka en sådan fil och ersätter ritytans innehåll.
+
+Formatet är avsiktligt läsbart — samma fält som appen använder internt:
+
+```json
+{
+  "format": "elschema",
+  "version": 1,
+  "symbols": [
+    { "id": "sym-1", "typeId": "spole", "x": 300, "y": 140, "rotation": 0,
+      "designation": "K1", "pinLabels": { "A1": "A1", "A2": "A2" },
+      "stemY": null }
+  ],
+  "wires": [
+    { "id": "wire-1", "elbow": "h",
+      "a": { "x": 380, "y": 180,
+             "attach": { "instanceId": "sym-1", "pinId": "A2" } },
+      "b": { "x": 600, "y": 180, "attach": null } }
+  ]
+}
+```
+
+Symbolernas id:n bevaras vid inläsning, eftersom ledningarnas `attach`
+pekar på dem. Bindningar som pekar på en symbol filen inte innehåller
+släpps tyst, och ledningen blir liggande där den är.
+
+En fil som inte är giltig JSON, har fel `format`, eller är sparad i en
+nyare `version` avvisas med ett meddelande i statusraden — ritningen lämnas
+orörd i stället för att bli halvinläst.
+
 ## Teknisk uppbyggnad av en symbolfil
 
 Varje SVG i `assets/symbols/` bär sin metadata som `data-`-attribut, så

@@ -7,10 +7,28 @@ import { TOOL_SELECT, TOOL_WIRE, placeTool } from "./tools.js";
 
 const SVG_NS = "http://www.w3.org/2000/svg";
 
-export function initPalette(container, svg, canvasApi, symbolsApi, library, tools) {
+export function initPalette(container, svg, canvasApi, symbolsApi, library, tools, fileApi) {
   const buttons = new Map();
 
   container.replaceChildren();
+
+  // Fil-knappar överst: spara/öppna hör till projektet som helhet, inte till
+  // något verktygsläge.
+  const fileHeading = document.createElement("h2");
+  fileHeading.textContent = "Projekt";
+  const fileList = document.createElement("div");
+  fileList.className = "tool-list";
+  for (const [label, handler] of [["Spara", () => fileApi.save()], ["Öppna", () => fileApi.openDialog()]]) {
+    const btn = document.createElement("button");
+    btn.type = "button";
+    // Egen klass, inte tool-item: de här byter inte verktygsläge och ska
+    // aldrig kunna se "aktiva" ut.
+    btn.className = "file-item";
+    btn.textContent = label;
+    btn.addEventListener("click", () => { handler(); btn.blur(); });
+    fileList.appendChild(btn);
+  }
+  container.append(fileHeading, fileList);
 
   const toolHeading = document.createElement("h2");
   toolHeading.textContent = "Verktyg";

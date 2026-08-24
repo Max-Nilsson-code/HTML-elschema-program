@@ -238,7 +238,8 @@ body {
   padding: 0 12px 4px;
 }
 
-.tool-item {
+.tool-item,
+.file-item {
   flex: 1;
   padding: 8px 6px;
   font: inherit;
@@ -250,7 +251,8 @@ body {
   cursor: pointer;
 }
 
-.tool-item:hover {
+.tool-item:hover,
+.file-item:hover {
   border-color: #a1a1aa;
 }
 

@@ -232,6 +232,41 @@ export function initWires(svg, canvasApi, symbolsApi, tools) {
 
   symbolsApi.onChange(syncAttachments);
 
+  // ---------- spara / öppna ----------
+
+  function serialize() {
+    return Array.from(wires.values()).map((w) => ({
+      id: w.id,
+      a: { x: w.a.x, y: w.a.y, attach: w.a.attach },
+      b: { x: w.b.x, y: w.b.y, attach: w.b.attach },
+      elbow: w.elbow,
+    }));
+  }
+
+  /**
+   * Ersätter alla ledningar. Bindningarna läses in som de är; syncAttachments
+   * städar bort dem som pekar på symboler filen inte innehöll.
+   */
+  function loadState(list) {
+    removeWires(Array.from(wires.keys()));
+
+    for (const raw of list) {
+      const wire = {
+        id: raw.id,
+        a: { x: raw.a.x, y: raw.a.y, attach: raw.a.attach ?? null },
+        b: { x: raw.b.x, y: raw.b.y, attach: raw.b.attach ?? null },
+        elbow: raw.elbow === "v" ? "v" : "h",
+      };
+      wires.set(wire.id, wire);
+      renderWire(wire);
+
+      const num = parseInt(String(raw.id).replace(/^wire-/, ""), 10);
+      if (!Number.isNaN(num) && num >= nextWireNumber) nextWireNumber = num + 1;
+    }
+    syncAttachments();
+    emitChange();
+  }
+
   // ---------- API ----------
 
   function addWire(a, b, elbow = "h") {
@@ -344,6 +379,8 @@ export function initWires(svg, canvasApi, symbolsApi, tools) {
     // Exponeras för junctions.js, som behöver de faktiskt ritade punkterna
     // (inklusive knäet) för att räkna ledare i varje punkt.
     routePoints,
+    serialize,
+    loadState,
     onChange: (fn) => changeListeners.add(fn),
     selectionProvider,
   };
