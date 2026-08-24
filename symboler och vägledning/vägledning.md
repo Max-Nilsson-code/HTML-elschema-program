@@ -147,6 +147,11 @@ linje blir det en rak linje, annars ett knä; `E` byter håll på knäet medan
 man ritar. Ändpunkterna fäster i symbolernas anslutningspunkter när man
 kommer inom ~12 enheter, vilket visas med en ring i förhandsvisningen.
 
+En ledningsände som fäst i en anslutning **binds** till den: flyttar eller
+roterar man symbolen följer ledningen med. Bindningen släpper om man drar
+hela ledningen någon annanstans, drar ändpunkten till en punkt utan
+anslutning, eller raderar symbolen — då blir ledningen liggande där den är.
+
 ### Kopplingsprickar
 
 En **fylld prick ritas bara där tre eller fler ledare möts** — alltså vid en

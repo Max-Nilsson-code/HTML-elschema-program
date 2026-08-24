@@ -51,12 +51,25 @@ export function initWires(svg, canvasApi, symbolsApi, tools) {
     return elbow === "h" ? [a, { x: b.x, y: a.y }, b] : [a, { x: a.x, y: b.y }, b];
   }
 
-  /** Snäpper en punkt: i första hand mot en anslutningspunkt, annars rutnätet. */
+  /**
+   * Snäpper en punkt: i första hand mot en anslutningspunkt, annars rutnätet.
+   *
+   * Träffas en anslutning följer `attach` med — ledningsänden binds då till
+   * den anslutningen och flyttar sig automatiskt när symbolen flyttas eller
+   * roteras (se syncAttachments).
+   */
   function snapPoint(worldX, worldY) {
     const pin = symbolsApi.findNearestPin(worldX, worldY, PIN_SNAP_RADIUS);
-    if (pin) return { x: pin.x, y: pin.y, onPin: true };
+    if (pin) {
+      return {
+        x: pin.x,
+        y: pin.y,
+        onPin: true,
+        attach: { instanceId: pin.instanceId, pinId: pin.pinId },
+      };
+    }
     const g = snapToGrid(worldX, worldY);
-    return { x: g.x, y: g.y, onPin: false };
+    return { x: g.x, y: g.y, onPin: false, attach: null };
   }
 
   // ---------- rendering ----------
@@ -176,13 +189,56 @@ export function initWires(svg, canvasApi, symbolsApi, tools) {
     else if (event.key.toLowerCase() === "e") toggleElbow();
   });
 
+  // ---------- bindning till symbolernas anslutningar ----------
+
+  /**
+   * Flyttar bundna ledningsändar till sina anslutningars aktuella lägen.
+   * Körs varje gång symbolerna ändras, så ledningarna följer med när en
+   * symbol flyttas eller roteras.
+   *
+   * Har symbolen (eller anslutningen) försvunnit släpps bindningen och
+   * ledningen blir liggande där den var.
+   */
+  function syncAttachments() {
+    let changed = false;
+
+    for (const wire of wires.values()) {
+      let wireChanged = false;
+
+      for (const end of ["a", "b"]) {
+        const attach = wire[end].attach;
+        if (!attach) continue;
+
+        const pin = symbolsApi.getPinPosition(attach.instanceId, attach.pinId);
+        if (!pin) {
+          wire[end] = { x: wire[end].x, y: wire[end].y, attach: null };
+          wireChanged = true;
+          continue;
+        }
+        if (pin.x !== wire[end].x || pin.y !== wire[end].y) {
+          wire[end] = { x: pin.x, y: pin.y, attach };
+          wireChanged = true;
+        }
+      }
+
+      if (wireChanged) {
+        renderWire(wire);
+        changed = true;
+      }
+    }
+
+    if (changed) emitChange();
+  }
+
+  symbolsApi.onChange(syncAttachments);
+
   // ---------- API ----------
 
   function addWire(a, b, elbow = "h") {
     const wire = {
       id: `wire-${nextWireNumber++}`,
-      a: { x: a.x, y: a.y },
-      b: { x: b.x, y: b.y },
+      a: { x: a.x, y: a.y, attach: a.attach ?? null },
+      b: { x: b.x, y: b.y, attach: b.attach ?? null },
       elbow,
     };
     wires.set(wire.id, wire);
@@ -218,8 +274,10 @@ export function initWires(svg, canvasApi, symbolsApi, tools) {
     for (const id of ids) {
       const wire = wires.get(id);
       if (!wire) continue;
-      wire.a.x += dx; wire.a.y += dy;
-      wire.b.x += dx; wire.b.y += dy;
+      // Drar man hela ledningen lossnar den från symbolen — annars skulle
+      // den snärta tillbaka vid nästa synkning.
+      wire.a = { x: wire.a.x + dx, y: wire.a.y + dy, attach: null };
+      wire.b = { x: wire.b.x + dx, y: wire.b.y + dy, attach: null };
       renderWire(wire);
     }
     emitChange();
@@ -231,7 +289,7 @@ export function initWires(svg, canvasApi, symbolsApi, tools) {
       if (!wire) continue;
       for (const end of ["a", "b"]) {
         const p = snapPoint(wire[end].x, wire[end].y);
-        wire[end] = { x: p.x, y: p.y };
+        wire[end] = { x: p.x, y: p.y, attach: p.attach };
       }
       renderWire(wire);
     }
@@ -251,7 +309,7 @@ export function initWires(svg, canvasApi, symbolsApi, tools) {
     const wire = wires.get(wireId);
     if (!wire) return;
     const p = snapPoint(worldX, worldY);
-    wire[endpoint] = { x: p.x, y: p.y };
+    wire[endpoint] = { x: p.x, y: p.y, attach: p.attach };
     renderWire(wire);
     emitChange();
   }

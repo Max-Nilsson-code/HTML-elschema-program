@@ -141,6 +141,9 @@ bättre att låta appen läsa från en egen, url-vänlig assets-mapp.
       en ring i förhandsvisningen), annars mot rutnätet
 - [x] Markera, dra ändpunkt, flytta hela ledningen, radera
 - [x] Ingen elektrisk validering — bekräftat ur scope för v1
+- [x] **Ledningar följer symbolen**: en ändpunkt som fäst i en anslutning
+      binds till den och flyttas med när symbolen flyttas eller roteras.
+      Bindningen släpper när ledningen dras bort eller symbolen raderas.
 - [x] **Kopplingsprickar** (`js/junctions.js`): en fylld prick ritas bara
       där tre eller fler ledare möts, alltså vid en förgrening. Två symboler
       i serie, eller två ledningar som möts i ett hörn, får ingen prick.

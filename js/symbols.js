@@ -349,6 +349,13 @@ export function initSymbols(svg, library) {
     });
   }
 
+  /** Ett bestämt anslutningsläge, eller null om symbolen/pinnen inte finns. */
+  function getPinPosition(instanceId, pinId) {
+    const instance = instances.get(instanceId);
+    if (!instance) return null;
+    return getPinPositions(instance).find((p) => p.pinId === pinId) ?? null;
+  }
+
   /**
    * Närmaste anslutningspunkt inom maxDist — används av ledningsverktyget för
    * att låta ändpunkter fästa i symbolernas anslutningar i stället för att
@@ -390,6 +397,7 @@ export function initSymbols(svg, library) {
     hitTestPoint,
     findNearestPin,
     getPinPositions,
+    getPinPosition,
     onChange: (fn) => changeListeners.add(fn),
     setStemFromWorld,
     setSelectedIds,
