@@ -1,0 +1,40 @@
+/* Grundstilar för elschema-programmet.
+   Vit rityta + tunna gråa rutnätslinjer, samma konvention som utskrivna
+   elscheman (svart linjeverk på vitt), se ROADMAP.md. */
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html,
+body {
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  font-family: system-ui, -apple-system, "Segoe UI", sans-serif;
+}
+
+#canvas {
+  display: block;
+  width: 100%;
+  height: 100%;
+  background: #ffffff;
+  cursor: default;
+  touch-action: none;
+}
+
+#canvas.panning {
+  cursor: grabbing;
+}
+
+#canvas.pan-ready {
+  cursor: grab;
+}
+
+/* Rutnätslinjer, ritade som ett upprepat <pattern> i grid.js */
+.grid-line {
+  stroke: #d9d9d9;
+  stroke-width: 1;
+}
