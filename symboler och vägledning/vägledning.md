@@ -233,6 +233,23 @@ En fil som inte är giltig JSON, har fel `format`, eller är sparad i en
 nyare `version` avvisas med ett meddelande i statusraden — ritningen lämnas
 orörd i stället för att bli halvinläst.
 
+## Ångra och gör om
+
+`Ctrl+Z` ångrar, `Ctrl+Y` (eller `Ctrl+Shift+Z`) gör om. Samma sak finns som
+knappar överst i sidopanelen.
+
+Allt som ändrar ritningen går att ångra: placera, flytta, rotera, radera,
+rita och ta bort ledningar, samt textändringar — både på plats och i
+egenskapspanelen.
+
+Ett helt drag blir **ett** steg att ångra, inte ett per musrörelse.
+Detsamma gäller text: skriver man `K12` i ett svep ångras hela ordet, inte
+tecken för tecken.
+
+Står markören i ett textfält lämnas `Ctrl+Z` till webbläsarens egen
+ångra-funktion, så man kan rätta det man skriver utan att rulla tillbaka
+ritningen.
+
 ## Exportera
 
 **SVG** och **PNG** exporterar ritningen som bild. Bilden beskärs till det

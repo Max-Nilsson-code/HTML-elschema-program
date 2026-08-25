@@ -35,6 +35,24 @@ export function initPalette(container, svg, canvasApi, symbolsApi, library, tool
   }
   container.append(fileHeading, fileList);
 
+  // Ångra/gör om på egen rad — de hör till redigeringen, inte till filerna,
+  // men platsen överst gör dem lätta att hitta.
+  const historyList = document.createElement("div");
+  historyList.className = "tool-list file-list";
+  for (const [label, handler, title] of [
+    ["Ångra", () => fileApi.undo(), "Ångra senaste ändringen (Ctrl+Z)"],
+    ["Gör om", () => fileApi.redo(), "Gör om (Ctrl+Y)"],
+  ]) {
+    const btn = document.createElement("button");
+    btn.type = "button";
+    btn.className = "file-item";
+    btn.textContent = label;
+    btn.title = title;
+    btn.addEventListener("click", () => { handler(); btn.blur(); });
+    historyList.appendChild(btn);
+  }
+  container.append(historyList);
+
   const toolHeading = document.createElement("h2");
   toolHeading.textContent = "Verktyg";
   container.appendChild(toolHeading);

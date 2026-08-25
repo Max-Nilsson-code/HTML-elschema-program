@@ -10,6 +10,7 @@ import { initLabels } from "./labels.js";
 import { initInspector } from "./inspector.js";
 import { initPersistence } from "./persistence.js";
 import { initExport } from "./export.js";
+import { initHistory } from "./history.js";
 import { initPalette } from "./palette.js";
 import { initSelection } from "./selection.js";
 import { initTools } from "./tools.js";
@@ -24,7 +25,8 @@ const tools = initTools(svg);
 const STATUS = {
   select:
     "Markera: klicka eller dra ram · dubbelklicka en etikett för att döpa om · " +
-    "R = rotera · Ctrl+D = duplicera · Delete = radera · Mellanslag+dra = panorera",
+    "R = rotera · Ctrl+D = duplicera · Delete = radera · Ctrl+Z = ångra · " +
+    "Mellanslag+dra = panorera",
   wire:
     "Ledning: klicka startpunkt, klicka slutpunkt · E = byt håll på knäet · " +
     "Escape = avbryt · ändpunkter fäster i anslutningar",
@@ -43,7 +45,11 @@ try {
   // ritklick aldrig också tolkas som markering.
   // Fil-API:t behöver markeringen, som i sin tur skapas efter paletten —
   // därför ett litet fördröjt objekt som paletten kan hålla i från start.
-  const fileApi = { save: () => {}, openDialog: () => {}, exportSvg: () => {}, exportPng: () => {} };
+  const fileApi = {
+    save: () => {}, openDialog: () => {},
+    exportSvg: () => {}, exportPng: () => {},
+    undo: () => {}, redo: () => {},
+  };
   initPalette(paletteEl, svg, canvasApi, symbolsApi, library, tools, fileApi);
 
   // Ledningar först i listan = de ligger under symbolerna vid träfftest.
@@ -62,7 +68,10 @@ try {
     initPersistence(paletteEl, symbolsApi, wiresApi, selectionApi, setStatus),
     // Exporten måste se ritytan utan markeringsramar; den städar bort dem
     // ur sin kopia, men en aktiv markering ska ändå inte hänga med.
-    initExport(svg, setStatus)
+    initExport(svg, setStatus),
+    // Historiken sist: den lyssnar på ändringar och behöver markeringen för
+    // att kunna nollställa den när ett läge återställs.
+    initHistory(symbolsApi, wiresApi, selectionApi, setStatus)
   );
 
   function showStatus() {

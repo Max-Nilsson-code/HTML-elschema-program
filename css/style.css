@@ -438,3 +438,20 @@ body {
 .file-list .file-item {
   flex: 1 1 40%;
 }
+
+/* --- Finputs: hover i markeringsläge --- */
+
+/* Bara i markeringsläge — i ledningsläge är det anslutningarna som ska
+   dra blicken, inte symbolen man råkar dra musen över. */
+#canvas:not(.wiring):not(.placing) .symbol-instance:hover .symbol-geometry,
+#canvas:not(.wiring):not(.placing) .symbol-instance:hover .stem {
+  stroke: #2563eb;
+}
+
+#canvas:not(.wiring):not(.placing) .wire-instance:hover .wire {
+  stroke: #2563eb;
+}
+
+.wire-instance {
+  cursor: pointer;
+}

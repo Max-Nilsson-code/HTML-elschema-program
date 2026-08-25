@@ -195,12 +195,24 @@ bättre att låta appen läsa från en egen, url-vänlig assets-mapp.
 - [x] PNG-export: samma SVG renderad via `<canvas>` i dubbel upplösning
 - [x] Tom rityta ger ett meddelande i stället för en tom fil
 
-### Fas 8 – Historik & finputs
-- [ ] Undo/redo: kommandohistorik för alla muterande åtgärder (placera,
-      flytta, rotera, radera, redigera etikett, rita/ta bort wire)
-- [ ] Tangentbordsgenvägar: Delete, Ctrl+Z / Ctrl+Y, Ctrl+D (duplicera)
-- [ ] Visuell polish: hover-states, tydlig markeringsram, muspekare per
-      aktivt verktyg
+### Fas 8 – Historik & finputs ✅
+- [x] Ångra/gör om (`js/history.js`) för alla muterande åtgärder — placera,
+      flytta, rotera, radera, redigera etikett, rita och ta bort ledning
+- [x] Tangentbordsgenvägar: Delete, Ctrl+Z, Ctrl+Y (och Ctrl+Shift+Z),
+      Ctrl+D, R, Escape — plus knappar i sidopanelen
+- [x] Visuell polish: hover på symboler och ledningar i markeringsläge,
+      markeringsram, muspekare per aktivt verktyg
+
+> **Ögonblicksbilder, inte kommandologg.** Eftersom Fas 6 redan gav
+> `serialize()` för hela dokumentet lagras historiken som serialiserade
+> lägen i stället för som par av gör/ångra-kommandon. Det är billigt (ett
+> schema är litet) och framför allt kan det inte glida isär från
+> verkligheten: varje åtgärd som ändrar något fångas automatiskt, utan att
+> varje anropsställe måste komma ihåg att logga sin motsats.
+>
+> Ändringar under ett drag kommer en gång per musrörelse, så de samlas ihop
+> — först när det varit tyst 250 ms läggs ett läge på stacken. Ett helt drag
+> eller en inskriven text blir därmed **ett** steg att ångra.
 
 ### Fas 9 – Publicering
 - [ ] Driftsätt via GitHub Pages, verifiera hela flödet (placera → koppla →
