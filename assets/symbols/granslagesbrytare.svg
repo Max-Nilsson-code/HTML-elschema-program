@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 80 80" width="80" height="80"
+     data-symbol-id="granslagesbrytare" data-symbol-name="Gränslägesbrytare (tillägg)" data-designation-prefix="S"
+     data-width="80" data-height="80"
+     data-stem-x="40" data-stem-attach-y="45" data-stem-default-y="30" data-stem-dashed="false">
+  <g class="symbol-geometry" fill="none" stroke="#000" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+    <!-- Rullen: stammen möter cirkelns överkant på y=45 -->
+    <circle cx="40" cy="50" r="5" />
+    <circle cx="40" cy="50" r="2" fill="#000" stroke="none" />
+  </g>
+  <!-- Stammen ritas av symbols.js utifrån data-stem-* ovan, eftersom längden
+       går att justera per instans. -->
+</svg>

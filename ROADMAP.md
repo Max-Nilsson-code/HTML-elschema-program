@@ -58,7 +58,8 @@ finns.
 │       └── … (se Fas 2)
 ├── symboler och vägledning/        ← symbolkälla & dokumentation
 │   ├── README.md
-│   ├── Symboler-vägledning.svg     ← originalritningen (draw.io), symbolernas källa
+│   ├── Symboler-vägledning.svg     ← originalritningen (draw.io), symbol 1–10
+│   ├── Elschema-symboler2.svg      ← påbyggnad, symbol 11–12
 │   └── vägledning.md               ← skriven guide: standard, namngivningskonvention, etikettplacering
 └── ROADMAP.md                      ← detta dokument
 ```
@@ -111,6 +112,8 @@ bättre att låta appen läsa från en egen, url-vänlig assets-mapp.
   8. Motorskyddskontakt *(tillägg på kontakt)*
   9. Lampa
   10. Spole
+  11. Gränslägesbrytare *(tillägg på kontakt)*
+  12. Summer/ringklocka
 - [x] `symboler och vägledning/vägledning.md`: standard, beteckningsprefix,
       pinnamnskonvention, filformat
 - [x] `js/symbol-library.js`: laddar och exponerar symboltyperna

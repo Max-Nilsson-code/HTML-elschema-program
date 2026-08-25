@@ -5,10 +5,11 @@
 
 const ASSET_PATH = "assets/symbols/";
 
-// Manifest över symboltyperna, i samma ordning som numreringen 1–10 i
-// "symboler och vägledning/Symboler-vägledning.svg".
+// Manifest över symboltyperna, i samma ordning som numreringen i
+// "symboler och vägledning/" (1–10 i Symboler-vägledning.svg, 11–12 i
+// Elschema-symboler2.svg).
 //
-// 6–8 är "tillägg på kontakt": de saknar egna anslutningspunkter och
+// 6–8 och 11 är "tillägg på kontakt": de saknar egna anslutningspunkter och
 // beteckning, och placeras ovanpå en kontaktsymbol.
 const SYMBOL_IDS = [
   "kontakt-no",
@@ -21,6 +22,8 @@ const SYMBOL_IDS = [
   "motorskyddskontakt",
   "lampa",
   "spole",
+  "granslagesbrytare",
+  "summer",
 ];
 
 let libraryPromise = null;

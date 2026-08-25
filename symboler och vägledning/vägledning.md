@@ -3,8 +3,9 @@
 Den här mappen är **källan** för symbolbiblioteket. Filerna som appen laddar
 vid körning ligger i `assets/symbols/`.
 
-- `Symboler-vägledning.svg` — originalritningen (draw.io/diagrams.net-export).
-  Det är härifrån symbolernas geometri är hämtad.
+- `Symboler-vägledning.svg` — originalritningen (draw.io/diagrams.net-export)
+  med symbol 1–10. Det är härifrån geometrin är hämtad.
+- `Elschema-symboler2.svg` — påbyggnad med symbol 11–12.
 - `vägledning.md` — det här dokumentet.
 
 ## Hur symbolerna kommit till
@@ -38,13 +39,26 @@ går att koppla in och hamnar rätt på rutnätet.
 | 8 | `motorskyddskontakt.svg` | Motorskyddskontakt | — | *tillägg* |
 | 9 | `lampa.svg` | Lampa | P | 1 / 2 |
 | 10 | `spole.svg` | Spole | K | A1 / A2 |
+| 11 | `granslagesbrytare.svg` | Gränslägesbrytare | — | *tillägg* |
+| 12 | `summer.svg` | Summer/ringklocka | P | 1 / 2 |
 
 > **Not:** originalritningen stavar nr 5 "Säring" — tolkat som en felstavning
 > av "Säkring".
 
-## Tilläggssymboler (6, 7, 8)
+> **Nr 11 och 12** kommer från `Elschema-symboler2.svg`. Två saker justerades
+> vid konverteringen:
+> - Gränslägesbrytaren ritades ~3 enheter vänster om mitten; den är
+>   centrerad så stammen hamnar på `x=40` som övriga tillägg och därmed
+>   linjerar med kontakten under. En osynlig rektangel runt symbolen
+>   (draw.io:s behållare, `stroke="none" fill="none"`) följde inte med.
+> - Summerns anslutningsledningar gick till `x=10` och `x=70`; de är
+>   förlängda till `x=0` och `x=80` så anslutningarna hamnar på rutnätet,
+>   samma justering som lampan fick.
 
-Nr 6, 7 och 8 är i originalritningen markerade som **"tillägg på kontakt"**.
+## Tilläggssymboler (6, 7, 8, 11)
+
+Nr 6, 7, 8 och 11 är i originalritningarna markerade som **"tillägg på
+kontakt"**.
 De är manöverdon, inte egna komponenter: de placeras *ovanpå* en
 kontaktsymbol (1–4) för att visa hur kontakten manövreras.
 
@@ -54,8 +68,9 @@ Därför har de medvetet:
 
 **Tillägget sätter kontaktens beteckningsprefix.** Det är manöverdonet som
 avgör vad komponenten *är*: placerar man en tryckknapp (nr 6 eller 7) på en
-kontakt blir kontakten ett `S`, och ett motorskydd (nr 8) gör den till ett
-`B`. Numret tas från nästa lediga i den serien. Har kontakten redan rätt
+kontakt blir kontakten ett `S`, ett motorskydd (nr 8) gör den till ett `B`,
+och en gränslägesbrytare (nr 11) ger `S` — den är en brytare i manöverkretsen,
+och `S` täcker "brytare" enligt tabellen nedan. Numret tas från nästa lediga i den serien. Har kontakten redan rätt
 prefix lämnas den i fred, så ett nummer man satt själv inte byts ut.
 
 Symbolerna är ritade i samma koordinatsystem som kontakterna, så en
@@ -67,7 +82,7 @@ datamodellen: flyttar du kontakten följer tillägget inte med.
 ### Justerbar mekanisk förbindelse
 
 Den lodräta stammen från manöverdonet är den mekaniska förbindelsen till
-kontakten (streckad på nr 6 och 8, heldragen med låshake på nr 7).
+kontakten (streckad på nr 6 och 8, heldragen på nr 7 och 11).
 
 **Stammens längd går att justera per instans.** Det behövs eftersom hur långt
 den måste nå beror på vilken kontakt tillägget sitter på: en NO-kontakts blad
@@ -106,7 +121,7 @@ men beteckningen är fritt redigerbar.
 | `Q` | Effektbrytare, huvudbrytare, lastfrånskiljare |
 | `F` | Säkringar och skyddsutrustning |
 | `B` | Givare och övervakning |
-| `P` | Signal- och indikeringsdon (lampor) |
+| `P` | Signal- och indikeringsdon (lampor, summer) |
 | `M` | Motorer |
 
 ## Pinnamn (anslutningsnummer)
