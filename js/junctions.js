@@ -47,6 +47,9 @@ export function initJunctions(svg, symbolsApi, wiresApi) {
     const candidates = [];
 
     for (const wire of wires) {
+      // Streckade linjer är mekaniska förbindelser, inte ledare — de ska
+      // varken ge upphov till en kopplingsprick eller räknas in i en.
+      if (wire.dashed) continue;
       const pts = wiresApi.routePoints(wire);
       for (const p of pts) candidates.push({ x: p.x, y: p.y });
       for (let i = 0; i < pts.length - 1; i++) segments.push([pts[i], pts[i + 1]]);

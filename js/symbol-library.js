@@ -7,7 +7,7 @@ const ASSET_PATH = "assets/symbols/";
 
 // Manifest över symboltyperna, i samma ordning som numreringen i
 // "symboler och vägledning/" (1–10 i Symboler-vägledning.svg, 11–12 i
-// Elschema-symboler2.svg).
+// Elschema-symboler2.svg, 13–14 i Elschema-Symboler3.drawio.svg).
 //
 // 6–8 och 11 är "tillägg på kontakt": de saknar egna anslutningspunkter och
 // beteckning, och placeras ovanpå en kontaktsymbol.
@@ -24,6 +24,8 @@ const SYMBOL_IDS = [
   "spole",
   "granslagesbrytare",
   "summer",
+  "photocell",
+  "vaxlande-kontakt",
 ];
 
 let libraryPromise = null;

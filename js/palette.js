@@ -3,7 +3,7 @@
 // ritytan); nästa klick på ritytan droppar instansen snäppt till grid.
 // Escape avbryter. Se ROADMAP.md, Fas 3 och Fas 4.
 
-import { TOOL_SELECT, TOOL_WIRE, placeTool } from "./tools.js";
+import { TOOL_SELECT, TOOL_WIRE, TOOL_DASHED, placeTool } from "./tools.js";
 
 const SVG_NS = "http://www.w3.org/2000/svg";
 
@@ -64,6 +64,7 @@ export function initPalette(container, svg, canvasApi, symbolsApi, library, tool
   for (const [tool, label, hint] of [
     [TOOL_SELECT, "Markera", "Markera, flytta och radera"],
     [TOOL_WIRE, "Ledning", "Rita ledningar mellan anslutningar"],
+    [TOOL_DASHED, "Streckad", "Rita streckad linje — mekanisk förbindelse, ingen ledare"],
   ]) {
     const btn = document.createElement("button");
     btn.type = "button";

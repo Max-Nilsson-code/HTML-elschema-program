@@ -30,6 +30,9 @@ const STATUS = {
   wire:
     "Ledning: klicka startpunkt, klicka slutpunkt · E = byt håll på knäet · " +
     "Escape = avbryt · ändpunkter fäster i anslutningar",
+  dashed:
+    "Streckad linje (mekanisk förbindelse, ingen ledare) · klicka start- och " +
+    "slutpunkt · E = byt håll på knäet · Escape = avbryt",
   place: "Klicka på ritytan för att placera symbolen · Escape = avbryt",
 };
 
@@ -75,7 +78,8 @@ try {
   );
 
   function showStatus() {
-    if (tools.isWire()) statusEl.textContent = STATUS.wire;
+    if (tools.isDashed()) statusEl.textContent = STATUS.dashed;
+    else if (tools.isWire()) statusEl.textContent = STATUS.wire;
     else if (tools.placingTypeId()) statusEl.textContent = STATUS.place;
     else statusEl.textContent = STATUS.select;
   }

@@ -1,0 +1,20 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 80 80" width="80" height="80"
+     data-symbol-id="vaxlande-kontakt" data-symbol-name="Växlande kontakt" data-designation-prefix="K"
+     data-width="80" data-height="80" data-designation-x="40" data-designation-y="10">
+  <g class="symbol-geometry" fill="none" stroke="#000" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M 0 40 L 17 40" />
+    <path d="M 60 20 L 80 20" />
+    <path d="M 60 60 L 80 60" />
+    <!-- Bladet i sitt slutna läge -->
+    <path d="M 20 40 L 60 60" />
+    <!-- Det andra läget visas streckat -->
+    <path d="M 20 40 L 57.32 21.34" stroke-dasharray="3 3" />
+    <path d="M 57 20 L 60 20" stroke-dasharray="3 3" />
+    <circle cx="20" cy="40" r="3" fill="#fff" />
+    <circle cx="60" cy="20" r="3" fill="#fff" />
+    <circle cx="60" cy="60" r="3" fill="#fff" />
+  </g>
+  <circle class="pin" data-pin-id="11" data-default-label="11" data-label-dx="8" data-label-dy="-10" cx="0" cy="40" r="2.5" />
+  <circle class="pin" data-pin-id="14" data-default-label="14" data-label-dx="-8" data-label-dy="-10" cx="80" cy="20" r="2.5" />
+  <circle class="pin" data-pin-id="12" data-default-label="12" data-label-dx="-8" data-label-dy="-10" cx="80" cy="60" r="2.5" />
+</svg>

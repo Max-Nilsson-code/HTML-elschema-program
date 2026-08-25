@@ -6,6 +6,7 @@ vid körning ligger i `assets/symbols/`.
 - `Symboler-vägledning.svg` — originalritningen (draw.io/diagrams.net-export)
   med symbol 1–10. Det är härifrån geometrin är hämtad.
 - `Elschema-symboler2.svg` — påbyggnad med symbol 11–12.
+- `Elschema-Symboler3.drawio.svg` — påbyggnad med symbol 13–14.
 - `vägledning.md` — det här dokumentet.
 
 ## Hur symbolerna kommit till
@@ -41,6 +42,8 @@ går att koppla in och hamnar rätt på rutnätet.
 | 10 | `spole.svg` | Spole | K | A1 / A2 |
 | 11 | `granslagesbrytare.svg` | Gränslägesbrytare | — | *tillägg* |
 | 12 | `summer.svg` | Summer/ringklocka | P | 1 / 2 |
+| 13 | `photocell.svg` | Photocell | B | 1 / 2 |
+| 14 | `vaxlande-kontakt.svg` | Växlande kontakt | K | 11 / 14 / 12 |
 
 > **Not:** originalritningen stavar nr 5 "Säring" — tolkat som en felstavning
 > av "Säkring".
@@ -54,6 +57,13 @@ går att koppla in och hamnar rätt på rutnätet.
 > - Summerns anslutningsledningar gick till `x=10` och `x=70`; de är
 >   förlängda till `x=0` och `x=80` så anslutningarna hamnar på rutnätet,
 >   samma justering som lampan fick.
+
+> **Nr 13 och 14** kommer från `Elschema-Symboler3.drawio.svg`. Photocellen
+> ritades utan anslutningsledningar (som lampan) och har fått sådana.
+> Växlande kontakt följer IEC-numreringen: `11` gemensam, `12` det slutna
+> läget (heldraget blad) och `14` det andra läget (streckat blad). Det
+> streckade bladet hör till symbolen och ritas alltid — det är inte samma
+> sak som det streckade linjeverktyget.
 
 ## Tilläggssymboler (6, 7, 8, 11)
 
@@ -120,7 +130,7 @@ men beteckningen är fritt redigerbar.
 | `S` | Manöverdon: tryckknappar, brytare, väljare |
 | `Q` | Effektbrytare, huvudbrytare, lastfrånskiljare |
 | `F` | Säkringar och skyddsutrustning |
-| `B` | Givare och övervakning |
+| `B` | Givare och övervakning (gränslägen, fotoceller) |
 | `P` | Signal- och indikeringsdon (lampor, summer) |
 | `M` | Motorer |
 
@@ -193,6 +203,21 @@ En ledningsände som fäst i en anslutning **binds** till den: flyttar eller
 roterar man symbolen följer ledningen med. Bindningen släpper om man drar
 hela ledningen någon annanstans, drar ändpunkten till en punkt utan
 anslutning, eller raderar symbolen — då blir ledningen liggande där den är.
+
+### Streckad linje
+
+Verktyget **Streckad** ritar en linje precis som ledningsverktyget, men
+resultatet är en **mekanisk förbindelse — inte en ledare**. Den används för
+att visa att delar hör ihop mekaniskt, t.ex. mellan kontakter som manövreras
+tillsammans.
+
+Eftersom en streckad linje inte leder ström räknas den **inte** med när
+kopplingsprickarna beräknas: den ger aldrig upphov till en prick, och den
+bidrar inte till en prick i en punkt där ledningar möts.
+
+I övrigt beter den sig som en vanlig ledning — den snäpper mot rutnät och
+anslutningar, fäster i en anslutning och följer med när symbolen flyttas,
+och går att markera, flytta och radera på samma sätt.
 
 ### Kopplingsprickar
 

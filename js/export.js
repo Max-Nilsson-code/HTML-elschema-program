@@ -34,6 +34,7 @@ const EXPORT_CSS = `
 .stem-dashed { stroke-dasharray: 3 3; }
 .wire { fill: none; stroke: #18181b; stroke-width: 1.5;
   stroke-linecap: round; stroke-linejoin: round; }
+.wire-dashed { stroke-dasharray: 5 4; }
 .junction-dot { fill: #18181b; }
 .designation-label, .pin-label { font-family: system-ui, -apple-system,
   "Segoe UI", Arial, sans-serif; fill: #18181b; }

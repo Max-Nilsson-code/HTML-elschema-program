@@ -96,7 +96,7 @@ export function initWires(svg, canvasApi, symbolsApi, tools) {
     group.appendChild(hitLine);
 
     const line = document.createElementNS(SVG_NS, "polyline");
-    line.setAttribute("class", "wire");
+    line.setAttribute("class", wire.dashed ? "wire wire-dashed" : "wire");
     line.setAttribute("points", d);
     group.appendChild(line);
 
@@ -119,7 +119,8 @@ export function initWires(svg, canvasApi, symbolsApi, tools) {
     if (pending && hoverPoint) {
       const pts = routePoints({ a: pending.a, b: hoverPoint, elbow: pending.elbow });
       const line = document.createElementNS(SVG_NS, "polyline");
-      line.setAttribute("class", "wire-preview-line");
+      line.setAttribute("class",
+        tools.isDashed() ? "wire-preview-line preview-dashed" : "wire-preview-line");
       line.setAttribute("points", pts.map((p) => `${p.x},${p.y}`).join(" "));
       preview.appendChild(line);
     }
@@ -170,7 +171,7 @@ export function initWires(svg, canvasApi, symbolsApi, tools) {
       return;
     }
 
-    addWire(pending.a, p, pending.elbow);
+    addWire(pending.a, p, pending.elbow, tools.isDashed());
     cancelPending();
   });
 
@@ -240,6 +241,7 @@ export function initWires(svg, canvasApi, symbolsApi, tools) {
       a: { x: w.a.x, y: w.a.y, attach: w.a.attach },
       b: { x: w.b.x, y: w.b.y, attach: w.b.attach },
       elbow: w.elbow,
+      dashed: Boolean(w.dashed),
     }));
   }
 
@@ -256,6 +258,7 @@ export function initWires(svg, canvasApi, symbolsApi, tools) {
         a: { x: raw.a.x, y: raw.a.y, attach: raw.a.attach ?? null },
         b: { x: raw.b.x, y: raw.b.y, attach: raw.b.attach ?? null },
         elbow: raw.elbow === "v" ? "v" : "h",
+        dashed: Boolean(raw.dashed),
       };
       wires.set(wire.id, wire);
       renderWire(wire);
@@ -269,12 +272,13 @@ export function initWires(svg, canvasApi, symbolsApi, tools) {
 
   // ---------- API ----------
 
-  function addWire(a, b, elbow = "h") {
+  function addWire(a, b, elbow = "h", dashed = false) {
     const wire = {
       id: `wire-${nextWireNumber++}`,
       a: { x: a.x, y: a.y, attach: a.attach ?? null },
       b: { x: b.x, y: b.y, attach: b.attach ?? null },
       elbow,
+      dashed,
     };
     wires.set(wire.id, wire);
     renderWire(wire);

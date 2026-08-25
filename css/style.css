@@ -455,3 +455,13 @@ body {
 .wire-instance {
   cursor: pointer;
 }
+
+/* Streckad linje = mekanisk förbindelse, inte en ledare */
+
+.wire-dashed {
+  stroke-dasharray: 5 4;
+}
+
+.wire-preview-line.preview-dashed {
+  stroke-dasharray: 5 4;
+}

@@ -60,6 +60,7 @@ finns.
 │   ├── README.md
 │   ├── Symboler-vägledning.svg     ← originalritningen (draw.io), symbol 1–10
 │   ├── Elschema-symboler2.svg      ← påbyggnad, symbol 11–12
+│   ├── Elschema-Symboler3.drawio.svg ← påbyggnad, symbol 13–14
 │   └── vägledning.md               ← skriven guide: standard, namngivningskonvention, etikettplacering
 └── ROADMAP.md                      ← detta dokument
 ```
@@ -114,6 +115,8 @@ bättre att låta appen läsa från en egen, url-vänlig assets-mapp.
   10. Spole
   11. Gränslägesbrytare *(tillägg på kontakt)*
   12. Summer/ringklocka
+  13. Photocell
+  14. Växlande kontakt
 - [x] `symboler och vägledning/vägledning.md`: standard, beteckningsprefix,
       pinnamnskonvention, filformat
 - [x] `js/symbol-library.js`: laddar och exponerar symboltyperna
@@ -145,6 +148,8 @@ bättre att låta appen läsa från en egen, url-vänlig assets-mapp.
       en ring i förhandsvisningen), annars mot rutnätet
 - [x] Markera, dra ändpunkt, flytta hela ledningen, radera
 - [x] Ingen elektrisk validering — bekräftat ur scope för v1
+- [x] **Streckad linje** som eget verktyg: mekanisk förbindelse, inte en
+      ledare. Räknas därför inte med när kopplingsprickarna beräknas.
 - [x] **Ledningar följer symbolen**: en ändpunkt som fäst i en anslutning
       binds till den och flyttas med när symbolen flyttas eller roteras.
       Bindningen släpper när ledningen dras bort eller symbolen raderas.
