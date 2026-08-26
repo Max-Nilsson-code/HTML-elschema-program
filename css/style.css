@@ -234,6 +234,9 @@ body {
 
 .tool-list {
   display: flex;
+  /* Fyra verktyg får inte plats på en rad i den smala panelen — utan
+     radbrytning börjar sidopanelen scrolla i sidled och rubrikerna klipps. */
+  flex-wrap: wrap;
   gap: 6px;
   padding: 0 12px 4px;
 }
@@ -430,12 +433,9 @@ body {
   font-weight: 600;
 }
 
-/* Fil- och exportknappar får plats på två rader i den smala panelen */
-.file-list {
-  flex-wrap: wrap;
-}
-
-.file-list .file-item {
+/* Fil-, export- och verktygsknappar får plats på två rader i den smala panelen */
+.file-list .file-item,
+.tool-list .tool-item {
   flex: 1 1 40%;
 }
 
