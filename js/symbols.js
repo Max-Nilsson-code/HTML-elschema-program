@@ -94,6 +94,7 @@ export function initSymbols(svg, library) {
       x: snapped.x,
       y: snapped.y,
       rotation: 0,
+      mirrored: false,
       // Tilläggssymboler bär ingen egen beteckning — den hör till kontakten
       // de placeras ovanpå.
       designation: type.hasDesignation ? nextDesignation(type.designationPrefix) : "",
@@ -152,6 +153,21 @@ export function initSymbols(svg, library) {
     emitChange();
   }
 
+  /**
+   * Spegelvänder kring symbolens lodräta mittlinje. Tillsammans med
+   * rotationen i 90-stegs steg ger det alla åtta lägen — en lodrät spegling
+   * är samma sak som en vågrät plus ett halvt varv.
+   */
+  function mirrorInstances(ids) {
+    for (const id of ids) {
+      const instance = instances.get(id);
+      if (!instance) continue;
+      instance.mirrored = !instance.mirrored;
+      renderInstance(instance); // etikettankaren måste räknas om
+    }
+    emitChange();
+  }
+
   function duplicateInstances(ids) {
     const created = [];
     for (const id of ids) {
@@ -164,6 +180,7 @@ export function initSymbols(svg, library) {
         x: original.x + 20,
         y: original.y + 20,
         rotation: original.rotation,
+        mirrored: original.mirrored,
         designation: type.hasDesignation ? nextDesignation(type.designationPrefix) : "",
         pinLabels: { ...original.pinLabels },
         stemY: original.stemY,
@@ -195,7 +212,11 @@ export function initSymbols(svg, library) {
 
     const rotWrap = document.createElementNS(SVG_NS, "g");
     rotWrap.setAttribute("class", "symbol-geometry-wrap");
-    rotWrap.setAttribute("transform", `rotate(${instance.rotation} ${cx} ${cy})`);
+    // Speglingen ligger innerst (längst till höger) så den sker före
+    // rotationen. Etiketterna ligger utanför den här gruppen och speglas
+    // därför aldrig — bara deras ankarpunkter räknas om.
+    const mirror = instance.mirrored ? ` translate(${type.width} 0) scale(-1 1)` : "";
+    rotWrap.setAttribute("transform", `rotate(${instance.rotation} ${cx} ${cy})${mirror}`);
     rotWrap.appendChild(document.importNode(type.geometryElement, true));
 
     if (type.stem) {
@@ -230,7 +251,7 @@ export function initSymbols(svg, library) {
     group.appendChild(rotWrap);
 
     if (type.hasDesignation) {
-      const designationPos = rotatePoint(type.designationX, type.designationY, cx, cy, instance.rotation);
+      const designationPos = localToOffset(instance, type, type.designationX, type.designationY);
       group.appendChild(
         makeLabel("designation-label", designationPos.x, designationPos.y, instance.designation, {
           instanceId: instance.id,
@@ -240,7 +261,7 @@ export function initSymbols(svg, library) {
     }
 
     for (const pin of type.pins) {
-      const labelPos = rotatePoint(pin.x + pin.labelDx, pin.y + pin.labelDy, cx, cy, instance.rotation);
+      const labelPos = localToOffset(instance, type, pin.x + pin.labelDx, pin.y + pin.labelDy);
       group.appendChild(
         makeLabel("pin-label", labelPos.x, labelPos.y, instance.pinLabels[pin.id], {
           instanceId: instance.id,
@@ -306,15 +327,28 @@ export function initSymbols(svg, library) {
     };
   }
 
-  /** Omräkning av en world-punkt till symbolens eget, oroterade system. */
+  /**
+   * En punkt i symbolens eget system → läge relativt instansens origo.
+   *
+   * Speglingen görs FÖRE rotationen, precis som i renderingens transform,
+   * annars skulle en speglad och roterad symbol få sina etiketter och
+   * anslutningar på fel sida.
+   */
+  function localToOffset(instance, type, x, y) {
+    const mirroredX = instance.mirrored ? type.width - x : x;
+    return rotatePoint(mirroredX, y, type.width / 2, type.height / 2, instance.rotation);
+  }
+
+  /** Motsatsen: en world-punkt → symbolens eget, oroterade och ospeglade system. */
   function worldToLocal(instance, type, worldX, worldY) {
-    return rotatePoint(
+    const p = rotatePoint(
       worldX - instance.x,
       worldY - instance.y,
       type.width / 2,
       type.height / 2,
       -instance.rotation
     );
+    return { x: instance.mirrored ? type.width - p.x : p.x, y: p.y };
   }
 
   /**
@@ -396,7 +430,7 @@ export function initSymbols(svg, library) {
   function getPinPositions(instance) {
     const type = getSymbolType(library, instance.typeId);
     return type.pins.map((pin) => {
-      const p = rotatePoint(pin.x, pin.y, type.width / 2, type.height / 2, instance.rotation);
+      const p = localToOffset(instance, type, pin.x, pin.y);
       return { x: instance.x + p.x, y: instance.y + p.y, instanceId: instance.id, pinId: pin.id };
     });
   }
@@ -411,6 +445,7 @@ export function initSymbols(svg, library) {
       x: i.x,
       y: i.y,
       rotation: i.rotation,
+      mirrored: Boolean(i.mirrored),
       designation: i.designation,
       pinLabels: { ...i.pinLabels },
       stemY: i.stemY,
@@ -433,6 +468,7 @@ export function initSymbols(svg, library) {
         x: raw.x,
         y: raw.y,
         rotation: raw.rotation ?? 0,
+        mirrored: Boolean(raw.mirrored),
         designation: raw.designation ?? "",
         pinLabels: { ...Object.fromEntries(type.pins.map((p) => [p.id, p.defaultLabel])), ...raw.pinLabels },
         stemY: type.stem ? raw.stemY ?? type.stem.defaultY : null,
@@ -505,6 +541,7 @@ export function initSymbols(svg, library) {
     moveInstances,
     snapInstances,
     rotateInstances,
+    mirrorInstances,
     duplicateInstances,
     getInstance,
     getAllInstances,
@@ -534,6 +571,7 @@ export function initSymbols(svg, library) {
       remove: removeInstances,
       setSelectedIds,
       rotate: rotateInstances,
+      mirror: mirrorInstances,
       duplicate: duplicateInstances,
       startHandleDrag(event) {
         if (!event.target.classList?.contains("stem-handle")) return null;

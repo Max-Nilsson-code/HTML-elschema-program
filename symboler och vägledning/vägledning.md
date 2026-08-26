@@ -162,7 +162,22 @@ och rotation — användaren ändrar texten, inte positionen:
   anslutningspunkt.
 
 Etiketttexterna hålls alltid horisontella och läsbara, även när symbolen
-roteras 90/180/270°.
+roteras 90/180/270° eller spegelvänds.
+
+### Spegelvända
+
+`M` spegelvänder markerade symboler kring deras lodräta mittlinje. Praktiskt
+när en komponent behöver matas från andra hållet, t.ex. en växlande kontakt
+vars gemensamma anslutning ska sitta till höger.
+
+**Texten speglas aldrig.** Etiketterna ligger utanför den speglade gruppen —
+bara deras ankarpunkter räknas om, så beteckning och anslutningsnamn följer
+med till rätt sida men står fortfarande rättvända. Anslutningsnamnen byter
+alltså plats, inte utseende.
+
+En **lodrät** spegling behövs inte som eget kommando: den är samma sak som
+`M` följt av ett halvt varv (`R` två gånger). Fyra rotationslägen gånger två
+speglingslägen ger alla åtta möjliga orienteringar.
 
 ### Redigera en etikett
 

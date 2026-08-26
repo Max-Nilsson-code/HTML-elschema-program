@@ -134,6 +134,10 @@ bättre att låta appen läsa från en egen, url-vänlig assets-mapp.
 - [x] Markering: klick, shift-toggle, gummiband (`js/selection.js`)
 - [x] Flytta (drag, snäppt till grid vid släpp)
 - [x] Rotera i 90°-steg — etiketterna räknas om men hålls horisontella
+- [x] **Spegelvända** (`M`) kring lodräta mittlinjen. Texten speglas aldrig:
+      etiketterna ligger utanför den speglade gruppen, bara ankarpunkterna
+      räknas om. Fyra rotationslägen × två speglingslägen ger alla åtta
+      orienteringar, så en lodrät spegling behövs inte som eget kommando.
 - [x] Duplicera (Ctrl/Cmd+D)
 - [x] Radera (Delete/Backspace)
 

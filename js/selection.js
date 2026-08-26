@@ -9,7 +9,8 @@
 // Provider-gränssnitt:
 //   owns(id), getAll(), getBounds(obj), hitTestPoint(x,y),
 //   move(ids,dx,dy), snap(ids), remove(ids), setSelectedIds(ids),
-//   rotate?(ids,deg), duplicate?(ids), startHandleDrag?(event) -> {move,end}|null
+//   rotate?(ids,deg), mirror?(ids), duplicate?(ids),
+//   startHandleDrag?(event) -> {move,end}|null
 
 const SVG_NS = "http://www.w3.org/2000/svg";
 
@@ -209,6 +210,9 @@ export function initSelection(svg, canvasApi, providers, tools) {
       clearSelection();
     } else if (event.key.toLowerCase() === "r" && ids.length > 0) {
       for (const { provider, ids: own } of byProvider(ids)) provider.rotate?.(own, 90);
+      updateSelectionVisuals();
+    } else if (event.key.toLowerCase() === "m" && ids.length > 0) {
+      for (const { provider, ids: own } of byProvider(ids)) provider.mirror?.(own);
       updateSelectionVisuals();
     } else if ((event.ctrlKey || event.metaKey) && event.key.toLowerCase() === "d" && ids.length > 0) {
       event.preventDefault();

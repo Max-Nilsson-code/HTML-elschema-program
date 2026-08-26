@@ -25,8 +25,8 @@ const tools = initTools(svg);
 const STATUS = {
   select:
     "Markera: klicka eller dra ram · dubbelklicka en etikett för att döpa om · " +
-    "R = rotera · Ctrl+D = duplicera · Delete = radera · Ctrl+Z = ångra · " +
-    "Mellanslag+dra = panorera",
+    "R = rotera · M = spegelvänd · Ctrl+D = duplicera · Delete = radera · " +
+    "Ctrl+Z = ångra · Mellanslag+dra = panorera",
   wire:
     "Ledning: klicka startpunkt, klicka slutpunkt · E = byt håll på knäet · " +
     "Escape = avbryt · ändpunkter fäster i anslutningar",
