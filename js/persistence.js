@@ -8,7 +8,7 @@
 const FORMAT = "elschema";
 const VERSION = 1;
 
-export function initPersistence(container, symbolsApi, wiresApi, selectionApi, onStatus) {
+export function initPersistence(container, symbolsApi, wiresApi, textsApi, selectionApi, onStatus) {
   const fileInput = document.createElement("input");
   fileInput.type = "file";
   fileInput.accept = "application/json,.json";
@@ -21,6 +21,7 @@ export function initPersistence(container, symbolsApi, wiresApi, selectionApi, o
       version: VERSION,
       symbols: symbolsApi.serialize(),
       wires: wiresApi.serialize(),
+      texts: textsApi.serialize(),
     };
   }
 
@@ -55,6 +56,8 @@ export function initPersistence(container, symbolsApi, wiresApi, selectionApi, o
     // Symbolerna först: ledningarnas bindningar pekar på dem.
     symbolsApi.loadState(data.symbols);
     wiresApi.loadState(data.wires);
+    // texts saknas i filer sparade före textetiketterna fanns — tom lista då.
+    textsApi.loadState(data.texts ?? []);
   }
 
   async function openFile(file) {

@@ -14,9 +14,13 @@
 const SETTLE_MS = 250;
 const LIMIT = 100;
 
-export function initHistory(symbolsApi, wiresApi, selectionApi, onStatus) {
+export function initHistory(symbolsApi, wiresApi, textsApi, selectionApi, onStatus) {
   const snapshot = () =>
-    JSON.stringify({ symbols: symbolsApi.serialize(), wires: wiresApi.serialize() });
+    JSON.stringify({
+      symbols: symbolsApi.serialize(),
+      wires: wiresApi.serialize(),
+      texts: textsApi.serialize(),
+    });
 
   let present = snapshot();
   const past = [];
@@ -59,6 +63,7 @@ export function initHistory(symbolsApi, wiresApi, selectionApi, onStatus) {
       selectionApi.clearSelection();
       symbolsApi.loadState(data.symbols);
       wiresApi.loadState(data.wires);
+      textsApi.loadState(data.texts ?? []);
     } finally {
       applying = false;
     }
@@ -85,6 +90,7 @@ export function initHistory(symbolsApi, wiresApi, selectionApi, onStatus) {
 
   symbolsApi.onChange(schedule);
   wiresApi.onChange(schedule);
+  textsApi.onChange(schedule);
 
   window.addEventListener("keydown", (event) => {
     if (!(event.ctrlKey || event.metaKey)) return;

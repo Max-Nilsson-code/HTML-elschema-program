@@ -6,6 +6,7 @@ import { loadSymbolLibrary } from "./symbol-library.js";
 import { initSymbols } from "./symbols.js";
 import { initWires } from "./wires.js";
 import { initJunctions } from "./junctions.js";
+import { initTexts } from "./texts.js";
 import { initLabels } from "./labels.js";
 import { initInspector } from "./inspector.js";
 import { initPersistence } from "./persistence.js";
@@ -34,6 +35,7 @@ const STATUS = {
     "Streckad linje (mekanisk förbindelse, ingen ledare) · klicka start- och " +
     "slutpunkt · E = byt håll på knäet · Escape = avbryt",
   place: "Klicka på ritytan för att placera symbolen · Escape = avbryt",
+  text: "Klicka på ritytan för att placera en textetikett · dubbelklicka för att ändra texten",
 };
 
 try {
@@ -41,7 +43,10 @@ try {
   const symbolsApi = initSymbols(svg, library);
   const wiresApi = initWires(svg, canvasApi, symbolsApi, tools);
   initJunctions(svg, symbolsApi, wiresApi);
-  initLabels(svg, document.getElementById("workspace"), symbolsApi, tools);
+
+  // Texterna registrerar sin mousedown före markeringen, som paletten.
+  const textsApi = initTexts(svg, canvasApi, tools);
+  initLabels(svg, document.getElementById("workspace"), symbolsApi, textsApi, tools);
 
   // Ordningen spelar roll: paletten och ledningsverktyget registrerar sina
   // mousedown-lyssnare före markeringen, så att ett placerings- eller
@@ -56,10 +61,18 @@ try {
   initPalette(paletteEl, svg, canvasApi, symbolsApi, library, tools, fileApi);
 
   // Ledningar först i listan = de ligger under symbolerna vid träfftest.
-  const selectionApi = initSelection(svg, canvasApi, [wiresApi.selectionProvider, symbolsApi.selectionProvider], tools);
+  const selectionApi = initSelection(
+    svg,
+    canvasApi,
+    [wiresApi.selectionProvider, symbolsApi.selectionProvider, textsApi.selectionProvider],
+    tools
+  );
+
+  // Nyplacerad text markeras direkt, så egenskapspanelen visar dess fält.
+  textsApi.onPlaced((item) => selectionApi.setSelection([item.id]));
 
   // Egenskapspanelen speglar markeringen, så den måste komma efter den.
-  initInspector(document.getElementById("inspector"), symbolsApi, selectionApi, tools, library);
+  initInspector(document.getElementById("inspector"), symbolsApi, textsApi, selectionApi, tools, library);
 
   const setStatus = (text, isError) => {
     statusEl.textContent = text;
@@ -68,17 +81,18 @@ try {
 
   Object.assign(
     fileApi,
-    initPersistence(paletteEl, symbolsApi, wiresApi, selectionApi, setStatus),
+    initPersistence(paletteEl, symbolsApi, wiresApi, textsApi, selectionApi, setStatus),
     // Exporten måste se ritytan utan markeringsramar; den städar bort dem
     // ur sin kopia, men en aktiv markering ska ändå inte hänga med.
     initExport(svg, setStatus),
     // Historiken sist: den lyssnar på ändringar och behöver markeringen för
     // att kunna nollställa den när ett läge återställs.
-    initHistory(symbolsApi, wiresApi, selectionApi, setStatus)
+    initHistory(symbolsApi, wiresApi, textsApi, selectionApi, setStatus)
   );
 
   function showStatus() {
-    if (tools.isDashed()) statusEl.textContent = STATUS.dashed;
+    if (tools.isText()) statusEl.textContent = STATUS.text;
+    else if (tools.isDashed()) statusEl.textContent = STATUS.dashed;
     else if (tools.isWire()) statusEl.textContent = STATUS.wire;
     else if (tools.placingTypeId()) statusEl.textContent = STATUS.place;
     else statusEl.textContent = STATUS.select;

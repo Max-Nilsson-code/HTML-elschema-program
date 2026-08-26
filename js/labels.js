@@ -6,20 +6,20 @@
 // ovanpå etiketten: SVG har ingen egen textinmatning, och ett <input> ger
 // markering, urklipp och tangentbordsnavigering gratis.
 
-export function initLabels(svg, workspace, symbolsApi, tools) {
+export function initLabels(svg, workspace, symbolsApi, textsApi, tools) {
   let editor = null;
 
   /** Etikettelementet under punkten, om det är en redigerbar sådan. */
   function labelAt(target) {
     if (!(target instanceof Element)) return null;
     const kind = target.dataset?.labelKind;
-    return kind === "designation" || kind === "pin" ? target : null;
+    return kind === "designation" || kind === "pin" || kind === "free" ? target : null;
   }
 
   function beginEdit(labelEl) {
     commit(); // en pågående redigering avslutas först
 
-    const { instanceId, labelKind, pinId } = labelEl.dataset;
+    const { instanceId, labelKind, pinId, textId } = labelEl.dataset;
     const box = labelEl.getBoundingClientRect();
     const frame = workspace.getBoundingClientRect();
 
@@ -38,7 +38,7 @@ export function initLabels(svg, workspace, symbolsApi, tools) {
     input.focus();
     input.select();
 
-    editor = { input, instanceId, labelKind, pinId, cancelled: false };
+    editor = { input, instanceId, labelKind, pinId, textId, cancelled: false };
 
     input.addEventListener("keydown", (event) => {
       event.stopPropagation(); // annars fångar genvägarna R/Delete tecknen
@@ -57,12 +57,13 @@ export function initLabels(svg, workspace, symbolsApi, tools) {
   /** Skriver in värdet och stänger fältet. */
   function commit() {
     if (!editor) return;
-    const { input, instanceId, labelKind, pinId, cancelled } = editor;
+    const { input, instanceId, labelKind, pinId, textId, cancelled } = editor;
     editor = null; // nollställ först, så blur inte kommer tillbaka hit
 
     if (!cancelled) {
       const text = input.value.trim();
-      if (labelKind === "designation") symbolsApi.setDesignation(instanceId, text);
+      if (labelKind === "free") textsApi.setText(textId, text);
+      else if (labelKind === "designation") symbolsApi.setDesignation(instanceId, text);
       else symbolsApi.setPinLabel(instanceId, pinId, text);
     }
     input.remove();

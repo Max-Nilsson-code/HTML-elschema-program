@@ -40,6 +40,8 @@ const EXPORT_CSS = `
   "Segoe UI", Arial, sans-serif; fill: #18181b; }
 .designation-label { font-size: 13px; font-weight: 600; }
 .pin-label { font-size: 11px; }
+.free-text { font-family: system-ui, -apple-system, "Segoe UI", Arial, sans-serif;
+  fill: #18181b; }
 `;
 
 const MARGIN = 20;

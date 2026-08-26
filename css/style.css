@@ -465,3 +465,16 @@ body {
 .wire-preview-line.preview-dashed {
   stroke-dasharray: 5 4;
 }
+
+/* --- Fristående textetiketter --- */
+
+.free-text {
+  font-family: system-ui, -apple-system, "Segoe UI", sans-serif;
+  fill: #18181b;
+  cursor: text;
+  user-select: none;
+}
+
+.text-instance.selected .free-text {
+  fill: #2563eb;
+}

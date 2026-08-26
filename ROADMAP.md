@@ -43,10 +43,11 @@ finns.
 │   ├── symbol-library.js           ← registry: laddar symboldefinitioner
 │   ├── symbols.js                  ← placera/flytta/rotera/duplicera/radera symbolinstanser
 │   ├── selection.js                ← markering (klick + gummiband), typoberoende
-│   ├── tools.js                    ← delat verktygsläge (markera/ledning/placera)
+│   ├── tools.js                    ← delat verktygsläge (markera/ledning/streckad/text/placera)
 │   ├── wires.js                    ← rita/redigera ledningar
 │   ├── junctions.js                ← kopplingsprickar (räknas ut, ritas inte för hand)
 │   ├── labels.js                   ← redigera beteckning + pinnamn på plats
+│   ├── texts.js                    ← fristående textetiketter (eget objekt)
 │   ├── inspector.js                ← egenskapspanel: alla texter som fält
 │   ├── history.js                  ← undo/redo
 │   ├── persistence.js              ← JSON spara/öppna
@@ -184,6 +185,18 @@ bättre att låta appen läsa från en egen, url-vänlig assets-mapp.
 - [x] **Tillägg sätter kontaktens prefix**: en tryckknapp gör kontakten
       under till ett `S`, ett motorskydd till ett `B`. Redan rätt prefix
       lämnas i fred.
+- [x] **Fristående textetikett** (`js/texts.js`): verktyget *Text* placerar
+      en text var som helst på ritytan, oberoende av symboler — rubriker,
+      anteckningar, kretsnamn, L/N-märkning. Redigeras med dubbelklick eller
+      i egenskapspanelen (text + storlek), och markeras, flyttas, roteras,
+      dupliceras och raderas som allt annat.
+
+> **Varför ett eget objekt och inte en symbol i biblioteket?** En
+> biblioteksymbol har fast geometri och fast storlek; en text har varken —
+> dess yta beror på vad som står i den och hur stort det står. `texts.js`
+> mäter därför rutan med `getBBox()` på det renderade elementet i stället
+> för att räkna fram den, och lämnar in en egen provider till
+> `selection.js` precis som symboler och ledningar gör.
 
 ### Fas 6 – Spara & ladda ✅
 - [x] Projekt-JSON med `format` + `version`, symbolinstanser (typ, position,

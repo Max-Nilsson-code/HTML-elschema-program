@@ -200,6 +200,39 @@ Panelen ligger kvar även när inget är markerat (med en uppmaning i stället
 för fält). Det är avsiktligt: fälldes den ut vid markering skulle ritytan
 krympa och hela ritningen hoppa i sidled just när man klickat på något.
 
+## Fristående textetiketter
+
+Verktyget **Text** placerar en text var som helst på ritytan. Till skillnad
+från beteckningar och pinnamn hör den inte till någon symbol — den är ett
+eget objekt med egen position.
+
+Använd den till sådant som inte är en komponent: rubrik på schemat,
+kretsnamn, `L`- och `N`-märkning i kanterna, en anteckning om vad en del av
+kretsen gör, datum eller ritningsnummer.
+
+**Så här gör du:** klicka *Text* i sidopanelen och sedan på ritytan.
+Etiketten placeras snäppt till rutnätet, blir markerad direkt och får texten
+"Text" — skriv över den i egenskapspanelen till höger, eller dubbelklicka på
+den i ritningen. Verktyget går tillbaka till *Markera* efter placeringen, så
+nästa klick markerar i stället för att lägga ut ännu en text.
+
+| Vad | Hur |
+|---|---|
+| Ändra texten | Dubbelklick på plats, eller fältet **Text** i egenskapspanelen |
+| Ändra storlek | Fältet **Storlek** i egenskapspanelen (6–96) |
+| Flytta | Dra, snäpps till rutnätet vid släpp |
+| Rotera | `R`, i 90°-steg — här *roteras* texten faktiskt, till skillnad från symbolernas etiketter, eftersom en lodrät text ibland är precis vad man vill ha i kanten på ett schema |
+| Duplicera | `Ctrl/Cmd+D` |
+| Radera | `Delete` |
+
+Texten är ankrad i sitt **övre vänstra hörn**: det är den punkten som
+snäpper till rutnätet, så flera etiketter under varandra får rak vänsterkant.
+Markeringsrutan mäts av det som faktiskt renderats, med lite greppmån runtom
+— en tunn text ska gå att träffa utan att pricka exakt på strecken.
+
+Textetiketter följer med i spara/öppna, ångra/gör om och båda exporterna som
+allt annat.
+
 ## Ritkonvention
 
 Styrscheman ritas **horisontellt**, med fas (L) till vänster och nolla (N)
@@ -276,9 +309,17 @@ Formatet är avsiktligt läsbart — samma fält som appen använder internt:
       "a": { "x": 380, "y": 180,
              "attach": { "instanceId": "sym-1", "pinId": "A2" } },
       "b": { "x": 600, "y": 180, "attach": null } }
+  ],
+  "texts": [
+    { "id": "text-1", "x": 120, "y": 60, "text": "Styrkrets",
+      "size": 14, "rotation": 0 }
   ]
 }
 ```
+
+`texts` tillkom efter `symbols` och `wires`. En fil sparad innan dess saknar
+fältet och öppnas ändå — den läses då som ett schema utan textetiketter,
+inte som ett fel.
 
 Symbolernas id:n bevaras vid inläsning, eftersom ledningarnas `attach`
 pekar på dem. Bindningar som pekar på en symbol filen inte innehåller

@@ -5,7 +5,7 @@
 // Panelen är ett komplement till redigering på plats (labels.js) — båda
 // skriver till samma ställen i symbols.js, så de kan inte glida isär.
 
-export function initInspector(container, symbolsApi, selectionApi, tools, library) {
+export function initInspector(container, symbolsApi, textsApi, selectionApi, tools, library) {
   // Panelen tar alltid sin plats i layouten, även när inget är markerat.
   // Att fälla ut den vid markering skulle krympa ritytan och flytta hela
   // ritningen i sidled just när man klickat på något — förvirrande, och
@@ -17,6 +17,15 @@ export function initInspector(container, symbolsApi, selectionApi, tools, librar
   let shownId = null;
 
   function render(selectedIds) {
+    // Fri text har egna fält (innehåll + storlek) och hanteras för sig.
+    const textIds = selectedIds.filter((id) => textsApi.getText(id));
+    if (selectedIds.length === 1 && textIds.length === 1) {
+      shownId = null;
+      if (container.contains(document.activeElement)) return;
+      buildText(textsApi.getText(textIds[0]));
+      return;
+    }
+
     const symbolIds = selectedIds.filter((id) => symbolsApi.getInstance(id));
 
     if (symbolIds.length !== 1) {
@@ -35,6 +44,15 @@ export function initInspector(container, symbolsApi, selectionApi, tools, librar
 
   function showSimple(text) {
     container.replaceChildren(el("h2", {}, "Egenskaper"), el("p", { class: "inspector-note" }, text));
+  }
+
+  function buildText(item) {
+    container.replaceChildren(
+      el("h2", {}, "Egenskaper"),
+      el("p", { class: "inspector-type" }, "Textetikett"),
+      field("Text", item.text, (value) => textsApi.setText(item.id, value)),
+      field("Storlek", String(item.size), (value) => textsApi.setSize(item.id, value))
+    );
   }
 
   function build(instance) {
