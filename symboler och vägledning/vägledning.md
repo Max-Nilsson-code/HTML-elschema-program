@@ -65,6 +65,18 @@ går att koppla in och hamnar rätt på rutnätet.
 > streckade bladet hör till symbolen och ritas alltid — det är inte samma
 > sak som det streckade linjeverktyget.
 
+> **NO-kontakternas bladriktning.** På de öppna kontakterna (nr 1 och 3)
+> hänger bladet från **höger** kontaktpunkt med den fria änden nedåt vänster,
+> så det pekar uppåt-höger mot sitt slutläge. Geometrin är originalets,
+> speglad kring `x=40`; på nr 3 följde tidsfördröjningssymbolen med
+> speglingen så den fortfarande hänger i bladet. Anslutningarna rör sig inte:
+> `1` sitter kvar till vänster och `2` till höger. Bladet passerar `x=40` på
+> `y≈48` precis som förut, så tilläggens mekaniska förbindelse når lika långt.
+>
+> Har du ett sparat schema där du speglat en NO-kontakt med `M` för att få
+> just den här riktningen ligger speglingen kvar i filen och vänder nu
+> symbolen åt andra hållet — tryck `M` en gång till på den så stämmer det.
+
 ## Tilläggssymboler (6, 7, 8, 11)
 
 Nr 6, 7, 8 och 11 är i originalritningarna markerade som **"tillägg på

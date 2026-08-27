@@ -127,6 +127,9 @@ bättre att låta appen läsa från en egen, url-vänlig assets-mapp.
 > referensen, inte som egen ritad symbol. Nr 6–8 visade sig vara
 > *tillägg på kontakt* utan egna anslutningar eller beteckning.
 > Lampan (nr 9) har fått anslutningsledningar som originalet saknade.
+> De öppna kontakterna (nr 1 och 3) är speglade kring `x=40` så bladet
+> hänger från höger kontaktpunkt och pekar uppåt-höger — pinnarna behåller
+> sina sidor, och bladet korsar `x=40` på samma `y≈48` som förut.
 
 ### Fas 3 – Placera & manipulera symboler ✅
 - [x] Symbolpalett med förhandsvisningar (`js/palette.js`)
