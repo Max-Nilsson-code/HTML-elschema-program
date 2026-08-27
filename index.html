@@ -1,22 +1,93 @@
 <!DOCTYPE html>
 <html lang="sv">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Elschema-program</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Elschema Studio</title>
   <link rel="icon" href="data:," />
-  <link rel="stylesheet" href="css/style.css" />
+  <link rel="stylesheet" href="studio/nocturne-tokens.css">
+  <link rel="stylesheet" href="studio/studio.css">
 </head>
 <body>
-  <div id="app">
+<div id="studio" data-screen-label="Elschema Studio">
+  <header id="topbar">
+    <div class="brand"><span class="icon" data-icon="krets"></span><span>Elschema Studio</span></div>
+    <button type="button" class="btn btn-secondary" id="btn-new" title="Töm ritytan"><span class="icon" data-icon="nytt"></span>Nytt</button>
+    <button type="button" class="btn btn-secondary" id="btn-open" title="Öppna sparat schema (JSON)"><span class="icon" data-icon="oppna"></span>Öppna</button>
+    <button type="button" class="btn btn-secondary" id="btn-save" title="Spara schemat som JSON-fil"><span class="icon" data-icon="spara"></span>Spara</button>
+    <div class="topbar-sep"></div>
+    <button type="button" class="btn btn-secondary" id="btn-svg" title="Exportera ritningen som SVG"><span class="icon" data-icon="vektor"></span>SVG</button>
+    <button type="button" class="btn btn-secondary" id="btn-png" title="Exportera ritningen som PNG"><span class="icon" data-icon="bild"></span>PNG</button>
+    <div class="topbar-sep"></div>
+    <button type="button" class="btn btn-secondary btn-icon" id="btn-undo" title="Ångra (Ctrl+Z)"><span class="icon" data-icon="angra"></span></button>
+    <button type="button" class="btn btn-secondary btn-icon" id="btn-redo" title="Gör om (Ctrl+Y)"><span class="icon" data-icon="gorom"></span></button>
+    <div style="flex:1 1 auto"></div>
+    <button type="button" class="btn btn-ghost" id="btn-shortcuts" title="Visa kortkommandon (?)"><span class="icon" data-icon="tangentbord"></span>Kortkommandon</button>
+  </header>
+  <div id="studio-main">
     <aside id="palette"></aside>
     <main id="workspace">
       <svg id="canvas" xmlns="http://www.w3.org/2000/svg"></svg>
       <p id="status"></p>
+      <div id="zoombar">
+        <button type="button" id="zoom-out" title="Zooma ut"><span class="icon" data-icon="minus"></span></button>
+        <span id="zoom-label">100 %</span>
+        <button type="button" id="zoom-in" title="Zooma in"><span class="icon" data-icon="plus"></span></button>
+        <button type="button" id="zoom-fit" title="Anpassa vyn till arket"><span class="icon" data-icon="anpassa"></span></button>
+      </div>
     </main>
-    <aside id="inspector"></aside>
+    <aside id="sidebar">
+      <div id="inspector"></div>
+      <div id="sheet-panel">
+        <h2>Rityta</h2>
+        <div class="field">
+          <label for="sheet-size">Ark</label>
+          <select id="sheet-size" class="input">
+            <option value="a4-liggande">A4 liggande</option>
+            <option value="a4-staende">A4 stående</option>
+            <option value="a5-liggande">A5 liggande</option>
+            <option value="a5-staende">A5 stående</option>
+            <option value="a3-liggande">A3 liggande</option>
+            <option value="a3-staende">A3 stående</option>
+            <option value="inget">Inget ark</option>
+          </select>
+        </div>
+        <div class="field">
+          <label>Utseende</label>
+          <div class="seg-btnrow">
+            <button type="button" class="seg-btn armed" id="theme-light">Ljus</button>
+            <button type="button" class="seg-btn" id="theme-dark">Mörk</button>
+          </div>
+        </div>
+        <p class="inspector-note">Arket är en visuell referensram i verklig skala (2 enheter per mm). Export beskärs alltid till det ritade innehållet.</p>
+      </div>
+    </aside>
   </div>
-
-  <script type="module" src="js/main.js"></script>
+  <div id="shortcuts-backdrop" class="dialog-backdrop" hidden="hidden" style="position:fixed;z-index:50">
+    <div class="dialog">
+      <div class="dialog-title">Kortkommandon</div>
+      <table class="table">
+        <tbody>
+          <tr><td><span class="kbd">Klick</span> / <span class="kbd">dra ram</span></td><td>Markera</td></tr>
+          <tr><td><span class="kbd">R</span></td><td>Rotera markering 90°</td></tr>
+          <tr><td><span class="kbd">M</span></td><td>Spegelvänd markering</td></tr>
+          <tr><td><span class="kbd">Ctrl</span> + <span class="kbd">D</span></td><td>Duplicera markering</td></tr>
+          <tr><td><span class="kbd">Delete</span></td><td>Radera markering</td></tr>
+          <tr><td><span class="kbd">Ctrl</span> + <span class="kbd">Z</span> / <span class="kbd">Y</span></td><td>Ångra / gör om</td></tr>
+          <tr><td><span class="kbd">E</span></td><td>Byt håll på ledningens knä</td></tr>
+          <tr><td><span class="kbd">Mellanslag</span> + dra</td><td>Panorera (även mittenknapp)</td></tr>
+          <tr><td><span class="kbd">Scrollhjul</span></td><td>Zooma mot muspekaren</td></tr>
+          <tr><td>Dubbelklick på etikett</td><td>Byt namn direkt på ritningen</td></tr>
+          <tr><td><span class="kbd">Escape</span></td><td>Avbryt / avmarkera</td></tr>
+          <tr><td><span class="kbd">?</span></td><td>Visa eller dölj det här fönstret</td></tr>
+        </tbody>
+      </table>
+      <div class="dialog-actions">
+        <button type="button" class="btn btn-primary" id="shortcuts-close">Stäng</button>
+      </div>
+    </div>
+  </div>
+</div>
+<script type="module" src="studio/app.js"></script>
 </body>
 </html>

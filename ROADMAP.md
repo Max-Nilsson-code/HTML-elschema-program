@@ -33,8 +33,8 @@ finns.
 
 ```
 /
-├── index.html                      ← app-startsida (rot, så GitHub Pages kan servera direkt)
-├── studio.html                     ← andra skalet: Elschema Studio (samma motor)
+├── index.html                      ← startsida: Elschema Studio (rot, så GitHub Pages kan servera direkt)
+├── klassisk.html                   ← det första skalet, kvar och fungerande
 ├── css/
 │   └── style.css
 ├── js/
@@ -86,9 +86,10 @@ bättre att låta appen läsa från en egen, url-vänlig assets-mapp.
 
 ### Två skal, en motor
 
-Det finns **två sidor mot samma kod**:
+Det finns **två sidor mot samma kod**. Studio är startsidan — det är den
+länken pekar på — och det första skalet ligger kvar på `klassisk.html`:
 
-| | `index.html` | `studio.html` |
+| | `klassisk.html` | `index.html` (Studio) |
 |---|---|---|
 | Rutnät | 20 units | 10 units |
 | Symbolskala | 1 (80 units bred) | 0,5 (40 units bred) |
@@ -134,6 +135,8 @@ exporten blir svart på vitt oavsett vilket läge ritytan står i.
 
 ### Fas 0 – Projektgrund
 - [x] Skapa filstruktur enligt ovan (`index.html`, `css/`, `js/`, `assets/`)
+      — startsidan är sedan Studio-skalet `studio/`, med det första skalet
+      kvar på `klassisk.html`
 - [x] Minimalt HTML-skal med ett `<svg>`-element som fyller fönstret
 - [ ] Konfigurera GitHub Pages i repo-inställningarna (Settings → Pages →
       källa: main-branchen, rot-mappen) — **manuellt steg, kräver
@@ -297,6 +300,9 @@ exporten blir svart på vitt oavsett vilket läge ritytan står i.
 > eller en inskriven text blir därmed **ett** steg att ångra.
 
 ### Fas 9 – Publicering
+- [x] Bestäm startsida: `index.html` är Elschema Studio, så Pages-länken
+      landar direkt i det gränssnittet. `klassisk.html` nås fortfarande
+      genom att skriva ut filnamnet.
 - [ ] Driftsätt via GitHub Pages, verifiera hela flödet (placera → koppla →
       spara → öppna → exportera) i en riktig deployad miljö
 - [ ] Kort användarinstruktion (t.ex. i sidfoten eller en hjälp-panel)

@@ -302,13 +302,14 @@ De är inte ritningsinnehåll och följer inte med i schemat.
 
 ## Elschema Studio
 
-Det finns **två sidor mot samma program**. `index.html` är det ursprungliga
-gränssnittet; `studio.html` är ett andra skal med tätare rutnät, pappersark
-och kommandona i en topprad. Symbolerna, ledningarna, etiketterna,
-historiken, filformatet och exporten är exakt desamma — en fil sparad i det
-ena öppnas i det andra.
+Studio är programmets **startsida** — `index.html`, alltså det du får när du
+öppnar länken. Det har tätare rutnät, pappersark och kommandona i en topprad.
 
-| | `index.html` | `studio.html` |
+Det första gränssnittet finns kvar på **`klassisk.html`**, för den som hellre
+vill ha det. Symbolerna, ledningarna, etiketterna, historiken, filformatet och
+exporten är exakt desamma i båda — en fil sparad i det ena öppnas i det andra.
+
+| | `klassisk.html` | `index.html` (Studio) |
 |---|---|---|
 | Rutnät | 20 enheter | 10 enheter |
 | Symbolstorlek | 80 enheter bred | 40 enheter bred |
