@@ -8,14 +8,21 @@
 // ankarpunkt roteras med räkning i JS, men själva texten hålls alltid
 // horisontell/läsbar, oavsett symbolens rotation.
 
-import { snapToGrid } from "./grid.js";
+import { snapToGrid, GRID_SIZE } from "./grid.js";
 import { getSymbolType } from "./symbol-library.js";
 
 const SVG_NS = "http://www.w3.org/2000/svg";
 
 let nextInstanceNumber = 1;
 
-export function initSymbols(svg, library) {
+export function initSymbols(svg, library, scale = 1) {
+  // Global symbolskala: geometrin ritas i skalan, etiketttexten behåller sin
+  // läsbara storlek. 1 = originalstorlek (80 units per symbol), vilket
+  // originalgränssnittet kör; Studio ritar tätare och skickar in 0,5.
+  const SCALE = scale;
+  // Vid skala 1 utelämnas scale() helt, så transformen ser likadan ut som
+  // innan skalan fanns — ingen tom scale(1) i DOM:en eller i exporten.
+  const SCALE_PREFIX = SCALE === 1 ? "" : `scale(${SCALE}) `;
   const layer = document.createElementNS(SVG_NS, "g");
   layer.setAttribute("id", "symbols-layer");
   svg.appendChild(layer);
@@ -50,8 +57,8 @@ export function initSymbols(svg, library) {
    */
   function findHostContact(addon) {
     const type = getSymbolType(library, addon.typeId);
-    const cx = addon.x + type.width / 2;
-    const cy = addon.y + type.height / 2;
+    const cx = addon.x + (type.width * SCALE) / 2;
+    const cy = addon.y + (type.height * SCALE) / 2;
 
     const all = getAllInstances();
     for (let i = all.length - 1; i >= 0; i--) {
@@ -177,8 +184,9 @@ export function initSymbols(svg, library) {
       const copy = {
         id: `sym-${nextInstanceNumber++}`,
         typeId: original.typeId,
-        x: original.x + 20,
-        y: original.y + 20,
+        // Ett rutnätssteg åt sidan, så kopian syns men ligger kvar på nätet.
+        x: original.x + GRID_SIZE,
+        y: original.y + GRID_SIZE,
         rotation: original.rotation,
         mirrored: original.mirrored,
         designation: type.hasDesignation ? nextDesignation(type.designationPrefix) : "",
@@ -216,7 +224,7 @@ export function initSymbols(svg, library) {
     // rotationen. Etiketterna ligger utanför den här gruppen och speglas
     // därför aldrig — bara deras ankarpunkter räknas om.
     const mirror = instance.mirrored ? ` translate(${type.width} 0) scale(-1 1)` : "";
-    rotWrap.setAttribute("transform", `rotate(${instance.rotation} ${cx} ${cy})${mirror}`);
+    rotWrap.setAttribute("transform", `${SCALE_PREFIX}rotate(${instance.rotation} ${cx} ${cy})${mirror}`);
     rotWrap.appendChild(document.importNode(type.geometryElement, true));
 
     if (type.stem) {
@@ -320,10 +328,10 @@ export function initSymbols(svg, library) {
     const xs = corners.map((p) => p.x);
     const ys = corners.map((p) => p.y);
     return {
-      x: instance.x + Math.min(...xs),
-      y: instance.y + Math.min(...ys),
-      width: Math.max(...xs) - Math.min(...xs),
-      height: Math.max(...ys) - Math.min(...ys),
+      x: instance.x + Math.min(...xs) * SCALE,
+      y: instance.y + Math.min(...ys) * SCALE,
+      width: (Math.max(...xs) - Math.min(...xs)) * SCALE,
+      height: (Math.max(...ys) - Math.min(...ys)) * SCALE,
     };
   }
 
@@ -336,14 +344,15 @@ export function initSymbols(svg, library) {
    */
   function localToOffset(instance, type, x, y) {
     const mirroredX = instance.mirrored ? type.width - x : x;
-    return rotatePoint(mirroredX, y, type.width / 2, type.height / 2, instance.rotation);
+    const p = rotatePoint(mirroredX, y, type.width / 2, type.height / 2, instance.rotation);
+    return { x: p.x * SCALE, y: p.y * SCALE };
   }
 
   /** Motsatsen: en world-punkt → symbolens eget, oroterade och ospeglade system. */
   function worldToLocal(instance, type, worldX, worldY) {
     const p = rotatePoint(
-      worldX - instance.x,
-      worldY - instance.y,
+      (worldX - instance.x) / SCALE,
+      (worldY - instance.y) / SCALE,
       type.width / 2,
       type.height / 2,
       -instance.rotation

@@ -1,0 +1,375 @@
+/* Elschema Studio — Nocturne-mörkt gränssnitt kring en ljus/mörk rityta.
+   Alla färger kommer från designsystemets tokens (styles.css). */
+
+html, body { width: 100%; height: 100%; overflow: hidden; }
+
+#studio {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  background: var(--color-bg);
+  color: var(--color-text);
+  font-family: var(--font-body);
+}
+#studio-main { flex: 1 1 auto; display: flex; min-height: 0; }
+
+/* Ikonbärare: svg:n är 1em och currentColor, så font-size och color på
+   knappen styr storlek och färg — samma sätt som ikonfonten fungerade. */
+.icon { display: inline-flex; flex: 0 0 auto; }
+.icon svg { display: block; }
+
+/* --- Topprad --- */
+#topbar {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  padding: var(--space-2) var(--space-4);
+  border-bottom: 1px solid var(--color-divider);
+}
+#topbar .brand {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-right: var(--space-6);
+  font-family: var(--font-heading);
+  font-weight: var(--font-heading-weight);
+  font-size: 15px;
+  letter-spacing: -0.01em;
+}
+#topbar .brand .icon { color: var(--color-accent); font-size: 18px; }
+#topbar .btn { font-size: 13px; padding: 5px 10px; }
+#topbar .btn .icon { font-size: 15px; }
+.topbar-sep {
+  width: 1px;
+  height: 20px;
+  margin: 0 var(--space-2);
+  background: var(--color-divider);
+}
+
+/* --- Paneler --- */
+#palette, #sidebar {
+  flex: 0 0 236px;
+  overflow-y: auto;
+  padding: var(--space-4);
+  background: color-mix(in srgb, var(--color-surface) 45%, var(--color-bg));
+}
+#palette { border-right: 1px solid var(--color-divider); }
+#sidebar { border-left: 1px solid var(--color-divider); }
+
+#palette h2, #sidebar h2 {
+  font-size: 11px;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--color-neutral-500);
+  margin: 0 0 var(--space-3);
+}
+#palette h2 + .tool-list { margin-bottom: var(--space-6); }
+.palette-cat {
+  margin: var(--space-4) 0 var(--space-2);
+  font-size: 10px;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--color-accent-300);
+}
+
+/* Verktyg */
+.tool-list { display: flex; flex-wrap: wrap; gap: 6px; }
+.tool-item {
+  flex: 1 1 45%;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 7px 10px;
+  font: inherit;
+  font-size: 13px;
+  color: var(--color-text);
+  background: transparent;
+  border: 1px solid var(--color-divider);
+  border-radius: var(--radius-md);
+  cursor: pointer;
+}
+.tool-item .icon { font-size: 16px; color: var(--color-neutral-400); }
+.tool-item:hover { background: color-mix(in srgb, var(--color-text) 7%, transparent); }
+.tool-item:active { background: color-mix(in srgb, var(--color-text) 14%, transparent); }
+.tool-item.armed {
+  color: var(--color-accent);
+  border-color: var(--color-accent);
+  background: color-mix(in srgb, var(--color-accent) 10%, transparent);
+}
+.tool-item.armed .icon { color: var(--color-accent); }
+
+/* Symboler */
+.palette-list { display: flex; flex-direction: column; gap: 4px; }
+.palette-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+  padding: 5px 8px;
+  font: inherit;
+  font-size: 12px;
+  text-align: left;
+  color: var(--color-text);
+  background: transparent;
+  border: 1px solid transparent;
+  border-radius: var(--radius-md);
+  cursor: pointer;
+}
+.palette-item:hover {
+  background: color-mix(in srgb, var(--color-text) 7%, transparent);
+  border-color: var(--color-divider);
+}
+.palette-item.armed {
+  background: color-mix(in srgb, var(--color-accent) 12%, transparent);
+  border-color: var(--color-accent);
+  color: var(--color-accent-200);
+}
+.palette-preview { flex: 0 0 44px; width: 44px; height: 26px; }
+.palette-preview .symbol-geometry, .palette-preview .stem { stroke: var(--color-neutral-300); }
+.palette-preview .symbol-geometry [fill="#fff"] { fill: color-mix(in srgb, var(--color-surface) 45%, var(--color-bg)); }
+.palette-item.armed .palette-preview .symbol-geometry,
+.palette-item.armed .palette-preview .stem { stroke: var(--color-accent); }
+.palette-preview .pin { fill: none; }
+
+/* --- Arbetsyta --- */
+#workspace { position: relative; flex: 1 1 auto; min-width: 0; }
+
+#canvas {
+  /* Temavariabler för själva ritningen */
+  --line: 1.25;
+  --desk: #dfe2ee;
+  --paper: #fdfdff;
+  --ink: #18181b;
+  --gridline: #d9dbe6;
+  --sel: var(--color-accent-600);
+  display: block;
+  width: 100%;
+  height: 100%;
+  background: var(--desk);
+  cursor: default;
+  touch-action: none;
+}
+#canvas.canvas-dark {
+  --desk: var(--color-bg);
+  --paper: var(--color-surface);
+  --ink: var(--color-neutral-100);
+  --gridline: color-mix(in srgb, var(--color-text) 9%, transparent);
+  --sel: var(--color-accent-400);
+}
+#canvas.no-sheet { background: var(--paper); }
+#canvas.panning { cursor: grabbing; }
+#canvas.pan-ready { cursor: grab; }
+#canvas.placing { cursor: crosshair; }
+#canvas.wiring { cursor: crosshair; }
+
+/* Ark */
+.sheet-paper {
+  fill: var(--paper);
+  stroke: color-mix(in srgb, var(--ink) 22%, transparent);
+  stroke-width: 1;
+}
+#canvas:not(.canvas-dark) .sheet-paper { filter: drop-shadow(0 3px 10px rgba(22, 24, 38, 0.18)); }
+.sheet-label {
+  fill: color-mix(in srgb, var(--ink) 45%, transparent);
+  font-family: var(--font-body);
+  font-size: 11px;
+}
+
+/* Rutnät */
+.grid-line { stroke: var(--gridline); stroke-width: 1; }
+
+/* Symboler och ledningar — samma klasser som originalet, tematiserade */
+.symbol-instance { cursor: pointer; }
+.symbol-instance .symbol-geometry { stroke: var(--ink); stroke-width: var(--symbol-stroke, 1.5); }
+.symbol-instance .stem { stroke-width: var(--symbol-stroke, 1.5); }
+.symbol-instance .symbol-geometry [fill="#fff"] { fill: var(--paper); }
+
+.pin-marker { display: none; fill: none; stroke: var(--sel); stroke-width: 1; opacity: 0.55; }
+#canvas.wiring .pin-marker { display: block; }
+/* Radien sätts av app.js utifrån linjetjockleken, så skärm och export
+   ritar samma prick. */
+.junction-dot { fill: var(--ink); r: var(--junction-r, 3.5); pointer-events: none; }
+
+.stem { stroke: var(--ink); stroke-width: 1.5; stroke-linecap: round; }
+.stem-dashed { stroke-dasharray: 3 3; }
+.stem-handle { display: none; fill: var(--paper); stroke: var(--sel); stroke-width: 1.5; cursor: move; }
+.symbol-instance.selected .stem-handle { display: block; }
+
+.designation-label, .pin-label {
+  font-family: var(--font-body);
+  fill: var(--ink);
+  user-select: none;
+  cursor: text;
+}
+.designation-label { font-size: 13px; font-weight: 600; }
+.pin-label { font-size: 11px; }
+
+.selection-outline {
+  fill: none;
+  stroke: var(--sel);
+  stroke-width: 1.5;
+  stroke-dasharray: 5 3;
+  pointer-events: none;
+}
+.rubber-band {
+  fill: color-mix(in srgb, var(--sel) 8%, transparent);
+  stroke: var(--sel);
+  stroke-width: 1;
+  stroke-dasharray: 4 3;
+  pointer-events: none;
+}
+
+.wire { fill: none; stroke: var(--ink); stroke-width: var(--line, 1.5); stroke-linecap: round; stroke-linejoin: round; pointer-events: none; }
+.wire-hit { fill: none; stroke: transparent; stroke-width: 12; stroke-linecap: round; stroke-linejoin: round; }
+.wire-dashed { stroke-dasharray: 5 4; }
+.wire-instance { cursor: pointer; }
+.wire-instance.selected .wire { stroke: var(--sel); }
+.wire-handle { display: none; fill: var(--paper); stroke: var(--sel); stroke-width: 1.5; cursor: move; }
+.wire-instance.selected .wire-handle { display: block; }
+
+#wire-preview { pointer-events: none; }
+.wire-preview-line { fill: none; stroke: var(--sel); stroke-width: var(--line, 1.5); stroke-dasharray: 4 3; stroke-linecap: round; stroke-linejoin: round; }
+.wire-preview-line.preview-dashed { stroke-dasharray: 5 4; }
+.wire-snap-dot { fill: var(--sel); opacity: 0.5; }
+.wire-snap-dot.on-pin { fill: none; stroke: var(--sel); stroke-width: 2; opacity: 1; }
+
+#canvas:not(.wiring):not(.placing) .symbol-instance:hover .symbol-geometry,
+#canvas:not(.wiring):not(.placing) .symbol-instance:hover .stem { stroke: var(--sel); }
+#canvas:not(.wiring):not(.placing) .wire-instance:hover .wire { stroke: var(--sel); }
+
+.free-text { font-family: var(--font-body); fill: var(--ink); cursor: text; user-select: none; }
+.text-instance.selected .free-text { fill: var(--sel); }
+
+/* Etikettredigering */
+.label-editor {
+  position: absolute;
+  z-index: 10;
+  padding: 1px 3px;
+  border: 1px solid var(--color-accent);
+  border-radius: var(--radius-sm);
+  background: var(--color-surface);
+  font: 600 11px var(--font-body);
+  text-align: center;
+  color: var(--color-text);
+  outline: none;
+  box-shadow: 0 0 0 2px color-mix(in srgb, var(--color-accent) 20%, transparent);
+}
+
+/* Statusrad */
+#status {
+  position: absolute;
+  left: 12px;
+  bottom: 10px;
+  max-width: min(70%, 720px);
+  margin: 0;
+  padding: 5px 10px;
+  font-size: 11px;
+  line-height: 1.5;
+  color: var(--color-neutral-400);
+  background: color-mix(in srgb, var(--color-surface) 92%, transparent);
+  border: 1px solid var(--color-divider);
+  border-radius: var(--radius-md);
+  pointer-events: none;
+}
+#status.error { color: #f2b8b5; border-color: #f2b8b5; }
+
+/* Zoomkontroller */
+#zoombar {
+  position: absolute;
+  right: 12px;
+  bottom: 10px;
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  padding: 3px;
+  background: color-mix(in srgb, var(--color-surface) 92%, transparent);
+  border: 1px solid var(--color-divider);
+  border-radius: var(--radius-md);
+}
+#zoombar button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 26px;
+  height: 26px;
+  font-size: 14px;
+  color: var(--color-text);
+  background: transparent;
+  border: none;
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+}
+#zoombar button:hover { background: color-mix(in srgb, var(--color-accent) 12%, transparent); color: var(--color-accent); }
+#zoom-label {
+  min-width: 44px;
+  text-align: center;
+  font-size: 11px;
+  color: var(--color-neutral-400);
+  font-variant-numeric: tabular-nums;
+}
+
+/* --- Egenskapspanel (renderas av inspector.js) --- */
+#inspector { margin-bottom: var(--space-6); }
+.inspector-type { margin: 0 0 var(--space-3); font-size: 13px; color: var(--color-accent-300); }
+.inspector-note { font-size: 11px; line-height: 1.5; color: var(--color-neutral-500); }
+#inspector h3 {
+  margin: var(--space-4) 0 var(--space-2);
+  font-size: 10px;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--color-neutral-500);
+}
+.inspector-field { display: flex; align-items: center; gap: 8px; margin-bottom: 6px; }
+.inspector-field span { flex: 0 0 62px; font-size: 11px; color: var(--color-neutral-500); }
+.inspector-field input {
+  flex: 1 1 auto;
+  min-width: 0;
+  padding: 4px 8px;
+  font: inherit;
+  font-size: 12px;
+  color: var(--color-text);
+  caret-color: var(--color-accent);
+  background: var(--color-surface);
+  border: 1px solid var(--color-divider);
+  border-radius: var(--radius-sm);
+}
+.inspector-field input:hover { border-color: color-mix(in srgb, var(--color-text) 45%, transparent); }
+.inspector-field input:focus { outline: none; border-color: var(--color-accent); }
+.inspector-field input.inspector-designation { font-weight: 600; }
+
+/* Rityta-panelen */
+#sheet-panel .field { margin-bottom: var(--space-3); }
+#sheet-panel select.input { min-height: 32px; font-size: 13px; padding: 4px 8px; }
+.seg-btnrow { display: flex; overflow: hidden; border: 1px solid var(--color-divider); border-radius: var(--radius-md); }
+.seg-btn {
+  flex: 1;
+  padding: 6px 0;
+  font: inherit;
+  font-size: 13px;
+  color: var(--color-text);
+  background: transparent;
+  border: none;
+  cursor: pointer;
+}
+.seg-btn + .seg-btn { border-left: 1px solid var(--color-divider); }
+.seg-btn:hover { background: color-mix(in srgb, var(--color-text) 7%, transparent); }
+.seg-btn.armed { color: var(--color-accent); box-shadow: inset 0 0 0 1px var(--color-accent); }
+
+/* Kortkommandon */
+.dialog-backdrop[hidden] { display: none; }
+.kbd {
+  display: inline-block;
+  padding: 1px 7px;
+  font-size: 11px;
+  font-variant-numeric: tabular-nums;
+  color: var(--color-neutral-200);
+  background: var(--color-neutral-900);
+  border: 1px solid var(--color-divider);
+  border-radius: var(--radius-sm);
+  white-space: nowrap;
+}
+#shortcuts-backdrop .table td { font-size: 13px; }
+#shortcuts-backdrop .table td:first-child { width: 42%; }

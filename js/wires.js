@@ -6,13 +6,16 @@
 // ändpunkter plus vilket håll knäet går, och rutas om automatiskt när en
 // ändpunkt flyttas.
 
-import { snapToGrid } from "./grid.js";
+import { snapToGrid, GRID_SIZE } from "./grid.js";
 
 const SVG_NS = "http://www.w3.org/2000/svg";
 
 // Anslutningspunkter drar till sig ändpunkten inom den här radien; utanför
 // den snäpper ledningen mot rutnätet som allt annat.
-const PIN_SNAP_RADIUS = 12;
+// Fästradie mot en anslutning, som andel av rutnätssteget. Måste räknas ut
+// vid anropet och inte här uppe: rutnätet kan ställas om (Studio kör 10) och
+// en modulkonstant hade fryst originalets 20 innan omställningen hunnit ske.
+const PIN_SNAP_FRACTION = 0.6;
 const HIT_TOLERANCE = 5;
 
 let nextWireNumber = 1;
@@ -59,7 +62,7 @@ export function initWires(svg, canvasApi, symbolsApi, tools) {
    * roteras (se syncAttachments).
    */
   function snapPoint(worldX, worldY) {
-    const pin = symbolsApi.findNearestPin(worldX, worldY, PIN_SNAP_RADIUS);
+    const pin = symbolsApi.findNearestPin(worldX, worldY, GRID_SIZE * PIN_SNAP_FRACTION);
     if (pin) {
       return {
         x: pin.x,

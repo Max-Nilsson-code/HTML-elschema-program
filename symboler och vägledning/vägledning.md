@@ -300,6 +300,60 @@ De små ringarna vid symbolernas anslutningar är bara en hjälpvisning som
 syns medan ledningsverktyget är aktivt, så man ser var det går att fästa.
 De är inte ritningsinnehåll och följer inte med i schemat.
 
+## Elschema Studio
+
+Det finns **två sidor mot samma program**. `index.html` är det ursprungliga
+gränssnittet; `studio.html` är ett andra skal med tätare rutnät, pappersark
+och kommandona i en topprad. Symbolerna, ledningarna, etiketterna,
+historiken, filformatet och exporten är exakt desamma — en fil sparad i det
+ena öppnas i det andra.
+
+| | `index.html` | `studio.html` |
+|---|---|---|
+| Rutnät | 20 enheter | 10 enheter |
+| Symbolstorlek | 80 enheter bred | 40 enheter bred |
+| Palett | flat lista | kategorier med ikoner |
+| Rityta | oändlig och vit | pappersark, ljus eller mörk |
+
+En symbol är fyra rutor bred i båda — det är rutnätet och symbolerna som
+krympt tillsammans, så tillägg, stammar och anslutningar hamnar precis som
+förut, bara tätare på skärmen.
+
+### Pappersarket
+
+Panelen **Rityta** väljer ark: A5, A4 eller A3, stående eller liggande, eller
+**Inget ark**. Skalan är 2 enheter per millimeter, så ett A4 liggande är
+594 × 420 enheter — knappt 60 × 42 rutor.
+
+Arket är en **visuell referensram**, inget mer: det talar om ungefär hur
+mycket som får plats på ett utskrivet papper. Det begränsar inte var du får
+rita, och det följer aldrig med i exporten — den beskärs som vanligt till det
+du faktiskt ritat. Knappen längst till höger i zoomrutan anpassar vyn till
+arket.
+
+### Ljus och mörk rityta
+
+**Utseende** växlar ritytan mellan ljust och mörkt papper. Det är en ren
+skärminställning för att orka titta länge — den ändrar inte ritningen.
+**Exporten blir svart på vitt oavsett vilket läge du står i.**
+
+### Topprad och zoomruta
+
+Nytt, Öppna, Spara, SVG, PNG, Ångra och Gör om ligger i toppraden i stället
+för i sidopanelen. Nere till höger finns zoomrutan: minus, plus, procentsats
+och anpassa-till-ark. `?` öppnar en lista över alla kortkommandon.
+
+**Nytt** tömmer ritytan. Det går att ångra som vilken ändring som helst, så
+ett feltryck är inte farligt.
+
+### Utan nätverk
+
+Studio hämtar inget utifrån. Ikonerna ligger som SVG i `studio/icons.js` och
+texten går på systemets egna typsnitt. Det är avsiktligt: hela programmet ska
+fungera som statiska filer, även utan uppkoppling, och zoom- och
+ångra-knapparna är rena ikonknappar som hade blivit tomma rutor om en
+ikonfont inte gick att hämta.
+
 ## Spara och öppna
 
 **Spara** laddar ner hela schemat som `elschema.json`. **Öppna** läser

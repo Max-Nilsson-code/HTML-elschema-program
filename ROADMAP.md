@@ -34,6 +34,7 @@ finns.
 ```
 /
 ├── index.html                      ← app-startsida (rot, så GitHub Pages kan servera direkt)
+├── studio.html                     ← andra skalet: Elschema Studio (samma motor)
 ├── css/
 │   └── style.css
 ├── js/
@@ -44,6 +45,8 @@ finns.
 │   ├── symbols.js                  ← placera/flytta/rotera/duplicera/radera symbolinstanser
 │   ├── selection.js                ← markering (klick + gummiband), typoberoende
 │   ├── tools.js                    ← delat verktygsläge (markera/ledning/streckad/text/placera)
+│   ├── palette.js                  ← originalets symbolpalett
+│   ├── palette-shared.js           ← förhandsvisning + placeringsklick, delat av båda paletterna
 │   ├── wires.js                    ← rita/redigera ledningar
 │   ├── junctions.js                ← kopplingsprickar (räknas ut, ritas inte för hand)
 │   ├── labels.js                   ← redigera beteckning + pinnamn på plats
@@ -52,6 +55,13 @@ finns.
 │   ├── history.js                  ← undo/redo
 │   ├── persistence.js              ← JSON spara/öppna
 │   └── export.js                   ← SVG-/PNG-export
+├── studio/                         ← enbart Studios skal, motorn ligger kvar i js/
+│   ├── app.js                      ← startpunkt: kopplar js/-modulerna till skalet
+│   ├── palette.js                  ← palett med kategorier och ikoner
+│   ├── sheet.js                    ← pappersark (A5/A4/A3) som referensram
+│   ├── icons.js                    ← ikonerna som inline-SVG (inget CDN)
+│   ├── studio.css                  ← skalets utseende
+│   └── nocturne-tokens.css         ← designsystemets tokens
 ├── assets/
 │   └── symbols/                    ← appens egna, rena SVG-filer (en per symboltyp)
 │       ├── kontakt-no.svg
@@ -73,6 +83,50 @@ extraherad ur originalet och normaliserad mot rutnätet. Anledningen till
 uppdelningen: mappnamnet `symboler och vägledning` innehåller mellanslag,
 vilket är onödigt krångligt att referera från kod (URL-encoding vid `fetch`);
 bättre att låta appen läsa från en egen, url-vänlig assets-mapp.
+
+### Två skal, en motor
+
+Det finns **två sidor mot samma kod**:
+
+| | `index.html` | `studio.html` |
+|---|---|---|
+| Rutnät | 20 units | 10 units |
+| Symbolskala | 1 (80 units bred) | 0,5 (40 units bred) |
+| Linjetjocklek | 1,5 | 1,25 |
+| Palett | flat lista | kategorier, ikoner |
+| Rityta | oändlig, vit | pappersark A5/A4/A3, ljus eller mörk |
+| Kommandon | knappar i sidopanelen | topprad, zoomruta, `?`-fönster |
+
+Allt under skalet — symboler, ledningar, markering, etiketter, historik,
+spara/öppna, export — är samma moduler i `js/`. Skalet bestämmer bara hur de
+kopplas ihop och hur de ser ut.
+
+Tre saker gjordes ställbara för att det skulle gå:
+
+- `js/grid.js` — `GRID_SIZE` är `let` med en `setGridSize()`. Den läses bara
+  inne i modulen och alltid vid anropet, så en omställning slår igenom
+  överallt. Måste ske innan `setupGrid()` kör.
+- `js/symbols.js` — `initSymbols(svg, library, scale)`. Geometrin ritas i
+  skalan medan etiketterna ligger utanför den skalade gruppen och behåller
+  sin läsbara storlek. Vid `scale = 1` utelämnas `scale()` helt, så
+  originalets DOM och export ser exakt ut som förut.
+- `js/export.js` — `initExport(svg, onStatus, { extraStrip, extraCss })`.
+  Studio städar bort sitt pappersark och skickar in sina linjetjocklekar,
+  räknade ur samma konstanter som ritytan använder.
+
+`js/canvas.js` fick `zoomBy()`, `fitWorldRect()` och `onView()` för
+zoomrutan, och slutade kapa mellanslag som skrivs i ett textfält.
+
+**Inga externa beroenden.** Studio kom från designverktyget med en ikonfont
+från unpkg.com och Inter från Google Fonts. Båda är borta: ikonerna ligger
+som inline-SVG i `studio/icons.js` och texten går på systemstacken. Skälet är
+inte bara principen — zoom- och ångra-knapparna är rena ikonknappar, så ett
+uteblivet CDN-svar hade gjort dem till tomma rutor utan att något syntes vara
+fel. Systemstacken är dessutom densamma som exporten bäddar in, så
+etiketterna får samma bredd på skärmen som i den exporterade filen.
+
+**Mörkt läge är en skärminställning**, inte en egenskap hos ritningen:
+exporten blir svart på vitt oavsett vilket läge ritytan står i.
 
 ---
 

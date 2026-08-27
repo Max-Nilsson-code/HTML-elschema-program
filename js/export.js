@@ -46,21 +46,30 @@ const EXPORT_CSS = `
 
 const MARGIN = 20;
 
-export function initExport(svg, onStatus) {
+/**
+ * @param options.extraStrip  Fler selektorer att städa bort ur exporten —
+ *   gränssnitt som bara finns i ett av skalen (Studios pappersark).
+ * @param options.extraCss    CSS som läggs sist och därmed vinner över
+ *   basreglerna. Studio ritar i halv skala med egna linjetjocklekar och
+ *   skickar in dem här, så exporten inte behöver gissa vilket skal som ritat.
+ */
+export function initExport(svg, onStatus, { extraStrip = [], extraCss = "" } = {}) {
+  const strip = [...STRIP, ...extraStrip];
+
   /**
    * Bygger en fristående SVG av ritningens innehåll, beskuren till det som
    * faktiskt ritats. Returnerar null om ritytan är tom.
    */
   function buildSvg() {
     const clone = svg.cloneNode(true);
-    for (const selector of STRIP) {
+    for (const selector of strip) {
       clone.querySelectorAll(selector).forEach((el) => el.remove());
     }
     clone.removeAttribute("class");
     clone.removeAttribute("style");
 
     const style = document.createElementNS(SVG_NS, "style");
-    style.textContent = EXPORT_CSS;
+    style.textContent = EXPORT_CSS + extraCss;
     clone.insertBefore(style, clone.firstChild);
 
     // Måtten måste läsas av en renderad kopia — getBBox() ger inget vettigt

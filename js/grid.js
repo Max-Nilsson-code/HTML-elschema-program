@@ -1,9 +1,21 @@
 // Rutnät: ren visuell justeringshjälp i pixlar (SVG user units).
 // Ingen koppling till verkliga mått i v1 — se ROADMAP.md, "Rutnät".
-// GRID_SIZE hålls som en enda konstant här så att en verklig skala kan
-// läggas till senare utan att röra resten av koden.
+//
+// Steget bor bara här. Övriga moduler går via snapToGrid() eller läser
+// GRID_SIZE inne i en funktion, aldrig till en egen modulkonstant — det är
+// vad som gör att steget går att ställa om vid start (Studio kör 10).
 
-export const GRID_SIZE = 20;
+export let GRID_SIZE = 20;
+
+/**
+ * Ändrar rutnätssteget (world units).
+ *
+ * Måste anropas innan setupGrid() kör: mönstret byggs en gång och
+ * återanvänds sedan, så en senare omställning skulle inte synas i linjerna.
+ */
+export function setGridSize(size) {
+  GRID_SIZE = size;
+}
 
 const SVG_NS = "http://www.w3.org/2000/svg";
 const PATTERN_ID = "grid-pattern";

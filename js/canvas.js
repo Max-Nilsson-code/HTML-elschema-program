@@ -24,12 +24,16 @@ export function initCanvas(svg) {
 
   const gridRect = setupGrid(svg);
 
+  // Prenumeranter på vyn — Studios zoomruta speglar zoomnivån.
+  const viewListeners = new Set();
+
   function applyViewBox() {
     svg.setAttribute(
       "viewBox",
       `${viewBox.x} ${viewBox.y} ${viewBox.w} ${viewBox.h}`
     );
     updateGridExtent(gridRect, viewBox);
+    for (const fn of viewListeners) fn();
   }
 
   function currentZoom() {
@@ -44,28 +48,50 @@ export function initCanvas(svg) {
     };
   }
 
+  /**
+   * Zoomar med en faktor kring en skärmpunkt. Utan punkt zoomas det kring
+   * ritytans mitt, vilket är vad zoomknappar ska göra.
+   */
+  function zoomBy(factor, clientX, clientY) {
+    const rect = svg.getBoundingClientRect();
+    const cx = clientX ?? rect.left + rect.width / 2;
+    const cy = clientY ?? rect.top + rect.height / 2;
+    const newZoom = clamp(currentZoom() * factor, MIN_ZOOM, MAX_ZOOM);
+
+    // Håll punkten under muspekaren still medan vi zoomar.
+    const before = screenToWorld(cx, cy);
+    viewBox.w = baseSize.w / newZoom;
+    viewBox.h = baseSize.h / newZoom;
+    const after = screenToWorld(cx, cy);
+    viewBox.x += before.x - after.x;
+    viewBox.y += before.y - after.y;
+
+    applyViewBox();
+  }
+
+  /** Passar in en world-rektangel i vyn, centrerad, med marginal i skärmpixlar. */
+  function fitWorldRect(rect, padPx = 60) {
+    if (!rect || rect.width <= 0 || rect.height <= 0) return;
+    const zoom = clamp(
+      Math.min((baseSize.w - padPx * 2) / rect.width, (baseSize.h - padPx * 2) / rect.height),
+      MIN_ZOOM,
+      MAX_ZOOM
+    );
+    viewBox.w = baseSize.w / zoom;
+    viewBox.h = baseSize.h / zoom;
+    viewBox.x = rect.x + rect.width / 2 - viewBox.w / 2;
+    viewBox.y = rect.y + rect.height / 2 - viewBox.h / 2;
+    applyViewBox();
+  }
+
   // --- Zoom (scrollhjul, centrerad på muspekaren) ---
   svg.addEventListener(
     "wheel",
     (event) => {
       event.preventDefault();
-
       // Scrolla uppåt/bort (negativ deltaY) zoomar in, nedåt zoomar ut —
       // samma konvention som Google Maps/Figma m.fl.
-      const zoomFactor = event.deltaY > 0 ? 1 / 1.1 : 1.1;
-      const newZoom = clamp(currentZoom() * zoomFactor, MIN_ZOOM, MAX_ZOOM);
-      const newW = baseSize.w / newZoom;
-      const newH = baseSize.h / newZoom;
-
-      // Håll punkten under muspekaren still medan vi zoomar.
-      const before = screenToWorld(event.clientX, event.clientY);
-      viewBox.w = newW;
-      viewBox.h = newH;
-      const after = screenToWorld(event.clientX, event.clientY);
-      viewBox.x += before.x - after.x;
-      viewBox.y += before.y - after.y;
-
-      applyViewBox();
+      zoomBy(event.deltaY > 0 ? 1 / 1.1 : 1.1, event.clientX, event.clientY);
     },
     { passive: false }
   );
@@ -76,6 +102,12 @@ export function initCanvas(svg) {
 
   window.addEventListener("keydown", (event) => {
     if (event.code === "Space" && !event.repeat) {
+      // Mellanslag i ett textfält är ett blanksteg, och på en fokuserad
+      // knapp eller väljare är det knappens egen aktivering — i inget av
+      // fallen ska ritytan gå i panoreringsläge.
+      const tag = event.target.tagName;
+      if (tag === "INPUT" || tag === "TEXTAREA" || tag === "SELECT" || tag === "BUTTON") return;
+      if (event.target.isContentEditable) return;
       spaceHeld = true;
       svg.classList.add("pan-ready");
     }
@@ -157,6 +189,10 @@ export function initCanvas(svg) {
     viewBox,
     screenToWorld,
     currentZoom,
+    zoomBy,
+    fitWorldRect,
+    /** Anropas varje gång vyn ändras (zoom eller panorering). */
+    onView: (fn) => viewListeners.add(fn),
     // Exponeras så andra moduler (t.ex. selection.js) kan undvika att
     // tolka en panorerings-klick som ett markerings-klick.
     isSpaceHeld: () => spaceHeld,

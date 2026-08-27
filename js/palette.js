@@ -4,8 +4,7 @@
 // Escape avbryter. Se ROADMAP.md, Fas 3 och Fas 4.
 
 import { TOOL_SELECT, TOOL_WIRE, TOOL_DASHED, TOOL_TEXT, placeTool } from "./tools.js";
-
-const SVG_NS = "http://www.w3.org/2000/svg";
+import { buildPreview, initPlacement } from "./palette-shared.js";
 
 export function initPalette(container, svg, canvasApi, symbolsApi, library, tools, fileApi) {
   const buttons = new Map();
@@ -120,48 +119,7 @@ export function initPalette(container, svg, canvasApi, symbolsApi, library, tool
   tools.onChange(syncActiveButton);
   syncActiveButton();
 
-  // Registreras före selection.js i main.js — stopImmediatePropagation här
-  // gör att selection.js aldrig ser klicket som ett markerings-/gummiband-
-  // klick när en placering faktiskt genomförs.
-  svg.addEventListener("mousedown", (event) => {
-    const typeId = tools.placingTypeId();
-    if (!typeId || event.button !== 0) return;
-    // Panorering äger klicket — annars skulle ett mellanslag+dra för att
-    // scrolla fram rätt plats släppa symbolen på utgångspositionen direkt.
-    if (canvasApi.isSpaceHeld() || canvasApi.isPanning()) return;
-    event.preventDefault();
-    event.stopImmediatePropagation();
-
-    const world = canvasApi.screenToWorld(event.clientX, event.clientY);
-    symbolsApi.addInstance(typeId, world.x, world.y);
-    tools.reset();
-  });
-
-  window.addEventListener("keydown", (event) => {
-    if (event.key === "Escape" && tools.placingTypeId()) tools.reset();
-  });
+  initPlacement(svg, canvasApi, symbolsApi, tools);
 
   return {};
-}
-
-function buildPreview(type) {
-  const preview = document.createElementNS(SVG_NS, "svg");
-  preview.setAttribute("viewBox", `0 0 ${type.width} ${type.height}`);
-  preview.setAttribute("class", "palette-preview");
-  preview.appendChild(document.importNode(type.geometryElement, true));
-
-  // Den mekaniska förbindelsen ligger inte i .symbol-geometry utan ritas
-  // från data-stem-*, så förhandsvisningen måste rita den själv — annars
-  // visas tilläggen utan stam och stämmer inte med det som placeras.
-  if (type.stem) {
-    const stem = document.createElementNS(SVG_NS, "line");
-    stem.setAttribute("class", type.stem.dashed ? "stem stem-dashed" : "stem");
-    stem.setAttribute("x1", type.stem.x);
-    stem.setAttribute("y1", type.stem.attachY);
-    stem.setAttribute("x2", type.stem.x);
-    stem.setAttribute("y2", type.stem.defaultY);
-    preview.appendChild(stem);
-  }
-
-  return preview;
 }

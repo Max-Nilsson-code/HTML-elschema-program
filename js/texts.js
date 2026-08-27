@@ -5,7 +5,7 @@
 // objekt med egen position — de placeras var som helst på ritytan, markeras,
 // flyttas, roteras och raderas som allt annat.
 
-import { snapToGrid } from "./grid.js";
+import { snapToGrid, GRID_SIZE } from "./grid.js";
 
 const SVG_NS = "http://www.w3.org/2000/svg";
 
@@ -102,7 +102,7 @@ export function initTexts(svg, canvasApi, tools) {
     for (const id of ids) {
       const original = texts.get(id);
       if (!original) continue;
-      const copy = { ...original, id: `text-${nextTextNumber++}`, x: original.x + 20, y: original.y + 20 };
+      const copy = { ...original, id: `text-${nextTextNumber++}`, x: original.x + GRID_SIZE, y: original.y + GRID_SIZE };
       texts.set(copy.id, copy);
       renderText(copy);
       created.push(copy);
