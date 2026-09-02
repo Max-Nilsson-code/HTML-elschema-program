@@ -18,7 +18,7 @@ finns.
 | **Teknikstack** | Vanilla JS, flera filer (ES-moduler), inget ramverk | Inget byggsteg, inga beroenden, lätt att underhålla själv. |
 | **Distribution** | Statiska filer via GitHub Pages | Nås via en länk, noll installation för vem som helst som ska använda det. |
 | **Anslutningsmodell** | Rent visuellt — ledningar (wires) är grafiska linjer utan elektrisk validering eller netlist | Håller v1 realistiskt byggbart. Datamodellen är dock förberedd för mer (se Backlog). |
-| **Symbol-metadata** | Varje symbolinstans har en redigerbar **beteckning** (t.ex. "K1", "M3") och namngivna, redigerbara **anslutningspunkter/pinnar** (t.ex. "A1"/"A2", "13"/"14") | Ger spårbarhet/dokumentationsvärde utan att kräva en full netlist-motor. |
+| **Symbol-metadata** | Varje symbolinstans har en redigerbar **beteckning** (t.ex. "K1", "M3") och namngivna, redigerbara **anslutningspunkter/pinnar** (t.ex. "A1"/"A2", "13"/"14"). En symboltyp kan dessutom deklarera en **andra beteckning** (kontaktorn med motorskydd bär Q1 och B1) | Ger spårbarhet/dokumentationsvärde utan att kräva en full netlist-motor. |
 | **Wire-metadata** | Ledningar har ingen egen text/etikett | Bekräftat — behövs inte. |
 | **Etikettplacering** | Fast/automatisk per symboltyp, följer med vid rotation/flytt | Matchar användarens referensfil rakt av, konsekvent utseende mellan scheman. |
 | **Rutnät** | Ren visuell pixel-grid (t.ex. 20×20px), ingen koppling till verkliga mått | Räcker för tydlig dokumentation. Cellstorlek hålls som en konfigurerbar konstant så skalenlig utskrift kan läggas till senare utan omskrivning. |
@@ -27,7 +27,7 @@ finns.
 | **Spara/ladda** | JSON-export/import via fil (ladda ner/ladda upp) | Funkar i alla webbläsare, användaren äger sina filer. |
 | **Export** | SVG (primärt), PNG (bonus) | SVG-export är i praktiken en serialisering av det som redan ritas. PNG blir en biprodukt (rendera samma SVG via canvas). |
 | **Layout-konvention** | Horisontella rader, fas (L) vänster / nolla (N) höger — ren användarkonvention | Ritas med de generella verktygen (symboler + linjer), inget särskilt "skena"-objekt i v1. |
-| **Symbolkälla** | `symboler och vägledning/Symboler-vägledning.svg` (draw.io-export) — symbolerna är **extraherade direkt** ur filen | Den renderade delen av draw.io-exporten innehåller symbolerna som riktiga `<path>`/`<rect>`/`<ellipse>`, så geometrin kunde återanvändas exakt i stället för att ritas om. Vid konverteringen normaliseras varje symbol så anslutningspunkterna hamnar på rutnätet. |
+| **Symbolkälla** | `symboler och vägledning/Symboler-vägledning.svg` (draw.io-export) — symbolerna är **extraherade direkt** ur filen. Huvudkretssymbolerna (15–21) saknar draw.io-källa och är ritade för hand efter skisser, i samma stil | Den renderade delen av draw.io-exporten innehåller symbolerna som riktiga `<path>`/`<rect>`/`<ellipse>`, så geometrin kunde återanvändas exakt i stället för att ritas om. Vid konverteringen normaliseras varje symbol så anslutningspunkterna hamnar på rutnätet. |
 
 ### Projektstruktur
 
@@ -175,6 +175,13 @@ exporten blir svart på vitt oavsett vilket läge ritytan står i.
   12. Summer/ringklocka
   13. Photocell
   14. Växlande kontakt
+  15. Säkring 3-fas *(huvudkrets)*
+  16. Mekanisk brytare, trepolig *(huvudkrets)*
+  17. 3-fas kontakter *(huvudkrets)*
+  18. Kontaktor, trepolig *(huvudkrets)*
+  19. Kontaktor med motorskydd *(huvudkrets, två beteckningar)*
+  20. Motor *(huvudkrets)*
+  21. Motor med nedre anslutningar *(huvudkrets)*
 - [x] `symboler och vägledning/vägledning.md`: standard, beteckningsprefix,
       pinnamnskonvention, filformat
 - [x] `js/symbol-library.js`: laddar och exponerar symboltyperna
@@ -187,6 +194,19 @@ exporten blir svart på vitt oavsett vilket läge ritytan står i.
 > De öppna kontakterna (nr 1 och 3) är speglade kring `x=40` så bladet
 > hänger från höger kontaktpunkt och pekar uppåt-höger — pinnarna behåller
 > sina sidor, och bladet korsar `x=40` på samma `y≈48` som förut.
+
+> **Huvudkrets (15–21):** ritade för hand efter skisser, ingen draw.io-fil.
+> Trepoliga symboler är 120 breda med polerna på `x = 40/80/120` (polavstånd
+> 2 rutor) och vänsterkolumnen fri för beteckning och manöverorgan; alla
+> delar origo och pinnlägen så de kan bytas mot varandra. Kontaktorn med
+> motorskydd är 160 hög och har två beteckningar (Q + B) — ett litet tillägg
+> i datamodellen: `data-designation2-*` i symbolfilen, fältet `designation2`
+> på instansen och i JSON (skrivs bara för typer som har det, så gamla filer
+> ser likadana ut), redigerbart med dubbelklick och i egenskapspanelen.
+> Motorn är 160 bred (cirkeln är 6 rutor) och finns i två varianter i
+> stället för med ett tillval per instans. Måtten hålls till multiplar av
+> 40 eftersom rotationen sker kring mittpunkten — annars hamnar pinnarna
+> mellan rutnätslinjerna.
 
 ### Fas 3 – Placera & manipulera symboler ✅
 - [x] Symbolpalett med förhandsvisningar (`js/palette.js`)
@@ -318,7 +338,9 @@ hålls öppen för dem senare:
 - **Skalenligt rutnät** kopplat till verkliga mått, för utskrift i exakt skala
 - **Elektrisk validering/netlist**: varna för oanslutna pinnar, automatisk
   stycklista/komponentlista, kontroll av dubbla beteckningar
-- **Fler symboltyper** utöver startuppsättningen på 11
+- **Fler symboltyper** utöver de 21 som finns (14 för styrkrets, 7 för huvudkrets)
+- **Valbara delar per instans** (kryssrutor i egenskapspanelen, t.ex.
+  motorns nedre anslutningar) — löst med två symboler tills vidare
 - **Inbyggd mall/scaffolding** för L/N-skenor (färdig horisontell layout vid
   nytt projekt, med snap mot skenorna)
 - **Fri etikettplacering**: möjlighet att flytta loss en enskild etikett från
@@ -343,3 +365,7 @@ hålls öppen för dem senare:
 - Mappnamnet `symboler och vägledning` har mellanslag i sig — fungerar för
   dokumentation men undviks som körtidssökväg i kod (se "Varför två
   symbolmappar?" ovan).
+- **Huvudkretssymbolernas beteckningar** står i vänsterkolumnen, nära första
+  polens pinnamn. I Studio (halv skala, men etiketterna i full storlek) blir
+  det trångt mellan `Q1` och `1` — beteckningen ligger därför på `x=14`, inte
+  mitt i kolumnen. Får ses över om det ändå upplevs som rörigt.

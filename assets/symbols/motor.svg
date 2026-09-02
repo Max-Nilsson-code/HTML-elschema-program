@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 160 160" width="160" height="160"
+     data-symbol-id="motor" data-symbol-name="Motor" data-designation-prefix="M"
+     data-width="160" data-height="160" data-designation-x="80" data-designation-y="142">
+  <!-- Trefasmotor med anslutningar upptill. Cirkeln är 6 rutor i diameter; symbolen är 160 bred så cirkeln ryms. -->
+  <g class="symbol-geometry" fill="none" stroke="#000" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M 40 0 L 40 55.28" />
+    <path d="M 80 0 L 80 40" />
+    <path d="M 120 0 L 120 55.28" />
+    <circle cx="80" cy="100" r="60" />
+    <!-- Bokstaven M ritas som linjer, inte text: då är den oberoende av teckensnitt och följer linjetjockleken. Beteckningen (M1) placeras i cirkeln under bokstaven. -->
+    <path d="M 50 120 L 50 68 L 80 102 L 110 68 L 110 120" />
+  </g>
+  <circle class="pin" data-pin-id="U1" data-default-label="U1" data-label-dx="10" data-label-dy="9" cx="40" cy="0" r="2.5" />
+  <circle class="pin" data-pin-id="V1" data-default-label="V1" data-label-dx="10" data-label-dy="9" cx="80" cy="0" r="2.5" />
+  <circle class="pin" data-pin-id="W1" data-default-label="W1" data-label-dx="10" data-label-dy="9" cx="120" cy="0" r="2.5" />
+</svg>

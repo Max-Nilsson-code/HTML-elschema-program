@@ -77,8 +77,9 @@ A new selectable object kind = a new module + a new provider in the list. Do not
 
 Symbol types are self-describing SVG files in `assets/symbols/`; `symbol-library.js` reads their `data-*` attributes (id, name, designation prefix, width/height, designation position, per-pin `cx/cy` and label offsets, optional stem). The geometry `<g class="symbol-geometry">` DOM node is kept and cloned with `importNode` at render time. Full attribute reference is in `vägledning.md` under "Teknisk uppbyggnad av en symbolfil".
 
-- **To add a symbol:** create the SVG following that template and append its id to `SYMBOL_IDS` in `js/symbol-library.js`. Nothing else changes.
-- Pins must land on the 20-unit grid (symbols are 80×80 world units, connection points at grid crossings).
+- **To add a symbol:** create the SVG following that template, append its id to `SYMBOL_IDS` in `js/symbol-library.js`, and put it in a category in `studio/palette.js` (klassisk lists the whole library automatically; Studio shows only categorised ids).
+- Pins must land on the 20-unit grid. Control-circuit symbols are 80×80; main-circuit ones are 120×80 (three poles at x=40/80/120, left column free for designation and actuator), 120×160 (kontaktor med motorskydd) and 160×160 / 160×200 (motor). Keep width and height multiples of 40: rotation is about the symbol centre, so other sizes push rotated pins off-grid.
+- **Second designation** (optional): `data-designation2-prefix/name/x/y` on the root element gives a type a second, independently numbered label (kontaktor-motorskydd: Q + B). Instances carry `designation2` (null when the type has none), it is serialized only when present, and `nextDesignation()` counts both fields.
 - **Add-on symbols** (push buttons, motor protection, limit switch) have no pins and no `data-designation-x`; they are placed on top of a contact, draw an adjustable "stem" from `data-stem-*`, and set the underlying contact's designation prefix (e.g. push button → `S`). There is no data-model link between add-on and contact — moving the contact does not move the add-on (known open thread in the roadmap).
 - `symboler och vägledning/` holds the draw.io source drawings and docs only; the app never loads from it (the folder name has spaces).
 

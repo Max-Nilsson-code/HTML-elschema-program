@@ -1,4 +1,5 @@
-// Redigering av etiketter: beteckning (t.ex. "K1") och pinnamn (t.ex. "13").
+// Redigering av etiketter: beteckning (t.ex. "K1"), en eventuell andra
+// beteckning (t.ex. "B1" på en kontaktor med motorskydd) och pinnamn (t.ex. "13").
 // Se ROADMAP.md, Fas 5.
 //
 // Placeringen är fast per symboltyp — användaren ändrar bara texten, inte
@@ -13,7 +14,8 @@ export function initLabels(svg, workspace, symbolsApi, textsApi, tools) {
   function labelAt(target) {
     if (!(target instanceof Element)) return null;
     const kind = target.dataset?.labelKind;
-    return kind === "designation" || kind === "pin" || kind === "free" ? target : null;
+    const editable = kind === "designation" || kind === "designation2" || kind === "pin" || kind === "free";
+    return editable ? target : null;
   }
 
   function beginEdit(labelEl) {
@@ -64,6 +66,7 @@ export function initLabels(svg, workspace, symbolsApi, textsApi, tools) {
       const text = input.value.trim();
       if (labelKind === "free") textsApi.setText(textId, text);
       else if (labelKind === "designation") symbolsApi.setDesignation(instanceId, text);
+      else if (labelKind === "designation2") symbolsApi.setDesignation2(instanceId, text);
       else symbolsApi.setPinLabel(instanceId, pinId, text);
     }
     input.remove();
