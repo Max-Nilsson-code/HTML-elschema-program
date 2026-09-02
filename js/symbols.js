@@ -40,8 +40,11 @@ export function initSymbols(svg, library, scale = 1) {
   function nextDesignation(prefix) {
     let max = 0;
     for (const inst of instances.values()) {
-      if (inst.designation.startsWith(prefix)) {
-        const num = parseInt(inst.designation.slice(prefix.length), 10);
+      // Båda beteckningarna räknas — ett B1 på ett motorskydd i en
+      // kontaktorsymbol ska inte kunna krocka med en fristående B1.
+      for (const text of [inst.designation, inst.designation2]) {
+        if (!text || !text.startsWith(prefix)) continue;
+        const num = parseInt(text.slice(prefix.length), 10);
         if (!Number.isNaN(num) && num > max) max = num;
       }
     }
@@ -105,6 +108,8 @@ export function initSymbols(svg, library, scale = 1) {
       // Tilläggssymboler bär ingen egen beteckning — den hör till kontakten
       // de placeras ovanpå.
       designation: type.hasDesignation ? nextDesignation(type.designationPrefix) : "",
+      // Andra beteckningen finns bara på typer som deklarerar en.
+      designation2: type.designation2 ? nextDesignation(type.designation2.prefix) : null,
       pinLabels: Object.fromEntries(type.pins.map((p) => [p.id, p.defaultLabel])),
       // Fria änden på den mekaniska förbindelsen (endast tilläggssymboler).
       stemY: type.stem ? type.stem.defaultY : null,
@@ -190,6 +195,7 @@ export function initSymbols(svg, library, scale = 1) {
         rotation: original.rotation,
         mirrored: original.mirrored,
         designation: type.hasDesignation ? nextDesignation(type.designationPrefix) : "",
+        designation2: type.designation2 ? nextDesignation(type.designation2.prefix) : null,
         pinLabels: { ...original.pinLabels },
         stemY: original.stemY,
       };
@@ -264,6 +270,16 @@ export function initSymbols(svg, library, scale = 1) {
         makeLabel("designation-label", designationPos.x, designationPos.y, instance.designation, {
           instanceId: instance.id,
           labelKind: "designation",
+        })
+      );
+    }
+
+    if (type.designation2) {
+      const pos = localToOffset(instance, type, type.designation2.x, type.designation2.y);
+      group.appendChild(
+        makeLabel("designation-label", pos.x, pos.y, instance.designation2, {
+          instanceId: instance.id,
+          labelKind: "designation2",
         })
       );
     }
@@ -456,6 +472,9 @@ export function initSymbols(svg, library, scale = 1) {
       rotation: i.rotation,
       mirrored: Boolean(i.mirrored),
       designation: i.designation,
+      // Fältet skrivs bara för typer som har en andra beteckning, så filer
+      // utan sådana symboler ser ut precis som förut.
+      ...(i.designation2 !== null ? { designation2: i.designation2 } : {}),
       pinLabels: { ...i.pinLabels },
       stemY: i.stemY,
     }));
@@ -479,6 +498,7 @@ export function initSymbols(svg, library, scale = 1) {
         rotation: raw.rotation ?? 0,
         mirrored: Boolean(raw.mirrored),
         designation: raw.designation ?? "",
+        designation2: type.designation2 ? raw.designation2 ?? "" : null,
         pinLabels: { ...Object.fromEntries(type.pins.map((p) => [p.id, p.defaultLabel])), ...raw.pinLabels },
         stemY: type.stem ? raw.stemY ?? type.stem.defaultY : null,
       };
@@ -496,6 +516,15 @@ export function initSymbols(svg, library, scale = 1) {
     const instance = instances.get(instanceId);
     if (!instance) return;
     instance.designation = text;
+    renderInstance(instance);
+    emitChange();
+  }
+
+  /** Sätter den andra beteckningen (t.ex. "B1") på en typ som har en sådan. */
+  function setDesignation2(instanceId, text) {
+    const instance = instances.get(instanceId);
+    if (!instance || instance.designation2 === null) return;
+    instance.designation2 = text;
     renderInstance(instance);
     emitChange();
   }
@@ -562,6 +591,7 @@ export function initSymbols(svg, library, scale = 1) {
     serialize,
     loadState,
     setDesignation,
+    setDesignation2,
     findHostContact,
     setPinLabel,
     onChange: (fn) => changeListeners.add(fn),

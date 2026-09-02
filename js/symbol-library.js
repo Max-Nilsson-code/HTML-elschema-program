@@ -26,6 +26,15 @@ const SYMBOL_IDS = [
   "summer",
   "photocell",
   "vaxlande-kontakt",
+  // 15–21: huvudkretssymboler, ritade för hand efter användarens skisser
+  // (ingen draw.io-källa). Trepoliga med polavstånd 2 rutor, 120 breda.
+  "sakring-trefas",
+  "mekanisk-brytare",
+  "trefas-kontakt",
+  "kontaktor",
+  "kontaktor-motorskydd",
+  "motor",
+  "motor-nedre",
 ];
 
 let libraryPromise = null;
@@ -77,6 +86,19 @@ async function loadSymbolType(id) {
   // tur bär anslutningarna. Därför är tom pin-lista giltigt.
   const hasDesignation = svgEl.dataset.designationX !== undefined;
 
+  // En andra beteckning, för symboler som rymmer två apparater (kontaktor +
+  // motorskydd: Q1 och B1). Eget prefix, egen autonumrering, eget läge.
+  const designation2 =
+    svgEl.dataset.designation2Prefix === undefined
+      ? null
+      : {
+          prefix: svgEl.dataset.designation2Prefix,
+          // Visas som fältnamn i egenskapspanelen.
+          name: svgEl.dataset.designation2Name || "Beteckning 2",
+          x: parseFloat(svgEl.dataset.designation2X),
+          y: parseFloat(svgEl.dataset.designation2Y),
+        };
+
   // Mekanisk förbindelse (stam) på tilläggssymboler. Ritas inte i SVG-filen
   // utan av symbols.js, eftersom längden justeras per instans — hur långt
   // stammen behöver nå beror på vilken kontakt tillägget sitter på (en NO-
@@ -100,6 +122,7 @@ async function loadSymbolType(id) {
     hasDesignation,
     designationX: hasDesignation ? parseFloat(svgEl.dataset.designationX) : 0,
     designationY: hasDesignation ? parseFloat(svgEl.dataset.designationY) : 0,
+    designation2,
     pins,
     stem,
     // Behåll den faktiska DOM-noden (inte en sträng) så den kan importeras

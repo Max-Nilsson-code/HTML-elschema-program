@@ -129,6 +129,7 @@ html, body { width: 100%; height: 100%; overflow: hidden; }
 .palette-preview { flex: 0 0 44px; width: 44px; height: 26px; }
 .palette-preview .symbol-geometry, .palette-preview .stem { stroke: var(--color-neutral-300); }
 .palette-preview .symbol-geometry [fill="#fff"] { fill: color-mix(in srgb, var(--color-surface) 45%, var(--color-bg)); }
+.palette-preview .symbol-geometry [fill="#000"] { fill: var(--color-neutral-300); }
 .palette-item.armed .palette-preview .symbol-geometry,
 .palette-item.armed .palette-preview .stem { stroke: var(--color-accent); }
 .palette-preview .pin { fill: none; }
@@ -185,6 +186,8 @@ html, body { width: 100%; height: 100%; overflow: hidden; }
 .symbol-instance .symbol-geometry { stroke: var(--ink); stroke-width: var(--symbol-stroke, 1.5); }
 .symbol-instance .stem { stroke-width: var(--symbol-stroke, 1.5); }
 .symbol-instance .symbol-geometry [fill="#fff"] { fill: var(--paper); }
+/* Fyllda pilspetsar (säkringarna) är svarta i filen; på mörk rityta ska de bli bläckfärgade som strecken. */
+.symbol-instance .symbol-geometry [fill="#000"] { fill: var(--ink); }
 
 .pin-marker { display: none; fill: none; stroke: var(--sel); stroke-width: 1; opacity: 0.55; }
 #canvas.wiring .pin-marker { display: block; }

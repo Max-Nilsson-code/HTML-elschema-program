@@ -69,6 +69,14 @@ export function initInspector(container, symbolsApi, textsApi, selectionApi, too
           symbolsApi.setDesignation(instance.id, value);
         }, "inspector-designation")
       );
+      // Typer med två apparater (kontaktor + motorskydd) har en beteckning till.
+      if (type.designation2) {
+        container.append(
+          field(`Beteckning ${type.designation2.name.toLowerCase()}`, instance.designation2, (value) => {
+            symbolsApi.setDesignation2(instance.id, value);
+          }, "inspector-designation")
+        );
+      }
     } else {
       // Tillägg har ingen egen beteckning — visa vilken kontakt den styr, så
       // det syns var beteckningen faktiskt bor.

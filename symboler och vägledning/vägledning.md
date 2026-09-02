@@ -44,6 +44,13 @@ går att koppla in och hamnar rätt på rutnätet.
 | 12 | `summer.svg` | Summer/ringklocka | P | 1 / 2 |
 | 13 | `photocell.svg` | Photocell | B | 1 / 2 |
 | 14 | `vaxlande-kontakt.svg` | Växlande kontakt | K | 11 / 14 / 12 |
+| 15 | `sakring-trefas.svg` | Säkring 3-fas | F | 1 / 2 på varje pol |
+| 16 | `mekanisk-brytare.svg` | Mekanisk brytare (trepolig) | Q | 1 / 3 / 5 upptill, 2 / 4 / 6 nedtill |
+| 17 | `trefas-kontakt.svg` | 3-fas kontakter | Q | 1 / 3 / 5, 2 / 4 / 6 |
+| 18 | `kontaktor.svg` | Kontaktor (trepolig) | Q | 1 / 3 / 5, 2 / 4 / 6 |
+| 19 | `kontaktor-motorskydd.svg` | Kontaktor med motorskydd | Q + B | 1 / 3 / 5, 2 / 4 / 6 |
+| 20 | `motor.svg` | Motor | M | U1 / V1 / W1 |
+| 21 | `motor-nedre.svg` | Motor med nedre anslutningar | M | U1 / V1 / W1, U2 / V2 / W2 |
 
 > **Not:** originalritningen stavar nr 5 "Säring" — tolkat som en felstavning
 > av "Säkring".
@@ -76,6 +83,34 @@ går att koppla in och hamnar rätt på rutnätet.
 > Har du ett sparat schema där du speglat en NO-kontakt med `M` för att få
 > just den här riktningen ligger speglingen kvar i filen och vänder nu
 > symbolen åt andra hållet — tryck `M` en gång till på den så stämmer det.
+
+> **Nr 15–21 är huvudkretssymboler.** De kommer inte från någon draw.io-fil
+> utan är ritade för hand efter skisser, i samma stil som de övriga (linje
+> 1,5, kontaktpunkter som vita ringar). Det som skiljer dem från 1–14:
+>
+> - **Tre poler med polavstånd 2 rutor** (40 enheter): polerna står på
+>   `x = 40, 80, 120` och symbolen är 120 bred. Vänsterkolumnen (`x 0–40`)
+>   rymmer beteckningen och manöverorganet — kontaktorlådan, brytarens
+>   manuella manöverdon, motorskyddets utlösare. Alla trepoliga delar samma
+>   origo och pinnlägen, så en kontaktor kan bytas mot en mekanisk brytare
+>   utan att ledningarna behöver flyttas.
+> - Varje pol är `kontakt-no.svg` ställd på högkant: bladet hänger från den
+>   nedre kontaktpunkten med fria änden uppåt vänster. Säkringarna (nr 15)
+>   är `sakring.svg` på samma sätt, med pilen åt vänster och den termiska
+>   vågen till vänster om polen, precis som på skissen.
+> - Den **streckade mekaniska länken** genom de tre bladen hör till symbolen
+>   och ritas alltid — det är inte samma sak som det streckade linjeverktyget.
+> - **Kontaktor med motorskydd (nr 19)** är 160 hög: kontaktorn i övre
+>   halvan, motorskyddets utlösare med egen streckad länk genom ledarna i den
+>   nedre. Den bär **två beteckningar**, `Q` för kontaktorn och `B` för
+>   motorskyddet — se *Beteckningar* nedan.
+> - **Motorn (nr 20–21)** har en cirkel på 6 rutor (120) och är därför 160
+>   bred, med ledarna på `x = 40, 80, 120`. Bokstaven M är ritad som linjer,
+>   inte som text, så den följer linjetjockleken och är oberoende av
+>   teckensnitt; beteckningen (`M1`) står i cirkeln under bokstaven. De nedre
+>   anslutningarna är en egen symbol i stället för ett tillval i
+>   egenskapspanelen — enklare, och fungerar med spara/öppna, export och
+>   ledningsbindningar utan ny mekanik.
 
 ## Tilläggssymboler (6, 7, 8, 11)
 
@@ -136,6 +171,13 @@ Varje symbolinstans får en beteckning som placeras **ovanför** symbolen.
 Appen föreslår automatiskt nästa lediga nummer per prefix (K1, K2, K3 …),
 men beteckningen är fritt redigerbar.
 
+Vissa symboler rymmer två apparater och har därför **två beteckningar**:
+kontaktorn med motorskydd (nr 19) får `Q1` vid kontaktorn och `B1` vid
+motorskyddet, var och en med egen autonumrering. Båda redigeras med
+dubbelklick eller i egenskapspanelen, och numreringen räknar över bägge
+fälten — ett `B1` på en kontaktor och ett fristående `B1` på en photocell
+kan inte uppstå av sig själva.
+
 | Prefix | Används för |
 |---|---|
 | `K` | Reläer, kontaktorer, spolar, tidreläer |
@@ -159,6 +201,8 @@ förifyllda standardnummer, som också går att redigera fritt.
 | Motorskydd, utlösningskontakt | `95` / `96` (NC), `97` / `98` (NO) | Termiskt överlastskydd |
 | Huvudkontakter (kraft) | `1`/`2`, `3`/`4`, `5`/`6` | Kontaktorns huvudpoler |
 | Manöverdon (tryckknapp) | `1` / `2` (NC), `3` / `4` (NO) | Tryckknapp |
+| Säkring, per pol | `1` / `2` | Säkring 3-fas har 1/2 på varje pol |
+| Motor (trefas) | `U1` / `V1` / `W1`, ev. `U2` / `V2` / `W2` | Motorns lindningsanslutningar |
 
 Tiotalssiffran anger vilken kontakt i ordningen det gäller, entalssiffran
 vilken sida av kontakten. Ett relä med två slutande hjälpkontakter får
@@ -204,7 +248,8 @@ scheman ser likadana ut. Det är bara texten som ändras.
 ### Egenskapspanelen
 
 Markerar man en symbol listas **alla dess texter som fält** till höger:
-beteckningen överst, sedan ett fält per anslutning. Ändringar slår igenom
+beteckningen överst (två fält på en kontaktor med motorskydd), sedan ett
+fält per anslutning. Ändringar slår igenom
 direkt i ritningen. Panelen och redigering på plats skriver till samma
 ställe, så de kan inte glida isär — använd det som passar.
 
@@ -441,7 +486,11 @@ konfigurationsfil:
      data-designation-prefix="S"          <!-- prefix för autonumrering -->
      data-width="80" data-height="80"     <!-- storlek i world units -->
      data-designation-x="40"              <!-- var beteckningen placeras;  -->
-     data-designation-y="10">             <!-- utelämnas för tilläggssymboler -->
+     data-designation-y="10"              <!-- utelämnas för tilläggssymboler -->
+     data-designation2-prefix="B"         <!-- valfri andra beteckning:     -->
+     data-designation2-name="Motorskydd"  <!--   fältnamn i egenskapspanelen -->
+     data-designation2-x="20"             <!--   och var den placeras       -->
+     data-designation2-y="88">
   <g class="symbol-geometry"> … </g>      <!-- själva linjeverket -->
   <circle class="pin"
           data-pin-id="1"
@@ -453,8 +502,15 @@ konfigurationsfil:
 ```
 
 En symbol utan `data-designation-x` och utan `.pin`-element behandlas som en
-tilläggssymbol.
+tilläggssymbol. `data-designation2-*` är valfritt och används bara av
+symboler som bär två apparater (kontaktor med motorskydd).
+
+Bredd och höjd hålls till **multiplar av 40**. Symbolen roteras kring sin
+mittpunkt, och med andra mått hamnar anslutningarna mellan rutnätslinjerna
+efter en rotation.
 
 **Att lägga till en ny symbol:** skapa en SVG efter mallen ovan i
-`assets/symbols/` och lägg till dess id i `SYMBOL_IDS`-listan i
-`js/symbol-library.js`. Inget annat behöver ändras.
+`assets/symbols/`, lägg till dess id i `SYMBOL_IDS`-listan i
+`js/symbol-library.js` och i en kategori i `studio/palette.js`.
+`klassisk.html` listar hela biblioteket automatiskt; Studio visar bara de
+symboler som fått en kategori.

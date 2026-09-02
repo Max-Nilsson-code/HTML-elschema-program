@@ -9,6 +9,7 @@ const CATEGORIES = [
   { name: "Kontakter", ids: ["kontakt-no", "kontakt-nc", "vaxlande-kontakt", "tillslagsfordrojd-kontakt-no", "tillslagsfordrojd-kontakt-nc"] },
   { name: "Manöverdon · tillägg", ids: ["aterfjadrande-knapp", "tryckknapp-bistabil", "motorskyddskontakt", "granslagesbrytare"] },
   { name: "Apparater", ids: ["sakring", "spole", "lampa", "summer", "photocell"] },
+  { name: "Huvudkrets", ids: ["sakring-trefas", "mekanisk-brytare", "trefas-kontakt", "kontaktor", "kontaktor-motorskydd", "motor", "motor-nedre"] },
 ];
 
 const TOOLS = [
