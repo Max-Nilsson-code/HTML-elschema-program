@@ -1,22 +1,22 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 160 200" width="160" height="200"
      data-symbol-id="motor-nedre" data-symbol-name="Motor med nedre anslutningar" data-designation-prefix="M"
-     data-width="160" data-height="200" data-designation-x="80" data-designation-y="142">
-  <!-- Som motor.svg, men med tre ledare även nedtill (U2/V2/W2). -->
+     data-width="160" data-height="200" data-designation-x="100" data-designation-y="126">
+  <!-- Geometri ur Symboler3Fas.svg (draw.io); polavstånd 40 och ledare 20 anpassade till rutnätet. Som motor.svg, men med tre ledare även nedtill (U2/V2/W2), ritningens tillval. -->
   <g class="symbol-geometry" fill="none" stroke="#000" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
-    <path d="M 40 0 L 40 55.28" />
-    <path d="M 80 0 L 80 40" />
-    <path d="M 120 0 L 120 55.28" />
-    <circle cx="80" cy="100" r="60" />
-    <!-- Bokstaven M ritas som linjer, inte text: då är den oberoende av teckensnitt och följer linjetjockleken. Beteckningen (M1) placeras i cirkeln under bokstaven. -->
-    <path d="M 50 120 L 50 68 L 80 102 L 110 68 L 110 120" />
-    <path d="M 40 144.72 L 40 200" />
-    <path d="M 80 160 L 80 200" />
-    <path d="M 120 144.72 L 120 200" />
+    <path d="M 60 0 L 60 30 L 77 46" />
+    <path d="M 100 0 L 100 40" />
+    <path d="M 140 0 L 140 30 L 123 46" />
+    <circle cx="100" cy="90" r="50" />
+    <!-- Bokstaven M ritas som linjer, inte text: oberoende av teckensnitt och följer linjetjockleken. -->
+    <path d="M 78 110 L 78 70 L 100 96 L 122 70 L 122 110" />
+    <path d="M 77 134 L 60 150 L 60 200" />
+    <path d="M 100 140 L 100 200" />
+    <path d="M 123 134 L 140 150 L 140 200" />
   </g>
-  <circle class="pin" data-pin-id="U1" data-default-label="U1" data-label-dx="10" data-label-dy="9" cx="40" cy="0" r="2.5" />
-  <circle class="pin" data-pin-id="V1" data-default-label="V1" data-label-dx="10" data-label-dy="9" cx="80" cy="0" r="2.5" />
-  <circle class="pin" data-pin-id="W1" data-default-label="W1" data-label-dx="10" data-label-dy="9" cx="120" cy="0" r="2.5" />
-  <circle class="pin" data-pin-id="U2" data-default-label="U2" data-label-dx="10" data-label-dy="-9" cx="40" cy="200" r="2.5" />
-  <circle class="pin" data-pin-id="V2" data-default-label="V2" data-label-dx="10" data-label-dy="-9" cx="80" cy="200" r="2.5" />
-  <circle class="pin" data-pin-id="W2" data-default-label="W2" data-label-dx="10" data-label-dy="-9" cx="120" cy="200" r="2.5" />
+  <circle class="pin" data-pin-id="U1" data-default-label="U1" data-label-dx="10" data-label-dy="9" cx="60" cy="0" r="2.5" />
+  <circle class="pin" data-pin-id="V1" data-default-label="V1" data-label-dx="10" data-label-dy="9" cx="100" cy="0" r="2.5" />
+  <circle class="pin" data-pin-id="W1" data-default-label="W1" data-label-dx="10" data-label-dy="9" cx="140" cy="0" r="2.5" />
+  <circle class="pin" data-pin-id="U2" data-default-label="U2" data-label-dx="10" data-label-dy="-9" cx="60" cy="200" r="2.5" />
+  <circle class="pin" data-pin-id="V2" data-default-label="V2" data-label-dx="10" data-label-dy="-9" cx="100" cy="200" r="2.5" />
+  <circle class="pin" data-pin-id="W2" data-default-label="W2" data-label-dx="10" data-label-dy="-9" cx="140" cy="200" r="2.5" />
 </svg>

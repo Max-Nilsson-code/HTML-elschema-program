@@ -84,12 +84,16 @@ går att koppla in och hamnar rätt på rutnätet.
 > just den här riktningen ligger speglingen kvar i filen och vänder nu
 > symbolen åt andra hållet — tryck `M` en gång till på den så stämmer det.
 
-> **Nr 15–21 är huvudkretssymboler.** De kommer inte från någon draw.io-fil
-> utan är ritade för hand efter skisser, i samma stil som de övriga (linje
-> 1,5, kontaktpunkter som vita ringar). Det som skiljer dem från 1–14:
+> **Nr 15–21 är huvudkretssymboler.** Nr 16–21 är extraherade ur
+> `Symboler3Fas.svg` (draw.io) precis som 1–14 ur sina filer; nr 15 saknar
+> ritad källa och är säkringen (nr 5) ställd på högkant efter en skiss. Det
+> som skiljer dem från 1–14:
 >
 > - **Tre poler med polavstånd 2 rutor** (40 enheter): polerna står på
->   `x = 40, 80, 120` och symbolen är 120 bred. Vänsterkolumnen (`x 0–40`)
+>   `x = 60, 100, 140` och symbolen är 160 bred. Ritningen har polavstånd 30
+>   och ledare 30 utanför kontaktpunkterna; här är de 40 respektive 20 så
+>   att anslutningarna hamnar på rutnätet — allt annat i polen är
+>   originalets mått. Vänsterkolumnen (`x 0–60`)
 >   rymmer beteckningen och manöverorganet — kontaktorlådan, brytarens
 >   manuella manöverdon, motorskyddets utlösare. Alla trepoliga delar samma
 >   origo och pinnlägen, så en kontaktor kan bytas mot en mekanisk brytare
@@ -102,10 +106,13 @@ går att koppla in och hamnar rätt på rutnätet.
 >   och ritas alltid — det är inte samma sak som det streckade linjeverktyget.
 > - **Kontaktor med motorskydd (nr 19)** är 160 hög: kontaktorn i övre
 >   halvan, motorskyddets utlösare med egen streckad länk genom ledarna i den
->   nedre. Den bär **två beteckningar**, `Q` för kontaktorn och `B` för
+>   nedre. Under länken har varje pol en kontaktpunkt, och pinnamnen 2/4/6
+>   står där, som i ritningen. Den bär **två beteckningar**, `Q` för kontaktorn och `B` för
 >   motorskyddet — se *Beteckningar* nedan.
-> - **Motorn (nr 20–21)** har en cirkel på 6 rutor (120) och är därför 160
->   bred, med ledarna på `x = 40, 80, 120`. Bokstaven M är ritad som linjer,
+> - **Motorn (nr 20–21)** har ritningens cirkel (radie 50) och ledarna på
+>   `x = 60, 100, 140` — samma x som de trepoliga symbolernas poler, så en
+>   kontaktor ovanför motorn kopplas med raka ledningar. Ytterledarna vinklas
+>   in mot cirkeln som i ritningen. Bokstaven M är ritad som linjer,
 >   inte som text, så den följer linjetjockleken och är oberoende av
 >   teckensnitt; beteckningen (`M1`) står i cirkeln under bokstaven. De nedre
 >   anslutningarna är en egen symbol i stället för ett tillval i

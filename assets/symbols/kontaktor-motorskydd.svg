@@ -1,33 +1,39 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 160" width="120" height="160"
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 160 160" width="160" height="160"
      data-symbol-id="kontaktor-motorskydd" data-symbol-name="Kontaktor med motorskydd" data-designation-prefix="Q"
-     data-width="120" data-height="160" data-designation-x="14" data-designation-y="10"
-     data-designation2-prefix="B" data-designation2-name="Motorskydd" data-designation2-x="20" data-designation2-y="88">
-  <!-- Kontaktorn i övre halvan, det termiska motorskyddet i nedre: dess utlösare sitter i vänsterkolumnen med en egen streckad länk genom de tre ledarna. Två beteckningar: Q för kontaktorn, B för motorskyddet. -->
+     data-width="160" data-height="160" data-designation-x="20" data-designation-y="10"
+     data-designation2-prefix="B" data-designation2-name="Motorskydd" data-designation2-x="30" data-designation2-y="86">
+  <!-- Geometri ur Symboler3Fas.svg (draw.io); polavstånd 40 och ledare 20 anpassade till rutnätet. Två beteckningar: Q för kontaktorn, B för motorskyddet. Pinnamnen 2/4/6 står vid kontaktpunkterna under motorskyddets länk. -->
   <g class="symbol-geometry" fill="none" stroke="#000" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
     <rect x="10" y="20" width="20" height="40" />
-    <path d="M 30 40 L 112.5 40" stroke-dasharray="3 3" />
-    <path d="M 5 100 L 12 100 L 12 110 L 28 110 L 28 100 L 35 100" />
-    <path d="M 35 100 L 120 100" stroke-dasharray="3 3" />
-    <path d="M 40 0 L 40 17" />
-    <path d="M 38.95 57.19 L 25 20" />
-    <path d="M 40 63 L 40 160" />
-    <circle cx="40" cy="20" r="3" fill="#fff" />
-    <circle cx="40" cy="60" r="3" fill="#fff" />
-    <path d="M 80 0 L 80 17" />
-    <path d="M 78.95 57.19 L 65 20" />
-    <path d="M 80 63 L 80 160" />
-    <circle cx="80" cy="20" r="3" fill="#fff" />
-    <circle cx="80" cy="60" r="3" fill="#fff" />
-    <path d="M 120 0 L 120 17" />
-    <path d="M 118.95 57.19 L 105 20" />
-    <path d="M 120 63 L 120 160" />
-    <circle cx="120" cy="20" r="3" fill="#fff" />
-    <circle cx="120" cy="60" r="3" fill="#fff" />
+    <path d="M 30 40 L 132.5 40" stroke-dasharray="3 3" />
+    <path d="M 10 100 L 20 100 L 20 110 L 40 110 L 40 100 L 50 100" />
+    <path d="M 55 100 L 140 100" stroke-dasharray="3 3" />
+    <path d="M 60 0 L 60 17" />
+    <path d="M 58.95 57.19 L 45 20" />
+    <path d="M 60 63 L 60 117" />
+    <circle cx="60" cy="20" r="3" fill="#fff" />
+    <circle cx="60" cy="60" r="3" fill="#fff" />
+    <circle cx="60" cy="120" r="3" fill="#fff" />
+    <path d="M 60 123 L 60 160" />
+    <path d="M 100 0 L 100 17" />
+    <path d="M 98.95 57.19 L 85 20" />
+    <path d="M 100 63 L 100 117" />
+    <circle cx="100" cy="20" r="3" fill="#fff" />
+    <circle cx="100" cy="60" r="3" fill="#fff" />
+    <circle cx="100" cy="120" r="3" fill="#fff" />
+    <path d="M 100 123 L 100 160" />
+    <path d="M 140 0 L 140 17" />
+    <path d="M 138.95 57.19 L 125 20" />
+    <path d="M 140 63 L 140 117" />
+    <circle cx="140" cy="20" r="3" fill="#fff" />
+    <circle cx="140" cy="60" r="3" fill="#fff" />
+    <circle cx="140" cy="120" r="3" fill="#fff" />
+    <path d="M 140 123 L 140 160" />
   </g>
-  <circle class="pin" data-pin-id="1" data-default-label="1" data-label-dx="9" data-label-dy="9" cx="40" cy="0" r="2.5" />
-  <circle class="pin" data-pin-id="3" data-default-label="3" data-label-dx="9" data-label-dy="9" cx="80" cy="0" r="2.5" />
-  <circle class="pin" data-pin-id="5" data-default-label="5" data-label-dx="9" data-label-dy="9" cx="120" cy="0" r="2.5" />
-  <circle class="pin" data-pin-id="2" data-default-label="2" data-label-dx="9" data-label-dy="-9" cx="40" cy="160" r="2.5" />
-  <circle class="pin" data-pin-id="4" data-default-label="4" data-label-dx="9" data-label-dy="-9" cx="80" cy="160" r="2.5" />
-  <circle class="pin" data-pin-id="6" data-default-label="6" data-label-dx="9" data-label-dy="-9" cx="120" cy="160" r="2.5" />
+  <circle class="pin" data-pin-id="1" data-default-label="1" data-label-dx="9" data-label-dy="9" cx="60" cy="0" r="2.5" />
+  <circle class="pin" data-pin-id="3" data-default-label="3" data-label-dx="9" data-label-dy="9" cx="100" cy="0" r="2.5" />
+  <circle class="pin" data-pin-id="5" data-default-label="5" data-label-dx="9" data-label-dy="9" cx="140" cy="0" r="2.5" />
+  <circle class="pin" data-pin-id="2" data-default-label="2" data-label-dx="9" data-label-dy="-32" cx="60" cy="160" r="2.5" />
+  <circle class="pin" data-pin-id="4" data-default-label="4" data-label-dx="9" data-label-dy="-32" cx="100" cy="160" r="2.5" />
+  <circle class="pin" data-pin-id="6" data-default-label="6" data-label-dx="9" data-label-dy="-32" cx="140" cy="160" r="2.5" />
 </svg>

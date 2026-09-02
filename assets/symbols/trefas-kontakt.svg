@@ -1,28 +1,28 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 80" width="120" height="80"
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 160 80" width="160" height="80"
      data-symbol-id="trefas-kontakt" data-symbol-name="3-fas kontakter" data-designation-prefix="Q"
-     data-width="120" data-height="80" data-designation-x="14" data-designation-y="10">
-  <!-- Tre stående slutande kontakter, polavstånd 2 rutor (40). Vänsterkolumnen (x 0–40) rymmer beteckning och manöverorgan. -->
+     data-width="160" data-height="80" data-designation-x="20" data-designation-y="10">
+  <!-- Geometri ur Symboler3Fas.svg (draw.io); polavstånd 40 och ledare 20 anpassade till rutnätet. Tre stående slutande kontakter; vänsterkolumnen (x 0–60) är fri. -->
   <g class="symbol-geometry" fill="none" stroke="#000" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
-    <path d="M 40 0 L 40 17" />
-    <path d="M 38.95 57.19 L 25 20" />
-    <path d="M 40 63 L 40 80" />
-    <circle cx="40" cy="20" r="3" fill="#fff" />
-    <circle cx="40" cy="60" r="3" fill="#fff" />
-    <path d="M 80 0 L 80 17" />
-    <path d="M 78.95 57.19 L 65 20" />
-    <path d="M 80 63 L 80 80" />
-    <circle cx="80" cy="20" r="3" fill="#fff" />
-    <circle cx="80" cy="60" r="3" fill="#fff" />
-    <path d="M 120 0 L 120 17" />
-    <path d="M 118.95 57.19 L 105 20" />
-    <path d="M 120 63 L 120 80" />
-    <circle cx="120" cy="20" r="3" fill="#fff" />
-    <circle cx="120" cy="60" r="3" fill="#fff" />
+    <path d="M 60 0 L 60 17" />
+    <path d="M 58.95 57.19 L 45 20" />
+    <path d="M 60 63 L 60 80" />
+    <circle cx="60" cy="20" r="3" fill="#fff" />
+    <circle cx="60" cy="60" r="3" fill="#fff" />
+    <path d="M 100 0 L 100 17" />
+    <path d="M 98.95 57.19 L 85 20" />
+    <path d="M 100 63 L 100 80" />
+    <circle cx="100" cy="20" r="3" fill="#fff" />
+    <circle cx="100" cy="60" r="3" fill="#fff" />
+    <path d="M 140 0 L 140 17" />
+    <path d="M 138.95 57.19 L 125 20" />
+    <path d="M 140 63 L 140 80" />
+    <circle cx="140" cy="20" r="3" fill="#fff" />
+    <circle cx="140" cy="60" r="3" fill="#fff" />
   </g>
-  <circle class="pin" data-pin-id="1" data-default-label="1" data-label-dx="9" data-label-dy="9" cx="40" cy="0" r="2.5" />
-  <circle class="pin" data-pin-id="3" data-default-label="3" data-label-dx="9" data-label-dy="9" cx="80" cy="0" r="2.5" />
-  <circle class="pin" data-pin-id="5" data-default-label="5" data-label-dx="9" data-label-dy="9" cx="120" cy="0" r="2.5" />
-  <circle class="pin" data-pin-id="2" data-default-label="2" data-label-dx="9" data-label-dy="-9" cx="40" cy="80" r="2.5" />
-  <circle class="pin" data-pin-id="4" data-default-label="4" data-label-dx="9" data-label-dy="-9" cx="80" cy="80" r="2.5" />
-  <circle class="pin" data-pin-id="6" data-default-label="6" data-label-dx="9" data-label-dy="-9" cx="120" cy="80" r="2.5" />
+  <circle class="pin" data-pin-id="1" data-default-label="1" data-label-dx="9" data-label-dy="9" cx="60" cy="0" r="2.5" />
+  <circle class="pin" data-pin-id="3" data-default-label="3" data-label-dx="9" data-label-dy="9" cx="100" cy="0" r="2.5" />
+  <circle class="pin" data-pin-id="5" data-default-label="5" data-label-dx="9" data-label-dy="9" cx="140" cy="0" r="2.5" />
+  <circle class="pin" data-pin-id="2" data-default-label="2" data-label-dx="9" data-label-dy="-9" cx="60" cy="80" r="2.5" />
+  <circle class="pin" data-pin-id="4" data-default-label="4" data-label-dx="9" data-label-dy="-9" cx="100" cy="80" r="2.5" />
+  <circle class="pin" data-pin-id="6" data-default-label="6" data-label-dx="9" data-label-dy="-9" cx="140" cy="80" r="2.5" />
 </svg>

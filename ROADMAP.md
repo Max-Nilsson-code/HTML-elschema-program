@@ -27,7 +27,7 @@ finns.
 | **Spara/ladda** | JSON-export/import via fil (ladda ner/ladda upp) | Funkar i alla webbläsare, användaren äger sina filer. |
 | **Export** | SVG (primärt), PNG (bonus) | SVG-export är i praktiken en serialisering av det som redan ritas. PNG blir en biprodukt (rendera samma SVG via canvas). |
 | **Layout-konvention** | Horisontella rader, fas (L) vänster / nolla (N) höger — ren användarkonvention | Ritas med de generella verktygen (symboler + linjer), inget särskilt "skena"-objekt i v1. |
-| **Symbolkälla** | `symboler och vägledning/Symboler-vägledning.svg` (draw.io-export) — symbolerna är **extraherade direkt** ur filen. Huvudkretssymbolerna (15–21) saknar draw.io-källa och är ritade för hand efter skisser, i samma stil | Den renderade delen av draw.io-exporten innehåller symbolerna som riktiga `<path>`/`<rect>`/`<ellipse>`, så geometrin kunde återanvändas exakt i stället för att ritas om. Vid konverteringen normaliseras varje symbol så anslutningspunkterna hamnar på rutnätet. |
+| **Symbolkälla** | `symboler och vägledning/Symboler-vägledning.svg` (draw.io-export) — symbolerna är **extraherade direkt** ur filen. Huvudkretssymbolerna 16–21 är på samma sätt extraherade ur `Symboler3Fas.svg`; nr 15 (säkring 3-fas) är säkringen ställd på högkant efter en skiss | Den renderade delen av draw.io-exporten innehåller symbolerna som riktiga `<path>`/`<rect>`/`<ellipse>`, så geometrin kunde återanvändas exakt i stället för att ritas om. Vid konverteringen normaliseras varje symbol så anslutningspunkterna hamnar på rutnätet. |
 
 ### Projektstruktur
 
@@ -72,6 +72,7 @@ finns.
 │   ├── Symboler-vägledning.svg     ← originalritningen (draw.io), symbol 1–10
 │   ├── Elschema-symboler2.svg      ← påbyggnad, symbol 11–12
 │   ├── Elschema-Symboler3.drawio.svg ← påbyggnad, symbol 13–14
+│   ├── Symboler3Fas.svg            ← huvudkrets, symbol 16–21
 │   └── vägledning.md               ← skriven guide: standard, namngivningskonvention, etikettplacering
 └── ROADMAP.md                      ← detta dokument
 ```
@@ -195,16 +196,19 @@ exporten blir svart på vitt oavsett vilket läge ritytan står i.
 > hänger från höger kontaktpunkt och pekar uppåt-höger — pinnarna behåller
 > sina sidor, och bladet korsar `x=40` på samma `y≈48` som förut.
 
-> **Huvudkrets (15–21):** ritade för hand efter skisser, ingen draw.io-fil.
-> Trepoliga symboler är 120 breda med polerna på `x = 40/80/120` (polavstånd
-> 2 rutor) och vänsterkolumnen fri för beteckning och manöverorgan; alla
+> **Huvudkrets (15–21):** nr 16–21 extraherade ur `Symboler3Fas.svg`, nr 15
+> efter en skiss. Trepoliga symboler är 160 breda med polerna på
+> `x = 60/100/140` — polavstånd 2 rutor, där ritningens 30 blev 40 och
+> ledarna 20 i stället för 30 så anslutningarna hamnar på rutnätet — och
+> vänsterkolumnen fri för beteckning och manöverorgan; alla
 > delar origo och pinnlägen så de kan bytas mot varandra. Kontaktorn med
 > motorskydd är 160 hög och har två beteckningar (Q + B) — ett litet tillägg
 > i datamodellen: `data-designation2-*` i symbolfilen, fältet `designation2`
 > på instansen och i JSON (skrivs bara för typer som har det, så gamla filer
 > ser likadana ut), redigerbart med dubbelklick och i egenskapspanelen.
-> Motorn är 160 bred (cirkeln är 6 rutor) och finns i två varianter i
-> stället för med ett tillval per instans. Måtten hålls till multiplar av
+> Motorn har ritningens cirkel (radie 50) med ledarna på samma x som
+> polerna, och finns i två varianter i stället för med ett tillval per
+> instans. Måtten hålls till multiplar av
 > 40 eftersom rotationen sker kring mittpunkten — annars hamnar pinnarna
 > mellan rutnätslinjerna.
 
@@ -365,7 +369,7 @@ hålls öppen för dem senare:
 - Mappnamnet `symboler och vägledning` har mellanslag i sig — fungerar för
   dokumentation men undviks som körtidssökväg i kod (se "Varför två
   symbolmappar?" ovan).
-- **Huvudkretssymbolernas beteckningar** står i vänsterkolumnen, nära första
-  polens pinnamn. I Studio (halv skala, men etiketterna i full storlek) blir
-  det trångt mellan `Q1` och `1` — beteckningen ligger därför på `x=14`, inte
-  mitt i kolumnen. Får ses över om det ändå upplevs som rörigt.
+- **Huvudkretssymbolernas beteckningar** står i vänsterkolumnen ovanför
+  manöverorganet. I Studio (halv skala, men etiketterna i full storlek) är
+  det trångt mot första polens pinnamn; kolumnen på 60 ger luft, men får ses
+  över om det ändå upplevs som rörigt.

@@ -1,34 +1,34 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 80" width="120" height="80"
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 160 80" width="160" height="80"
      data-symbol-id="sakring-trefas" data-symbol-name="Säkring 3-fas" data-designation-prefix="F"
-     data-width="120" data-height="80" data-designation-x="14" data-designation-y="10">
-  <!-- Tre stående säkringar (samma geometri som sakring.svg), polavstånd 2 rutor. Pinnarna heter 1/2 på varje pol. -->
+     data-width="160" data-height="80" data-designation-x="20" data-designation-y="10">
+  <!-- Tre stående säkringar (geometrin ur sakring.svg) efter skissen, polavstånd 40. Pinnarna heter 1/2 på varje pol. -->
   <g class="symbol-geometry" fill="none" stroke="#000" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
-    <path d="M 40 0 L 40 17" />
-    <path d="M 37.88 57.88 L 29 20 L 17.12 20" />
-    <path d="M 10.12 20 L 17.12 22.33 L 17.12 17.67 Z" fill="#000" />
-    <path d="M 40 63 L 40 80" />
-    <circle cx="40" cy="20" r="3" fill="#fff" />
-    <circle cx="40" cy="60" r="3" fill="#fff" />
-    <path d="M 4 40 L 14 40 L 14 50 L 24 50 L 24 40 L 34 40" />
-    <path d="M 80 0 L 80 17" />
-    <path d="M 77.88 57.88 L 69 20 L 57.12 20" />
-    <path d="M 50.12 20 L 57.12 22.33 L 57.12 17.67 Z" fill="#000" />
-    <path d="M 80 63 L 80 80" />
-    <circle cx="80" cy="20" r="3" fill="#fff" />
-    <circle cx="80" cy="60" r="3" fill="#fff" />
-    <path d="M 44 40 L 54 40 L 54 50 L 64 50 L 64 40 L 74 40" />
-    <path d="M 120 0 L 120 17" />
-    <path d="M 117.88 57.88 L 109 20 L 97.12 20" />
-    <path d="M 90.12 20 L 97.12 22.33 L 97.12 17.67 Z" fill="#000" />
-    <path d="M 120 63 L 120 80" />
-    <circle cx="120" cy="20" r="3" fill="#fff" />
-    <circle cx="120" cy="60" r="3" fill="#fff" />
-    <path d="M 84 40 L 94 40 L 94 50 L 104 50 L 104 40 L 114 40" />
+    <path d="M 60 0 L 60 17" />
+    <path d="M 57.88 57.88 L 49 20 L 37.12 20" />
+    <path d="M 30.12 20 L 37.12 22.33 L 37.12 17.67 Z" fill="#000" />
+    <path d="M 60 63 L 60 80" />
+    <circle cx="60" cy="20" r="3" fill="#fff" />
+    <circle cx="60" cy="60" r="3" fill="#fff" />
+    <path d="M 24 40 L 34 40 L 34 50 L 44 50 L 44 40 L 54 40" />
+    <path d="M 100 0 L 100 17" />
+    <path d="M 97.88 57.88 L 89 20 L 77.12 20" />
+    <path d="M 70.12 20 L 77.12 22.33 L 77.12 17.67 Z" fill="#000" />
+    <path d="M 100 63 L 100 80" />
+    <circle cx="100" cy="20" r="3" fill="#fff" />
+    <circle cx="100" cy="60" r="3" fill="#fff" />
+    <path d="M 64 40 L 74 40 L 74 50 L 84 50 L 84 40 L 94 40" />
+    <path d="M 140 0 L 140 17" />
+    <path d="M 137.88 57.88 L 129 20 L 117.12 20" />
+    <path d="M 110.12 20 L 117.12 22.33 L 117.12 17.67 Z" fill="#000" />
+    <path d="M 140 63 L 140 80" />
+    <circle cx="140" cy="20" r="3" fill="#fff" />
+    <circle cx="140" cy="60" r="3" fill="#fff" />
+    <path d="M 104 40 L 114 40 L 114 50 L 124 50 L 124 40 L 134 40" />
   </g>
-  <circle class="pin" data-pin-id="L1-1" data-default-label="1" data-label-dx="9" data-label-dy="9" cx="40" cy="0" r="2.5" />
-  <circle class="pin" data-pin-id="L2-1" data-default-label="1" data-label-dx="9" data-label-dy="9" cx="80" cy="0" r="2.5" />
-  <circle class="pin" data-pin-id="L3-1" data-default-label="1" data-label-dx="9" data-label-dy="9" cx="120" cy="0" r="2.5" />
-  <circle class="pin" data-pin-id="L1-2" data-default-label="2" data-label-dx="9" data-label-dy="-9" cx="40" cy="80" r="2.5" />
-  <circle class="pin" data-pin-id="L2-2" data-default-label="2" data-label-dx="9" data-label-dy="-9" cx="80" cy="80" r="2.5" />
-  <circle class="pin" data-pin-id="L3-2" data-default-label="2" data-label-dx="9" data-label-dy="-9" cx="120" cy="80" r="2.5" />
+  <circle class="pin" data-pin-id="L1-1" data-default-label="1" data-label-dx="9" data-label-dy="9" cx="60" cy="0" r="2.5" />
+  <circle class="pin" data-pin-id="L2-1" data-default-label="1" data-label-dx="9" data-label-dy="9" cx="100" cy="0" r="2.5" />
+  <circle class="pin" data-pin-id="L3-1" data-default-label="1" data-label-dx="9" data-label-dy="9" cx="140" cy="0" r="2.5" />
+  <circle class="pin" data-pin-id="L1-2" data-default-label="2" data-label-dx="9" data-label-dy="-9" cx="60" cy="80" r="2.5" />
+  <circle class="pin" data-pin-id="L2-2" data-default-label="2" data-label-dx="9" data-label-dy="-9" cx="100" cy="80" r="2.5" />
+  <circle class="pin" data-pin-id="L3-2" data-default-label="2" data-label-dx="9" data-label-dy="-9" cx="140" cy="80" r="2.5" />
 </svg>
